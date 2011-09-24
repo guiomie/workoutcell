@@ -1,0 +1,28 @@
+
+<html>
+    <head>
+      <title>My Facebook Login Page</title>
+    </head>
+    <body>
+      <div id="fb-root"></div>
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+      <script>
+         FB.init({ 
+            appId:'277924085557007', cookie:true, 
+            status:true, xfbml:true 
+         });
+         
+         FB.Event.subscribe('auth.login', function () {
+          window.location = "http://wc.guiomie.cloud9ide.com/auth/facebook";
+         });
+         
+      </script>
+      Welcome to Workoutcell, you can login with facebook for now.
+      
+      <br>
+      
+      <a href="/auth/facebook"> Login with FaceBook </a>
+      
+      
+    </body>
+ </html>
