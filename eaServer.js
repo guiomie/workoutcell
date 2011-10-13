@@ -9,8 +9,15 @@ var mongooseDb = require('./mongooseDb');
 var app = express.createServer();
 var Promise = everyauth.Promise;
 
+var mongooseLogic = require('./mongooseLogic');
+
 //Import database models
 User = mongooseDb.User;
+CalendarEvent = mongooseDb.CalendarEvent;
+GeneralReference = mongooseDb.GeneralReference;
+PersonnaReference = mongooseDb.PersonnaReference;
+ParcourReference = mongooseDb.ParcourReference;
+Parcour = mongooseDb.Parcour;
 
 everyauth.helpExpress(app);
 
@@ -23,28 +30,37 @@ everyauth.facebook
     //Define here for routing in case user decline app     
   })
   .findOrCreateUser( function (session, accessToken, accessTokExtra, fbUserMetadata) {
-
+    //BUGGED VERSION
     /*var promise = new this.Promise();
     mongooseDb.findOrCreateFacebookUser(fbUserMetadata, promise);
     return promise;*/
-    
-    var id = fbUserMetadata.id;
-    var promise = this.Promise();
-    User.findOne({ fbid: id}, function(err, result) {
-    var user;
-    if(!result) {
-        user = new User();
-        user.fbid = id;
-        user.firstName = fbUserMetadata.first_name;
-        user.lastName = fbUserMetadata.last_name;
-        user.save();
-    } else {
-        user = result.doc;
+    //Verifies if user in database already
+    try{
+        var id = fbUserMetadata.id;
+        var promise = this.Promise();
+        User.findOne({ fbid: id}, function(err, result) {
+        var user;
+        if(!result) {
+            //iniate also the users unique reference doc in ref collection
+            var newUserRefDoc = new GeneralReference();
+            user = new User();
+            user.fbid = id;
+            newUserRefDoc.id = id;
+            user.firstName = fbUserMetadata.first_name;
+            user.lastName = fbUserMetadata.last_name;
+            user.save();
+            newUserRefDoc.save();
+        } else {
+            user = result;
+        }
+        promise.fulfill(user);
+        });
+        return promise;
     }
-    promise.fulfill(user);
-    });
-    return promise;
- 
+    catch(err){
+        console.log(err); 
+     
+    }
   })
   .redirectPath('/view/profile');
   
@@ -55,6 +71,7 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({secret: cookieSecret}));
   app.use(everyauth.middleware());
+  app.use(express.favicon());
   
 });
 
