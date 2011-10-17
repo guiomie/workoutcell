@@ -35,7 +35,8 @@ module.exports = function(app) {
 
     });
     
-    
+    //Retrieve a specific parcour. A parcour is the name, distance and actual 
+    //gmap coordinates.
     app.get("/parcour/:parcourId", function(req, res){
      
     mongooseLogic.getParcour(req.params.parcourId, function(data){
@@ -63,8 +64,18 @@ module.exports = function(app) {
     });
     
     
+    //To post a workout 
+    //Step 1: write event in event reference collection
+    //Step 2: write full workout in workout collection
+    app.post("/workout/:userId", function(req, res){
+        
+    //step1    
+        
+        
+        
+    });
     
-    
+    //*************************************************************************
     //Facebook auth command samples
     //Sample of auth if statement
     app.get('/test', function(req, res) {

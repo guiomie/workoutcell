@@ -1,5 +1,6 @@
 var ObjectId = require('./node_modules/mongoose').Types.ObjectId;
 
+//**************************PARCOUR LOGIC **************************************
 //Save a parcour un referencial collection and in data collection
 var saveParcour = function(jsonString, distance, name, userId){
     
@@ -40,7 +41,6 @@ newParcour.save(function(err){
   
 }
 
-
 //will return an array of all parcours
 var getParcourList = function(userId, callback){
     
@@ -78,7 +78,28 @@ var getParcour = function(parcourId, callback){
 }
 
 
-//Exports
+//****************WORKOUTS LOGIC ****************************************
+
+var saveWorkout = function(reqString, callback){
+    
+    var receivedObject = JSON.parse(reqString);
+    CalendarMonth month = new CalendarMonth();
+    CalendarEvent theEvent = CalendarEvent({
+      
+      title      : receivedObject.title,
+      allDay     : receivedObject.allDay,
+      start      : receivedObject.start,
+      end        : receivedObject.end,
+      url        : receivedObject.url,
+      color      : receivedObject.color
+      //To implement refWorkout : 
+    
+   });
+    
+}
+
+
+//*****************Exports*****************************************8
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
 exports.getParcour = getParcour;
