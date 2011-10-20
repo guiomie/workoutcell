@@ -12,12 +12,27 @@ There are a couple of things you should do first, before you can use all of Git'
   * Push the commit the remote
     `git push [remote name] master` [Enter]
 
+create git repo named wc
+
+git remote add wc git@github.com:guiomie/wc.git
+
+git add eaServer.js index.html mongooseDb.js mongooseLogic.js routes.js welcome.html views/profile.html
+
+git commit -m 'Blablabla'
+
+git push wc master
+
+
+--------------------------------
+
+[guest@cloud9]:/workspace$ git remote add workoutcell git@github.com:guiomie/workoutcell.git
+[guest@cloud9]:/workspace$ git push -u workoutcell master
+
+
+---------------------------------------
+
+
 That's it! If this doesn't work for you, please visit the excellent resources from [Github.com](http://help.github.com) and the [Pro Git](http://http://progit.org/book/) book.
 If you can't find your answers there, feel free to ask us via Twitter (@cloud9ide), [mailing list](groups.google.com/group/cloud9-ide) or IRC (#cloud9ide on freenode).
 
 Happy coding!
-
-Note from Gui
-
-git commit -am "hey g"
-git push wc master

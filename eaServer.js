@@ -13,11 +13,13 @@ var mongooseLogic = require('./mongooseLogic');
 
 //Import database models
 User = mongooseDb.User;
-CalendarEvent = mongooseDb.CalendarEvent;
 GeneralReference = mongooseDb.GeneralReference;
 PersonnaReference = mongooseDb.PersonnaReference;
 ParcourReference = mongooseDb.ParcourReference;
 Parcour = mongooseDb.Parcour;
+CalendarEventReference = mongooseDb.CalendarEventReference;
+CalendarMonth = mongooseDb.CalendarMonth;
+CalendarEvent = mongooseDb.CalendarEvent;
 
 everyauth.helpExpress(app);
 
