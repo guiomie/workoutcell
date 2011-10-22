@@ -605,7 +605,7 @@ module.exports = {
     });
   },
 
-  'test findOne where subset of fields, excluding _id': function () {
+  'findOne where subset of fields excludes _id': function () {
     var db = start()
       , BlogPostB = db.model('BlogPostB', collection);
     BlogPostB.create({title: 'subset 1'}, function (err, created) {
@@ -635,6 +635,29 @@ module.exports = {
       });
     });
   },
+
+  // gh-541
+  'find subset of fields excluding embedded doc _id': function () {
+    var db = start()
+      , BlogPostB = db.model('BlogPostB', collection);
+
+    BlogPostB.create({title: 'LOTR', comments: [{ title: ':)' }]}, function (err, created) {
+      should.strictEqual(err, null);
+      BlogPostB.find({_id: created}, { _id: 0, 'comments._id': 0 }, function (err, found) {
+        db.close();
+        should.strictEqual(err, null);
+        should.strictEqual(undefined, found[0]._id);
+        found[0].title.should.equal('LOTR');
+        should.strictEqual('kandinsky', found[0].def);
+        should.strictEqual(undefined, found[0].author);
+        should.strictEqual(true, Array.isArray(found[0].comments));
+        found[0].comments.length.should.equal(1);
+        found[0].comments[0].title.should.equal(':)');
+        should.strictEqual(undefined, found[0].comments[0]._id);
+      });
+    });
+  },
+
 
   'exluded fields should be undefined': function () {
     var db = start()
@@ -736,23 +759,50 @@ module.exports = {
   // GH-204
   'test query casting when finding by Date': function () {
     var db = start()
-      , BlogPostB = db.model('BlogPostB', collection);
+      , P = db.model('BlogPostB', collection);
 
-    var post = new BlogPostB();
+    var post = new P;
 
     post.meta.date = new Date();
 
     post.save(function (err) {
       should.strictEqual(err, null);
 
-      BlogPostB.findOne({ _id: post._id, 'meta.date': { $lte: Date.now() } },
-      function (err, doc) {
+      P.findOne({ _id: post._id, 'meta.date': { $lte: Date.now() } }, function (err, doc) {
         should.strictEqual(err, null);
 
         DocumentObjectId.toString(doc._id).should.eql(DocumentObjectId.toString(post._id));
-        db.close();
+        doc.meta.date = null;
+        doc.save(function (err) {
+          should.strictEqual(err, null);
+          P.findById(doc._id, function (err, doc) {
+            db.close();
+            should.strictEqual(err, null);
+            should.strictEqual(doc.meta.date, null);
+          });
+        });
       });
     });
+  },
+
+  // gh-523
+  'null boolean default is allowed': function () {
+    var db = start()
+      , s1 = new Schema({ b: { type: Boolean, default: null }})
+      , M1 = db.model('NullDateDefaultIsAllowed1', s1)
+      , s2 = new Schema({ b: { type: Boolean, default: false }})
+      , M2 = db.model('NullDateDefaultIsAllowed2', s2)
+      , s3 = new Schema({ b: { type: Boolean, default: true }})
+      , M3 = db.model('NullDateDefaultIsAllowed3', s3)
+
+    db.close();
+
+    var m1 = new M1;
+    should.strictEqual(null, m1.b);
+    var m2 = new M2;
+    should.strictEqual(false, m2.b);
+    var m3 = new M3;
+    should.strictEqual(true, m3.b);
   },
 
   // GH-220
@@ -837,7 +887,7 @@ module.exports = {
     }
   },
 
-  'test querying via $which where a string': function () {
+  'test querying via $where a string': function () {
     var db = start()
       , BlogPostB = db.model('BlogPostB', collection);
 
@@ -853,7 +903,7 @@ module.exports = {
     });
   },
 
-  'test querying via $which where a function': function () {
+  'test querying via $where a function': function () {
     var db = start()
       , BlogPostB = db.model('BlogPostB', collection);
 
@@ -1132,7 +1182,30 @@ module.exports = {
       BlogPostB.findOne({title: /^Next/}, function (err, found) {
         should.strictEqual(err, null);
         found._id.should.eql(created._id);
-        db.close();
+
+        var reg = '^Next to Normal$';
+
+        BlogPostB.find({ title: { $regex: reg }}, function (err, found) {
+          should.strictEqual(err, null);
+          found.length.should.equal(1);
+          found[0]._id.should.eql(created._id);
+
+          BlogPostB.findOne({ title: { $regex: reg }}, function (err, found) {
+            should.strictEqual(err, null);
+            found._id.should.eql(created._id);
+
+            BlogPostB.where('title').$regex(reg).findOne(function (err, found) {
+              should.strictEqual(err, null);
+              found._id.should.eql(created._id);
+
+              BlogPostB.where('title').$regex(/^Next/).findOne(function (err, found) {
+                db.close();
+                should.strictEqual(err, null);
+                found._id.should.eql(created._id);
+              });
+            });
+          });
+        });
       });
     });
   },

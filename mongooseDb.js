@@ -1,10 +1,18 @@
+var mongoHQadress = 'staff.mongohq.com:10072/workoutcellDb';
+var mongoHQuser = 'mongoose';
+var mongoHQpassword = '12345';
+
 var mongoDbAdress = '24.202.230.241:27017';
 var mongoDbName = 'workoutcellDb';
 
 var mongoose = require('./node_modules/mongoose');
 var everyauth= require('everyauth');
 var Promise = everyauth.Promise;
-mongoose.connect('mongodb://' + mongoDbAdress + '/' + mongoDbName);
+
+//local dev guillaume desktop config
+//mongoose.connect('mongodb://' + mongoDbAdress + '/' + mongoDbName);
+//online connect url
+mongoose.connect('mongodb://' + mongoHQuser + ':' + mongoHQpassword + '@' + mongoHQadress);
 
 Schema = mongoose.Schema;
 ObjectId = Schema.ObjectId;

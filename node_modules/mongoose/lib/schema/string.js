@@ -16,7 +16,7 @@ var SchemaType = require('../schematype')
 function SchemaString (key, options) {
   this.enumValues = [];
   this.regExp = null;
-  SchemaType.call(this, key, options);
+  SchemaType.call(this, key, options, 'String');
 };
 
 /**
@@ -125,9 +125,10 @@ SchemaString.prototype.checkRequired = function (v) {
  * @api private
  */
 
-SchemaString.prototype.cast = function (value) {
+SchemaString.prototype.cast = function (value, scope, init) {
+  if (SchemaType._isRef(this, value, init)) return value;
   if (value === null) return value;
-  if (value.toString) return value.toString();
+  if ('undefined' !== typeof value && value.toString) return value.toString();
   throw new CastError('string', value);
 };
 
@@ -151,6 +152,7 @@ SchemaString.prototype.$conditionalHandlers = {
   , '$gte': handleSingle
   , '$lte': handleSingle
   , '$all': handleArray
+  , '$regex': handleSingle
 };
 
 SchemaString.prototype.castForQuery = function ($conditional, val) {

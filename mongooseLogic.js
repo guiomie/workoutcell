@@ -83,8 +83,8 @@ var getParcour = function(parcourId, callback){
 var saveWorkout = function(reqString, callback){
     
     var receivedObject = JSON.parse(reqString);
-    CalendarMonth month = new CalendarMonth();
-    CalendarEvent theEvent = CalendarEvent({
+    var month = new CalendarMonth();
+    var theEvent = CalendarEvent({
       
       title      : receivedObject.title,
       allDay     : receivedObject.allDay,
