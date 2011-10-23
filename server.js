@@ -84,6 +84,6 @@ app.get('/', function(req, res) {
    res.sendfile('./welcome.html');
 });
 
-//no.de joyent smartMachine port
 
-app.listen(26674);
+
+app.listen(80);
