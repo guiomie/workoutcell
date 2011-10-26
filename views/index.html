@@ -15,6 +15,7 @@
 <script src='/timepicker.js'></script>
 <!-- Homemade plugins -->
 <script src='/moduleJquery.js'></script>
+<script src='/globalVar.js'></script>
 <script src='/moduleFacebook.js'></script>
 <script src='/moduleGmap.js'></script>
 <script src='/restUrl.js'></script>
@@ -56,11 +57,11 @@
 
 <div id='header' style="width:1000px; height: 100px;  margin-bottom: 20px; padding-bottom:10px;"> 
 	
-	&nbsp; &nbsp; <a href="viewYourProfile" style="text-decoration: underline;">Guillaume Ouellet</a><br>
+	&nbsp; &nbsp; <a href="viewYourProfile" id="profileLink" style="text-decoration: underline;">Guillaume Ouellet</a><br>
 	<div style="display: table-row; ">
 
 		<div id="profilePic" style="display: table-cell; width:100px; height: 100px; background-color:#FFFFFF;">
-	
+	    <div id="xfbmlPic" style="padding-left: 10px; padding-top: 10px;">  </div>
 	
 		</div>
 
@@ -105,7 +106,7 @@
 View Results, comments and stats.
 
 </div>
-
+<!-- Load the mapping planner -->
 <div id="Map" style="display: none; width:510px; height:500px; margin-top:30px;">
 
 	
@@ -134,7 +135,7 @@ View Results, comments and stats.
 		<div style="float: bottom;">
 		
 		<li class="ui-state-default ui-corner-all" title="Remove Selecred Trace" id="unSaveTrace"><span class="ui-icon ui-icon-trash"></span></li>
-		Your maps: <select id="dropdown" style='width: 120px;'> <option>Click to load...</option> </select>
+		Your maps: <select id="dropdownMap" style='width: 120px;'> <option>Click to load...</option> </select>
 
 		</div>
 		</ul>
@@ -250,6 +251,12 @@ View Results, comments and stats.
 </div> <!-- end of toolPane -->
 <div style='clear:both;'> </div>  
 </div> <!-- end of main content body without header-->
+
+
+<div id="console">
+
+</div>
+
 
 </body>
 

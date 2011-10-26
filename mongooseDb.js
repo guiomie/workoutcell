@@ -11,6 +11,7 @@ var Promise = everyauth.Promise;
 
 //local dev guillaume desktop config
 //mongoose.connect('mongodb://' + mongoDbAdress + '/' + mongoDbName);
+
 //online connect url
 mongoose.connect('mongodb://' + mongoHQuser + ':' + mongoHQpassword + '@' + mongoHQadress);
 
@@ -83,7 +84,7 @@ var CalendarEventReference = new Schema({
 
 var CalendarMonth = new Schema({
  
- id          : Number, //String consisting of Year and Month ex:1112 = 2011 Dec
+ id          : Number, //String consisting of Year and Month ex:1211 = 2011 Dec
  allEvents   : [CalendarEvent]
    
 });
@@ -104,6 +105,43 @@ var CalendarEvent = new Schema({
     
 });
 
+var CardioWorkout = new Schema({
+
+    sport         :String,
+    type          :String,
+    intervalls    :[intervallUnit],
+    distance      :distanceUnit,
+    description   :String,
+    cell          :[Number], //Temporarly not a basicCell,
+    parcour       :ObjectId,
+    results       : String
+    
+    
+});
+
+var DistanceUnit = new Schema({
+    
+    targetType    :String,
+    value         :Number,
+    intensity     :Number
+    
+});
+
+var IntervallUnit = new Schema({
+   
+   distance     :String,
+   time         :Number,
+   intensity    :Number 
+       
+});
+
+var BasicCell = new Schema({
+    
+   name       :String,
+   members    :[ObjectId]
+    
+});
+
 //Create models out of schema
 mongoose.model('User', User);
 mongoose.model('GeneralReference', GeneralReference);   
@@ -118,6 +156,10 @@ mongoose.model('CalendarMonth', CalendarMonth);
 mongoose.model('CalendarEvent', CalendarEvent);  
 
 
+mongoose.model('CardioWorkout', CardioWorkout);
+mongoose.model('DistanceUnit', DistanceUnit);
+mongoose.model('BasicCell', BasicCell);
+mongoose.model('IntervallUnit',IntervallUnit);
 //Export models
 
 var User = exports.User = mongoose.model('User');
@@ -130,3 +172,8 @@ var Parcour = exports.Parcour = mongoose.model('Parcour');
 var CalendarEventReference = exports.CalendarEventReference = mongoose.model('CalendarEventReference');
 var CalendarMonth = exports.CalendarMonth = mongoose.model('CalendarMonth');
 var CalendarEvent = exports.CalendarEvent = mongoose.model('CalendarEvent');
+
+var DistanceUnit = exports.DistanceUnit = mongoose.model('DistanceUnit');
+var CardioWorkout = exports.CardioWorkout = mongoose.model('CardioWorkout');
+var BasicCell = exports.BasicCell = mongoose.model('BasicCell');
+var IntervallUnit = exports.IntervallUnit = mongoose.model('IntervallUnit');

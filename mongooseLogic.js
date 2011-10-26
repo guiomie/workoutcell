@@ -80,10 +80,10 @@ var getParcour = function(parcourId, callback){
 
 //****************WORKOUTS LOGIC ****************************************
 
-var saveWorkout = function(reqString, callback){
+//Saves an event (also a reference at the same time), the callback will send the
+//
+var saveEvent = function(eventObject, userId, workoutRef, callback){
     
-    var receivedObject = JSON.parse(reqString);
-    var month = new CalendarMonth();
     var theEvent = CalendarEvent({
       
       title      : receivedObject.title,
@@ -91,13 +91,73 @@ var saveWorkout = function(reqString, callback){
       start      : receivedObject.start,
       end        : receivedObject.end,
       url        : receivedObject.url,
-      color      : receivedObject.color
-      //To implement refWorkout : 
+      color      : receivedObject.color,
+      refWorkout : workoutRef
+   });
+   
+   var month = new CalendarMonth();
+   monthyear = parseInt(eventObject.start.getMonth() + '' + eventObject.start.getYear());
+   
+   CalendarEventReference.findOne({ id: userId }, function(err, resultReference){
+   
+      for(i = 0; i < resultReference.ref.length ; i++){
+      
+        if(resultReference.ref[i] === monthyear){
+            
+        }
+    
+      }
     
    });
-    
+   
 }
 
+//Saves workout, sends callback has the objectid, to then save in reference collection
+var saveWorkout = function(workoutObject, callback){
+    
+    var theWorkout = "not instantiated";
+    var callbackValue = "not instantiated";
+    
+    if(workoutObject.type === "intervall"){
+       
+       theWorkout = CardioWorkout({ 
+            sport         :workoutObject.sport, 
+            type          :workoutObject.type,
+            intervalls    :workoutObject.intervalls,
+            description   :workoutObject.description,
+            cell          :workoutObject.cell,
+            parcour       :workoutObject.parcour,
+            results       :workoutObject.results
+       }); 
+       callbackValue = theWorkout._id;
+    }
+    else if(workoutObject.type === "distance" ){
+        theWorkout = CardioWorkout({ 
+            sport         :workoutObject.sport, 
+            type          :workoutObject.type,
+            distance      :workoutObject.distance,
+            description   :workoutObject.description,
+            cell          :workoutObject.cell,
+            parcour       :workoutObject.parcour,
+            results       :workoutObject.results
+       }); 
+       callbackValue = theWorkout._id;
+    }
+    else{
+        //something wrong
+    }
+    
+    theWorkout.save(function(err){
+        if(err){
+            console.log("error in save: " + err);  
+        }else{
+            callbackValue = theWorkout._id;    
+        }
+    });
+   
+   callback(callbackValue);
+    
+}
 
 //*****************Exports*****************************************8
 exports.saveParcour = saveParcour;

@@ -65,10 +65,15 @@ module.exports = function(app) {
     
     
     //To post a workout 
-    //Step 1: write event in event reference collection
-    //Step 2: write full workout in workout collection
+    //Step 2: write event in event reference collection
+    //Step 1: write full workout in workout collection
     app.post("/workout/:userId", function(req, res){
-        
+     
+     //submitted object sould have event and workout inner object
+     var receivedJSON = JSON.parse(req.body);
+     var eventObject = receivedJSON.event;
+     var workoutObject = receivedJSON.workout;
+     
     //step1    
         
         

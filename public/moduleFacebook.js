@@ -4,7 +4,7 @@ var userObject = "empty";
 //Simply to help augment futur scalibility issues. Will need usergroup created in session info one day
 var userGroup = "group1";  
   FB.init({
-    appId  : '277924085557007',
+    appId  : globalAppid,
     status : true, // check login status
     cookie : true, // enable cookies to allow the server to access the session
     xfbml  : true, // parse XFBML
@@ -16,7 +16,7 @@ var userGroup = "group1";
     if (response.authResponse) {
       authToken = response.authResponse.accessToken;
       authId = response.authResponse.userID;
-	  alert(authId);
+	  //alert(authId);
       initPage();
     }
   });
@@ -26,11 +26,11 @@ var userGroup = "group1";
     FB.api('/me', function(response) {
     
     userObject = response;
-    var pictureTag = '<fb:profile-pic uid="' + authId + '" facebook-logo="false" linked="true" width="100" height="100" size="thumb"></fb:profile-pic>'; 
+    var pictureTag = '<fb:profile-pic uid="' + authId + '" facebook-logo="false" linked="true" width="80" height="80" size="thumb"></fb:profile-pic>'; 
     var name = userObject.name;
-    htmlText = pictureTag + ' ' + name + ', welcome to your Workoutcell profile';
-    document.getElementById('fastProfile').innerHTML =  htmlText ;
-    FB.XFBML.parse(document.getElementById('fastProfile'));
+    document.getElementById('profileLink').innerHTML =  name ;
+    document.getElementById('xfbmlPic').innerHTML =  pictureTag ;
+    FB.XFBML.parse(document.getElementById('xfbmlPic'));
     
     });
     

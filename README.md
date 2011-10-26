@@ -25,8 +25,12 @@ git push wc master
 
 --------------------------------
 
-[guest@cloud9]:/workspace$ git remote add workoutcell git@github.com:guiomie/workoutcell.git
-[guest@cloud9]:/workspace$ git push -u workoutcell master
+WORKING GIT
+
+git remote add workoutcell git@github.com:guiomie/workoutcell.git
+git add .
+git commit -m "text"
+git push -u workoutcell master
 
 
 ---------------------------------------

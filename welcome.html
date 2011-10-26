@@ -1,12 +1,17 @@
 
 <html>
     <head>
-      <title>My Facebook Login Page</title>
-    </head>
-    <body>
-      <div id="fb-root"></div>
+      <title>WorkoutCell - Welcome to the login page</title>
+      <script type="text/javascript" src='jquery.corner.js'></script>
+      <script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
       <script src="http://connect.facebook.net/en_US/all.js"></script>
+      
       <script>
+      
+      $(document).ready(function(){
+          
+        $("#welcomeBox").corner(); 
+        
          FB.init({ 
             appId:'277924085557007', cookie:true, 
             status:true, xfbml:true 
@@ -15,14 +20,40 @@
          FB.Event.subscribe('auth.login', function () {
           window.location = "http://wc.guiomie.cloud9ide.com/auth/facebook";
          });
-         
+                  
+          
+      });
+      
       </script>
-      Welcome to Workoutcell, you can login with facebook for now.
+    
+    </head>
+    
+    <body background="/background/pattern.png">
+     
+     <div style="padding-top: 200px;">
+
+     <h1 style="text-align: center"> <font size="9" face="verdana" color="white">WorkoutCell</font> </h1>     
+     <div id="welcomeBox" style="padding-top: 40px; margin-left: auto; margin-right: auto; width: 400px; height: 300px; background-color:#FFFFFF;">
+     
+    
+       <div style="vertical-align: middle; text-align: center">
+       
+       <font face="verdana">
+         
+         We currently are on pre-alpha testing. <br> <br>
+         For those with testing access, you can login with the link below.<br><br><br>
       
-      <br>
-      
-      <a href="/auth/facebook"> Login with FaceBook </a>
-      
-      
+        <a href="/auth/facebook"> <img src="img/login_button.png"> </a> <br><br><br><br>
+        
+        <font size="2"> Google+ integration to follow. <br> For testers, go here to declare bugs/issues.    </font>
+        
+       </font>
+       
+       </div>
+       
+     </div>
+    
+    </div>
+    
     </body>
  </html>

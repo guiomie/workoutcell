@@ -3,8 +3,12 @@ $(document).ready(function(){
 		p = 0;
 		var intervall = new Array();
 		var tempCell = new Array();
-		
-		
+		var selectedMap = "no map"; 
+        
+        var dropdownMapState = true;
+		var dropdownCreateState = true;
+        
+        
 		$('#fullcalendar').fullCalendar({
 			// put your options and callbacks here
 			height: 600,
@@ -15,7 +19,7 @@ $(document).ready(function(){
 				UIreposition(event.url);
 				return false;
 			}
-    }
+          }
 		});
 		
 		$('#mainContent').corner();
@@ -40,6 +44,13 @@ $(document).ready(function(){
 		
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 		
+        
+        //Behavior of when the map is clicked
+        $("#dropdownMap").click(function() { 
+    
+            
+        }); 
+        
 		// Dialog			
 		$('#dialog').dialog({
 			autoOpen: false,
@@ -300,8 +311,8 @@ $(document).ready(function(){
 			
 			toPostPackage.workout = workout;
 			toPostPackage.event = eventObject;
-			alert(JSON.stringify(toPostPackage));			
-			
+			//alert(JSON.stringify(toPostPackage));			
+			document.getElementById('console').innerHTML = JSON.stringify(toPostPackage) ;
 		}
 		//distance training
 		else if(activeAccordion === 0){
@@ -329,8 +340,8 @@ $(document).ready(function(){
 			
 			toPostPackage.workout = workout;
 			toPostPackage.event = eventObject;
-			alert(JSON.stringify(toPostPackage));
-			
+			//alert(JSON.stringify(toPostPackage));
+			document.getElementById('console').innerHTML = JSON.stringify(toPostPackage) ;
 		}
 		//nothing happens
 		else{
@@ -540,6 +551,40 @@ $(document).ready(function(){
 		
 		}
 		
+
+       
+        var clickedDropdown = function(lastClickState, dropdownId){
+            
+            if(lastClickState){
+                lastClickState = false;
+                $('#' + dropdownId).empty();
+                var url = getParcourList; //Reference to url declared in restUrl.js
+                $.get(url, function(data){
+                    populateDroplist(dropdownId, data, function(res){ });
+                }, "json");
+            }else{
+                clickedOnce = true;
+                //document.getElementById("getResult").innerHTML = $("#dropdown").val();
+            }
+            
+        }
+        
+        //Will take a JSON for string argumen (array of maps) and will populate drop list
+        var populateDroplist = function(dropdownName, string, callback){
+            
+            var droplistHtml = "<option> </option>" ;
+            var array = {};
+            var obj = jQuery.parseJSON(string);
+            $(droplistHtml).appendTo("#" + dropdownName);
+  
+            for(i = 0; i < obj.length;i++){
+                droplistHtml = "<option value='" +  obj[i].realId + "'>"+ obj[i].name+ "-" + obj[i].distance+"km </option>";
+                $(droplistHtml).appendTo("#" + dropdownName);
+            }
+            callback(droplistHtml);
+  
+        }
+        
 
 			
 });
