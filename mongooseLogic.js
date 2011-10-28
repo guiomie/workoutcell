@@ -84,6 +84,7 @@ var getParcour = function(parcourId, callback){
 //
 var saveEvent = function(eventObject, userId, workoutRef, callback){
     
+    var callbackVar = "not instantiated";
     var theEvent = CalendarEvent({
       
       title      : receivedObject.title,
@@ -102,9 +103,22 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
    
       for(i = 0; i < resultReference.ref.length ; i++){
       
-        if(resultReference.ref[i] === monthyear){
+        if(resultReference.ref[i].id === monthyear){
+           
+           resultReference.ref[i].event.push(theEvent);
+           result.Reference.save(function (err) {
+            if (err){
+                console.log('Error in saving result');
+                //callbackVar = "failed";
+            }
+            else{
+                callbackVar = "success";
+            }
             
+           });
         }
+        //get out of loop has soon everything is done.
+        break;
     
       }
     
@@ -129,7 +143,15 @@ var saveWorkout = function(workoutObject, callback){
             parcour       :workoutObject.parcour,
             results       :workoutObject.results
        }); 
-       callbackValue = theWorkout._id;
+       
+       theWorkout.save(function(err){
+            if(err){
+                console.log("error in save: " + err);  
+                callbackValue = "not instantiated";
+            }else{
+                callbackValue = theWorkout._id;    
+            }
+        });  
     }
     else if(workoutObject.type === "distance" ){
         theWorkout = CardioWorkout({ 
@@ -141,20 +163,22 @@ var saveWorkout = function(workoutObject, callback){
             parcour       :workoutObject.parcour,
             results       :workoutObject.results
        }); 
-       callbackValue = theWorkout._id;
+       
+       theWorkout.save(function(err){
+            if(err){
+                console.log("error in save: " + err);  
+                callbackValue = "not instantiated";
+            }else{
+                callbackValue = theWorkout._id;    
+            }
+        });
     }
     else{
-        //something wrong
+        //something went wrong
+        callbackValue = "not instantiated";
     }
     
-    theWorkout.save(function(err){
-        if(err){
-            console.log("error in save: " + err);  
-        }else{
-            callbackValue = theWorkout._id;    
-        }
-    });
-   
+    
    callback(callbackValue);
     
 }
@@ -163,3 +187,6 @@ var saveWorkout = function(workoutObject, callback){
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
 exports.getParcour = getParcour;
+
+exports.saveWorkout = saveWorkout;
+exports.saveEvent = saveEvent;

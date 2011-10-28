@@ -66,7 +66,7 @@ module.exports = function(app) {
     
     //To post a workout 
     //Step 2: write event in event reference collection
-    //Step 1: write full workout in workout collection
+    //Step 1: write full workout in workout collection, and callback objectId
     app.post("/workout/:userId", function(req, res){
      
      //submitted object sould have event and workout inner object
@@ -74,8 +74,26 @@ module.exports = function(app) {
      var eventObject = receivedJSON.event;
      var workoutObject = receivedJSON.workout;
      
-    //step1    
-        
+      //step1    
+      mongooseLogic.saveWorkout(workoutObject, function(savedWorkoutObjectId){
+          
+          if(savedWorkoutObjectId !== "not instantiated"){
+            //step 2
+            mongooseLogic.saveEvent(eventObject, req.params.userId, 
+            savedWorkoutObjectId, function(message){
+             
+                res.header('application/json');
+                if(message === "not instantiated")
+                    res.send("{ state: 'failed'}");            
+             });
+          }
+          else{
+            res.header('application/json');
+            res.send("{ state: 'failed'}"); 
+            
+          }    
+          
+      });
         
         
     });
