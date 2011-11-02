@@ -256,17 +256,25 @@ $(document).ready(function(){
 		//Button pushed in Distance type
 		$("#radio3").click(function(event) { 
 			var option = $('input[type=radio][name=radio3]:checked').attr('id');
-			if (option == 'radioKiloMeters'){
-				document.getElementById('typeDistance').innerHTML = " km";
+    		if (option == 'radioKiloMeters'){
+				document.getElementById('bigLabel').innerHTML = " km";
+				document.getElementById('smallLabel').innerHTML = " m";
 			}else{
-				document.getElementById('typeDistance').innerHTML = " (hh:ss)";
+				document.getElementById('bigLabel').innerHTML = "hour";
+				document.getElementById('smallLabel').innerHTML = "min";
 			}
 		});
 		
 		//Data validation and compilation before submitting to server
 		$("#push").click(function(event) {
 		var selectedSport = $('input[type=radio][name=radio1]:checked + label').text();
-		var parcourId = $("#parcourSelection").val();
+    	//var parcourId = $("#parcourSelection").val();
+		var parcourId = {
+		
+			id     :  $("#parcourSelection").val(),
+			name   :  $('#parcourSelection :selected').text()
+		
+		};
 		var postUrl = "/workout/" + authId + "/" + selectedSport;
 		var workout;
 		var eventObject;
@@ -318,13 +326,14 @@ $(document).ready(function(){
 		else if(activeAccordion === 0){
 			//alert(document.getElementById('intervallList').selectedIndex);
 			//alert(JSON.stringify(intervall));
-			var distanceType = document.getElementById('typeDistance').innerHTML;
-			var distanceInputValue = $("input[type=text][id=distanceInput]").val();
+			var distanceType = $('input[type=radio][name=radio3]:checked + label').text();
+			var minInputValue = $("input[type=text][id=smallInput]").val();
+			var maxInputValue = $("input[type=text][id=bigInput]").val();
 			var intensityValue = document.getElementById('intensityHtml2').innerHTML;
 			
 			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
 			
-			createSingleDistance(distanceType, distanceInputValue, intensityValue, function(distanceObject){
+			createSingleDistance(distanceType, minInputValue, maxInputValue, intensityValue, function(distanceObject){
 			
 				workout = {
 					sport       : selectedSport,
@@ -518,7 +527,7 @@ $(document).ready(function(){
 		}
 		
 		function createSingleIntervall(laDistance, laTime, leIntensity, callback){
-			
+    		
 			var object = {
 			
 				distance: laDistance,
@@ -530,13 +539,14 @@ $(document).ready(function(){
 			callback(object);
 		}
 		
-		function createSingleDistance(leTargetType, theValue, theIntensity, callback){
+		function createSingleDistance(leTargetType, theMinValue, theMaxValue, theIntensity, callback){
 			
 
 			var object = {
 				
 				targetType  : leTargetType,
-				value       : theValue,
+				minValue    : theMinValue,
+				maxValue    : theMaxValue,
 				intensity   : theIntensity
 				
 			}

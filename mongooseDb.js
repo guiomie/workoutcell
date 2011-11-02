@@ -101,7 +101,7 @@ var CalendarEvent = new Schema({
    end        : Date,
    url        : String,
    color      : String,
-   refWorkout : ObjectId
+   refWorkout : String
     
 });
 
@@ -109,23 +109,24 @@ var CardioWorkout = new Schema({
 
     sport         :String,
     type          :String,
-    intervalls    :[intervallUnit],
-    distance      :distanceUnit,
+    intervalls    :[IntervallUnit],
+    distance      :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
     description   :String,
     cell          :[Number], //Temporarly not a basicCell,
-    parcour       :ObjectId,
+    parcour       :{id: ObjectId, name: String},
     results       : String
     
     
 });
 
+/*
 var DistanceUnit = new Schema({
     
     targetType    :String,
     value         :Number,
     intensity     :Number
     
-});
+});*/
 
 var IntervallUnit = new Schema({
    
@@ -157,7 +158,7 @@ mongoose.model('CalendarEvent', CalendarEvent);
 
 
 mongoose.model('CardioWorkout', CardioWorkout);
-mongoose.model('DistanceUnit', DistanceUnit);
+//mongoose.model('DistanceUnit', DistanceUnit);
 mongoose.model('BasicCell', BasicCell);
 mongoose.model('IntervallUnit',IntervallUnit);
 //Export models
@@ -173,7 +174,7 @@ var CalendarEventReference = exports.CalendarEventReference = mongoose.model('Ca
 var CalendarMonth = exports.CalendarMonth = mongoose.model('CalendarMonth');
 var CalendarEvent = exports.CalendarEvent = mongoose.model('CalendarEvent');
 
-var DistanceUnit = exports.DistanceUnit = mongoose.model('DistanceUnit');
+//var DistanceUnit = exports.DistanceUnit = mongoose.model('DistanceUnit');
 var CardioWorkout = exports.CardioWorkout = mongoose.model('CardioWorkout');
 var BasicCell = exports.BasicCell = mongoose.model('BasicCell');
 var IntervallUnit = exports.IntervallUnit = mongoose.model('IntervallUnit');

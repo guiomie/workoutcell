@@ -93,7 +93,7 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
       end        : receivedObject.end,
       url        : receivedObject.url,
       color      : receivedObject.color,
-      refWorkout : workoutRef
+      refWorkout : "/workout/" + workoutRef
    });
    
    var month = new CalendarMonth();
@@ -103,7 +103,7 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
    
       for(i = 0; i < resultReference.ref.length ; i++){
       
-        if(resultReference.ref[i].id === monthyear){
+        if(resultReference.ref[i].id === monthyear || i === resultReference.ref.length - 1 ){
            
            resultReference.ref[i].event.push(theEvent);
            result.Reference.save(function (err) {
@@ -116,6 +116,13 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
             }
             
            });
+        }
+        //month isnt in database yet, so create it
+        else{
+        
+        //TO COMPLETE, PUSH NEW MOTN IN DATABASE
+        resultReference.push(
+            
         }
         //get out of loop has soon everything is done.
         break;
@@ -134,13 +141,20 @@ var saveWorkout = function(workoutObject, callback){
     
     if(workoutObject.type === "intervall"){
        
+       //We rewrite the parcour name, not just the id, because we dont want
+       //to http request just to get the name
+       var receivedParcour = {
+            id: workoutObject.parcour.id, 
+            name: workoutObject.parcour.name        
+       }
+ 
        theWorkout = CardioWorkout({ 
             sport         :workoutObject.sport, 
             type          :workoutObject.type,
             intervalls    :workoutObject.intervalls,
             description   :workoutObject.description,
             cell          :workoutObject.cell,
-            parcour       :workoutObject.parcour,
+            parcour       :receivedParcour,
             results       :workoutObject.results
        }); 
        
@@ -154,10 +168,18 @@ var saveWorkout = function(workoutObject, callback){
         });  
     }
     else if(workoutObject.type === "distance" ){
+        
+        var distanceValues = {
+            targetType     :workoutObject.distance.targetType, 
+            minValue       :workoutObject.distance.minValue,
+            maxValue       :workoutObject.distance.maxValue, 
+            intensity      :workoutObject.distance.intensity          
+        }
+        
         theWorkout = CardioWorkout({ 
             sport         :workoutObject.sport, 
             type          :workoutObject.type,
-            distance      :workoutObject.distance,
+            distance      :distanceValues,
             description   :workoutObject.description,
             cell          :workoutObject.cell,
             parcour       :workoutObject.parcour,

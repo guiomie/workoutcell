@@ -50,6 +50,14 @@ module.exports = function(app) {
     });
     
     
+    //retreive specific workout in database
+    app.get("/workout/:workoutid", function(req, res){
+        
+       res.send("Will look out for workout at objectid: " + req.params.workoutid); 
+       
+    });
+    
+    
     //HTTP POST REQUEST
     
     //To test auth code with it also 
@@ -74,26 +82,33 @@ module.exports = function(app) {
      var eventObject = receivedJSON.event;
      var workoutObject = receivedJSON.workout;
      
-      //step1    
-      mongooseLogic.saveWorkout(workoutObject, function(savedWorkoutObjectId){
+      //step1   
+      if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
+        mongooseLogic.saveWorkout(workoutObject, function(savedWorkoutObjectId){
           
-          if(savedWorkoutObjectId !== "not instantiated"){
-            //step 2
-            mongooseLogic.saveEvent(eventObject, req.params.userId, 
-            savedWorkoutObjectId, function(message){
+            if(savedWorkoutObjectId !== "not instantiated"){
+                //step 2
+                mongooseLogic.saveEvent(eventObject, req.params.userId, 
+                savedWorkoutObjectId, function(message){
              
+                    res.header('application/json');
+                    if(message === "not instantiated")
+                        res.send("{ state: 'failed'}");            
+                });
+            }
+            else{
                 res.header('application/json');
-                if(message === "not instantiated")
-                    res.send("{ state: 'failed'}");            
-             });
-          }
-          else{
-            res.header('application/json');
-            res.send("{ state: 'failed'}"); 
+                res.send("{ state: 'failed'}"); 
             
-          }    
-          
-      });
+            }       
+        });
+      }
+      else{
+         
+         res.header('application/json');
+         res.send("{ state: 'Invalid object sent to server'}");
+       
+      }
         
         
     });

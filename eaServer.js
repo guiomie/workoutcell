@@ -20,6 +20,10 @@ Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
 CalendarMonth = mongooseDb.CalendarMonth;
 CalendarEvent = mongooseDb.CalendarEvent;
+//DistanceUnit = mongooseDb.DistanceUnit;
+CardioWorkout = mongooseDb.CardioWorkout;
+BasicCell = mongooseDb.BasicCell;
+IntervallUnit = mongooseDb.IntervallUnit;
 
 everyauth.helpExpress(app);
 
