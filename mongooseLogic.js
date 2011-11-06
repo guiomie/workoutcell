@@ -85,52 +85,63 @@ var getParcour = function(parcourId, callback){
 var saveEvent = function(eventObject, userId, workoutRef, callback){
     
     var callbackVar = "not instantiated";
-    var theEvent = CalendarEvent({
+    var theEvent = new CalendarEvent({
       
-      title      : receivedObject.title,
-      allDay     : receivedObject.allDay,
-      start      : receivedObject.start,
-      end        : receivedObject.end,
-      url        : receivedObject.url,
-      color      : receivedObject.color,
-      refWorkout : "/workout/" + workoutRef
-   });
+        title      : eventObject.title,
+        allDay     : eventObject.allDay,
+        start      : eventObject.start,
+        end        : eventObject.end,
+        url        : "/workout/" + workoutRef,
+        color      : eventObject.color,
+        refWorkout : workoutRef
+    });
    
-   var month = new CalendarMonth();
-   monthyear = parseInt(eventObject.start.getMonth() + '' + eventObject.start.getYear());
+    var month = new CalendarMonth();
+    var eventDate = new Date(eventObject.start);
+    //The workout array starts on 1 Jan 2011, all other positions in array are 
+    //relative to this start day. To find the year/month of an array loc use modulo
+    arrayLocation = 1 + (((parseInt(eventDate.getFullYear()) - 2011)*12) + parseInt(eventDate.getMonth()));
+    console.log(arrayLocation);
+    //console.log(eventDate.getMonth());
+    console.log('Searching for userId in event ref collection: ' + userId);
+    CalendarEventReference.findOne({ id: userId }, function(err, resultReference){
    
-   CalendarEventReference.findOne({ id: userId }, function(err, resultReference){
-   
-      for(i = 0; i < resultReference.ref.length ; i++){
-      
-        if(resultReference.ref[i].id === monthyear || i === resultReference.ref.length - 1 ){
-           
-           resultReference.ref[i].event.push(theEvent);
-           result.Reference.save(function (err) {
-            if (err){
-                console.log('Error in saving result');
-                //callbackVar = "failed";
-            }
-            else{
-                callbackVar = "success";
-            }
-            
-           });
+        if(err){
+            console.log('Error in finding calendar reference collection: ' + err); 
+            callbackVar = "not instantiated";  
+            callback("Cant find CalendarEventReference for user, callback: " + callbackVar);
         }
-        //month isnt in database yet, so create it
         else{
-        
-        //TO COMPLETE, PUSH NEW MOTN IN DATABASE
-        resultReference.push(
-            
+            //console.log(resultReference.ref.length);
+            var initialRefLength = resultReference.ref.length;
+            if(resultReference.ref.length !== arrayLocation){
+          
+                for(i = 0; i < (arrayLocation - initialRefLength + 1); i++){
+                    //console.log(i);
+                    resultReference.ref.push({id: (i + initialRefLength), allEvents: []});  
+                } 
+                
+            }
+      
+            resultReference.ref[arrayLocation].allEvents.push(theEvent);
+            console.log(JSON.stringify(resultReference));
+            resultReference.save(function(err){
+     
+                if(err){
+                    console.log('Error in finding calendar reference: ' + err);
+                    callbackVar = "not instantiated";  
+                    callback("Cant save allEvents in CalendarEventReference");
+                }
+                else{
+                    console.log('Succesfully saved Event');
+                    callbackVar = "not instantiated";   
+                    callback("Successfully saved Workout and Reference");
+                }      
+            });
         }
-        //get out of loop has soon everything is done.
-        break;
-    
-      }
-    
-   });
-   
+
+    });
+
 }
 
 //Saves workout, sends callback has the objectid, to then save in reference collection
@@ -139,16 +150,16 @@ var saveWorkout = function(workoutObject, callback){
     var theWorkout = "not instantiated";
     var callbackValue = "not instantiated";
     
+    var receivedParcour = {
+        id: ObjectId(workoutObject.parcour.id), 
+        name: workoutObject.parcour.name        
+    };
+    
     if(workoutObject.type === "intervall"){
        
        //We rewrite the parcour name, not just the id, because we dont want
        //to http request just to get the name
-       var receivedParcour = {
-            id: workoutObject.parcour.id, 
-            name: workoutObject.parcour.name        
-       }
- 
-       theWorkout = CardioWorkout({ 
+       theWorkout = new CardioWorkout({ 
             sport         :workoutObject.sport, 
             type          :workoutObject.type,
             intervalls    :workoutObject.intervalls,
@@ -162,8 +173,10 @@ var saveWorkout = function(workoutObject, callback){
             if(err){
                 console.log("error in save: " + err);  
                 callbackValue = "not instantiated";
+                callback(callbackValue);
             }else{
-                callbackValue = theWorkout._id;    
+                callbackValue = theWorkout._id;
+                callback(callbackValue);
             }
         });  
     }
@@ -174,15 +187,15 @@ var saveWorkout = function(workoutObject, callback){
             minValue       :workoutObject.distance.minValue,
             maxValue       :workoutObject.distance.maxValue, 
             intensity      :workoutObject.distance.intensity          
-        }
+        };
         
-        theWorkout = CardioWorkout({ 
+        theWorkout = new CardioWorkout({ 
             sport         :workoutObject.sport, 
             type          :workoutObject.type,
             distance      :distanceValues,
             description   :workoutObject.description,
             cell          :workoutObject.cell,
-            parcour       :workoutObject.parcour,
+            parcour       :receivedParcour,
             results       :workoutObject.results
        }); 
        
@@ -190,22 +203,22 @@ var saveWorkout = function(workoutObject, callback){
             if(err){
                 console.log("error in save: " + err);  
                 callbackValue = "not instantiated";
+                callback(callbackValue);
             }else{
-                callbackValue = theWorkout._id;    
+                callbackValue = theWorkout._id;
+                callback(callbackValue);
             }
         });
     }
     else{
         //something went wrong
         callbackValue = "not instantiated";
+        callback(callbackValue);
     }
-    
-    
-   callback(callbackValue);
-    
-}
+        
+};
 
-//*****************Exports*****************************************8
+//*****************Exports*****************************************
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
 exports.getParcour = getParcour;

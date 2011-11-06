@@ -78,27 +78,33 @@ module.exports = function(app) {
     app.post("/workout/:userId", function(req, res){
      
      //submitted object sould have event and workout inner object
-     var receivedJSON = JSON.parse(req.body);
+     console.log(req.body);
+     var receivedJSON = req.body;//JSON.parse(req.body);
      var eventObject = receivedJSON.event;
+     //console.log(eventObject);
      var workoutObject = receivedJSON.workout;
      
       //step1   
       if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
         mongooseLogic.saveWorkout(workoutObject, function(savedWorkoutObjectId){
-          
+            console.log(savedWorkoutObjectId);
             if(savedWorkoutObjectId !== "not instantiated"){
-                //step 2
+                console.log("Saved Workout");
                 mongooseLogic.saveEvent(eventObject, req.params.userId, 
                 savedWorkoutObjectId, function(message){
-             
+                console.log("Saved Event ...");
                     res.header('application/json');
-                    if(message === "not instantiated")
-                        res.send("{ state: 'failed'}");            
+                    if(message === "not instantiated"){
+                        res.send("{ state: 'failed," + message + " '}");
+                    }
+                    else{
+                        res.send("{ state: 'Success, Workout Saved'}");    
+                    }
                 });
             }
             else{
                 res.header('application/json');
-                res.send("{ state: 'failed'}"); 
+                res.send("{ state: 'failed, couldnt save event.'}"); 
             
             }       
         });
@@ -106,7 +112,7 @@ module.exports = function(app) {
       else{
          
          res.header('application/json');
-         res.send("{ state: 'Invalid object sent to server'}");
+         res.send("{ state: 'failed, Invalid object sent to server'}");
        
       }
         

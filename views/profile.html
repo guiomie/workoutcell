@@ -63,7 +63,7 @@ Content
     
  ----------------------------- POST Testing Area ---------------------------<br>
 Post a map with coordinates: /parcour/100000268779394/map1/5 <br>
-
+Post workout:    /workout/:userId  |  ex: /workout/100000268779394  <br>
 <form action="/" id="requestForm">
 
 httpPost url: <input type="text" name="url" placeholder="" /> <br>
@@ -72,7 +72,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
     <textarea rows="6" cols="30" id="json">
         
 
-{"workout":{"sport":"Swim","type":"distance","distance":{"targetType":" km","value":"78","intensity":"0"},"description":"none","cell":[],"parcour":"4390093547","results":"not entered"},"event":{"title":"Swim","allDay":false,"start":"2011-10-12T13:00:00.000Z","end":"2011-10-12T12:00:00.000Z","url":"ServerSideCreated","color":"#99CCFF"}}
+{"workout":{"sport":"Swim","type":"distance","distance":{"targetType":"Time","minValue":"35","maxValue":"1","intensity":"0"},"description":"none","cell":[],"parcour":{"id":"4e962d381c49265e4d000020","name":"Pres de la maison - 5km"},"results":"not entered"},"event":{"title":"Swim","allDay":false,"start":"2011-11-10T13:00:00.000Z","end":"2011-11-10T15:00:00.000Z","url":"ServerSideCreated","color":"#99CCFF"}}
 
 </textarea><br>
 
@@ -121,6 +121,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
  ----------------------------- Get Testing Area ---------------------------<br>
 /parcour/list/:userId | ex: /parcour/list/100000268779394 <br>
 /parcour/:parcourObjectId | ex: /parcour/4e962d381c49265e4d000020 <br>
+
 httpGet url: <input type="text" id="getUrl" placeholder="" /> <br>
 
 <input type="submit" value="Get request" id="submitGet" /><br>
