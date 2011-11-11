@@ -7,3 +7,4 @@
 //upload new parcous - POST
 var restPost_newParcour = "/parcour/" + userGroup + "/" + authId;
 var getParcourList = "/parcour/list/" + authId;
+var postworkout = "/workout/" + authId;

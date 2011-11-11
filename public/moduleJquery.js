@@ -321,6 +321,12 @@ $(document).ready(function(){
 			toPostPackage.event = eventObject;
 			//alert(JSON.stringify(toPostPackage));			
 			document.getElementById('console').innerHTML = JSON.stringify(toPostPackage) ;
+            
+            postJson(JSON.stringify(toPostPackage), postworkout, function(message){
+            
+                document.getElementById("console").innerHTML = message;
+            
+            });
 		}
 		//distance training
 		else if(activeAccordion === 0){
@@ -593,6 +599,36 @@ $(document).ready(function(){
             }
             callback(droplistHtml);
   
+        }
+        
+        var postJson = function(theJson, theUrl, callback){
+            
+            
+            $.ajax({
+                url: theUrl,
+                type: "POST",
+                dataType: "json",
+                data: theJson,
+                contentType: "application/json",
+                cache: false,
+                timeout: 5000,
+                /*complete: function() {
+                    //called when complete
+                    callback("Operation treated successfully ");
+                },*/
+
+                success: function(data) {
+      
+                    callback('Sending: ' + data);
+                },
+
+                error: function() {
+                    callback('Operation failed');
+                },
+            });
+         
+         
+            
         }
         
 

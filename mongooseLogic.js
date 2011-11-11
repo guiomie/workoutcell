@@ -85,22 +85,22 @@ var getParcour = function(parcourId, callback){
 var saveEvent = function(eventObject, userId, workoutRef, callback){
     
     var callbackVar = "not instantiated";
-    var theEvent = new CalendarEvent({
-      
-        title      : eventObject.title,
-        allDay     : eventObject.allDay,
-        start      : eventObject.start,
-        end        : eventObject.end,
-        url        : "/workout/" + workoutRef,
-        color      : eventObject.color,
-        refWorkout : workoutRef
-    });
+    var theEvent = new CalendarEvent();
+  
+    theEvent.title = eventObject.title;
+    theEvent.allDay = eventObject.allDay;
+    theEvent.start = eventObject.start;
+    theEvent.end = eventObject.end;
+    theEvent.url = "/workout/" + workoutRef;
+    theEvent.color = eventObject.color;
+    theEvent.refWorkout = workoutRef;
+    
    
     var month = new CalendarMonth();
     var eventDate = new Date(eventObject.start);
     //The workout array starts on 1 Jan 2011, all other positions in array are 
     //relative to this start day. To find the year/month of an array loc use modulo
-    arrayLocation = 1 + (((parseInt(eventDate.getFullYear()) - 2011)*12) + parseInt(eventDate.getMonth()));
+    arrayLocation = 1 + (((parseInt(eventDate.getFullYear())) - 2011)*12) + parseInt(eventDate.getMonth());
     console.log(arrayLocation);
     //console.log(eventDate.getMonth());
     console.log('Searching for userId in event ref collection: ' + userId);
@@ -112,19 +112,25 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
             callback("Cant find CalendarEventReference for user, callback: " + callbackVar);
         }
         else{
-            //console.log(resultReference.ref.length);
+            console.log(resultReference.ref.length);
             var initialRefLength = resultReference.ref.length;
-            if(resultReference.ref.length !== arrayLocation){
-          
-                for(i = 0; i < (arrayLocation - initialRefLength + 1); i++){
-                    //console.log(i);
+            if(resultReference.ref.length <= arrayLocation){
+                console.log("In if");
+                for(i = initialRefLength; i <= (arrayLocation); i++){
+                    console.log("In loop: " +i);
                     resultReference.ref.push({id: (i + initialRefLength), allEvents: []});  
                 } 
-                
+                resultReference.ref[arrayLocation].allEvents.push(theEvent);
+            }
+            else{
+             
+                resultReference.ref[arrayLocation].allEvents.push(theEvent);
+   
             }
       
-            resultReference.ref[arrayLocation].allEvents.push(theEvent);
-            console.log(JSON.stringify(resultReference));
+            
+            
+            //console.log(JSON.stringify(resultReference));
             resultReference.save(function(err){
      
                 if(err){
@@ -218,6 +224,26 @@ var saveWorkout = function(workoutObject, callback){
         
 };
 
+var getWorkout = function(workoutId, callback){
+   
+    //var myObjectId = ObjectId.fromString(workoutId); 
+    //console.log("Searching for parcour at: " + myObjectId);
+    CardioWorkout.findOne({ _id: workoutId }, function(err, result){
+    var callB;
+        if(err || result === null){
+            console.log("error in save: " + err + " - Parcour returned for " +  parcourId + " : " + result);
+            callB = "No Document found: " + err;
+            callback(callB);
+        }else{
+            //console.log(userId + " : " + result);
+            callB = result; 
+            callback(callB);
+        } 
+     
+  });
+  
+}
+
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
@@ -225,3 +251,4 @@ exports.getParcour = getParcour;
 
 exports.saveWorkout = saveWorkout;
 exports.saveEvent = saveEvent;
+exports.getWorkout = getWorkout;

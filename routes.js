@@ -53,7 +53,18 @@ module.exports = function(app) {
     //retreive specific workout in database
     app.get("/workout/:workoutid", function(req, res){
         
-       res.send("Will look out for workout at objectid: " + req.params.workoutid); 
+        
+         mongooseLogic.getWorkout(req.params.workoutid, function(message){
+
+            if(message === "not instantiated"){
+                res.header('application/json');
+                res.send("{ state: 'failed," + message + " '}");
+            }
+            else{
+                res.json(JSON.stringify(message));    
+            }
+         
+         });
        
     });
     
@@ -78,7 +89,7 @@ module.exports = function(app) {
     app.post("/workout/:userId", function(req, res){
      
      //submitted object sould have event and workout inner object
-     console.log(req.body);
+     //console.log(req.body);
      var receivedJSON = req.body;//JSON.parse(req.body);
      var eventObject = receivedJSON.event;
      //console.log(eventObject);
@@ -87,9 +98,9 @@ module.exports = function(app) {
       //step1   
       if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
         mongooseLogic.saveWorkout(workoutObject, function(savedWorkoutObjectId){
-            console.log(savedWorkoutObjectId);
+            //console.log(savedWorkoutObjectId);
             if(savedWorkoutObjectId !== "not instantiated"){
-                console.log("Saved Workout");
+                console.log("Saved Workout ...");
                 mongooseLogic.saveEvent(eventObject, req.params.userId, 
                 savedWorkoutObjectId, function(message){
                 console.log("Saved Event ...");

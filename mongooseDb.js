@@ -72,23 +72,6 @@ var Parcour = new Schema({
 
 //************* SCHEMA FOR WORKOUTS **********************
 
-//Calendar event Reference collection
-//Sorted out by months
-var CalendarEventReference = new Schema({
-    
-   id   : Number,  //Users FBid 
-   ref  : [CalendarMonth]  
-    
-    
-});
-
-var CalendarMonth = new Schema({
- 
- id          : Number, //String consisting of Year and Month ex:1211 = 2011 Dec
- allEvents   : [CalendarEvent]
-   
-});
-
 //An event is jcalendar compatible and reference a full workout
 /*
  IETF format (ex: "Wed, 18 Oct 2009 13:00:00 EST"), a string in ISO8601 format (ex: "2009-11-05T13:15:30Z") or a UNIX timestamp.
@@ -103,6 +86,32 @@ var CalendarEvent = new Schema({
    color      : String,
    refWorkout : String
     
+});
+
+var CalendarMonth = new Schema({
+ 
+ id          : Number, //String consisting of Year and Month ex:1211 = 2011 Dec
+ allEvents   : [CalendarEvent]
+   
+});
+
+//Calendar event Reference collection
+//Sorted out by months
+var CalendarEventReference = new Schema({
+    
+   id   : Number,  //Users FBid 
+   ref  : [CalendarMonth]  
+    
+    
+});
+
+
+var IntervallUnit = new Schema({
+   
+   distance     :String,
+   time         :Number,
+   intensity    :Number 
+       
 });
 
 var CardioWorkout = new Schema({
@@ -128,13 +137,6 @@ var DistanceUnit = new Schema({
     
 });*/
 
-var IntervallUnit = new Schema({
-   
-   distance     :String,
-   time         :Number,
-   intensity    :Number 
-       
-});
 
 var BasicCell = new Schema({
     
