@@ -8,3 +8,14 @@
 var restPost_newParcour = "/parcour/" + userGroup + "/" + authId;
 var getParcourList = "/parcour/list/" + authId;
 var postworkout = "/workout/" + authId;
+
+
+//Instantiated variables with this function
+
+var initGlobalVar = function(){
+    
+    restPost_newParcour = "/parcour/" + userGroup + "/" + authId;
+    getParcourList = "/parcour/list/" + authId;
+    postworkout = "/workout/" + authId;
+    
+}

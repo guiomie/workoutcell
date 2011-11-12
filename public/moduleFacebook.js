@@ -24,7 +24,7 @@ var userGroup = "group1";
   function initPage(){
     
     FB.api('/me', function(response) {
-    
+    initGlobalVar();
     userObject = response;
     var pictureTag = '<fb:profile-pic uid="' + authId + '" facebook-logo="false" linked="true" width="80" height="80" size="thumb"></fb:profile-pic>'; 
     var name = userObject.name;

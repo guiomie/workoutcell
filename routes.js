@@ -57,15 +57,35 @@ module.exports = function(app) {
          mongooseLogic.getWorkout(req.params.workoutid, function(message){
 
             if(message === "not instantiated"){
-                res.header('application/json');
+                res.contentType('application/json');
                 res.send("{ state: 'failed," + message + " '}");
             }
             else{
-                res.json(JSON.stringify(message));    
+                res.contentType('application/json');
+                res.send(message);    
             }
          
          });
        
+    });
+    
+    app.get("/event/:year/:month/:userId", function(req, res){
+    
+    
+        mongooseLogic.getMonthEvent(req.params.userId, req.params.year, 
+            req.params.month, function(object){
+        
+            if(object === "not instantiated"){
+                
+                res.json({ success: false, message: 'Failed to find Events'});    
+            }
+            else{
+                
+               res.json(object); 
+            }
+        
+        });
+        
     });
     
     
@@ -103,27 +123,29 @@ module.exports = function(app) {
                 console.log("Saved Workout ...");
                 mongooseLogic.saveEvent(eventObject, req.params.userId, 
                 savedWorkoutObjectId, function(message){
-                console.log("Saved Event ...");
-                    res.header('application/json');
+                
+                    //res.contentType('application/json');
                     if(message === "not instantiated"){
-                        res.send("{ state: 'failed," + message + " '}");
+                        //console.log("Event not Saved ...");
+                        res.json({ success: false, message: 'Failed to saved workout.'});
                     }
                     else{
-                        res.send("{ state: 'Success, Workout Saved'}");    
+                        //console.log("Saved Event ...");
+                        res.json({ success: true,  message: 'Workout saved successfully.'});    
                     }
                 });
             }
             else{
-                res.header('application/json');
-                res.send("{ state: 'failed, couldnt save event.'}"); 
+                //res.header('application/json');
+                res.json({ success: false,  message: 'Failed, could not save event.'}); 
             
             }       
         });
       }
       else{
          
-         res.header('application/json');
-         res.send("{ state: 'failed, Invalid object sent to server'}");
+         //res.header('application/json');
+         res.json({ success: false,  message: 'Failed, Invalid object sent to server'});
        
       }
         

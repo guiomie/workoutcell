@@ -18,8 +18,16 @@ $(document).ready(function(){
 				//the launched function readjusts UI and send httprequest for view
 				UIreposition(event.url);
 				return false;
-			}
-          }
+			    }
+            },     
+            viewDisplay: function(view) {
+                
+                var d = $('#calendar').fullCalendar('getDate');
+                var month = d.getMonths();
+                var year = d.getYears();
+                
+                
+            }
 		});
 		
 		$('#mainContent').corner();
@@ -189,14 +197,14 @@ $(document).ready(function(){
 				if (option === 'radioMeters'){
 					if($("#intensityHtml").text() === '0' || $("#intensityHtml").text() === 'n/a'){
 						$("select[name='intervallList']").append(new Option(target + "m", 'a'));
-						createSingleIntervall(target, "null", "null", function(singleIntervall){
+						createSingleIntervall(target, 0, 0, function(singleIntervall){
 							intervall.push(singleIntervall);
 						});
 					}
 					else{
 						var output = target + "m @ " + $("#intensityHtml").text() + "%";
 						$("select[name='intervallList']").append(new Option(output, 'a'));
-						createSingleIntervall(target, "null", $("#intensityHtml").text(), function(singleIntervall){
+						createSingleIntervall(target, 0, $("#intensityHtml").text(), function(singleIntervall){
 							intervall.push(singleIntervall);
 						});
 					}
@@ -205,14 +213,14 @@ $(document).ready(function(){
 			
 					if($("#intensityHtml").text() === '0' || $("#intensityHtml").text() === 'n/a'){
 						$("select[name='intervallList']").append(new Option(target + "s", 'a'));
-						createSingleIntervall("null", target, "null", function(singleIntervall){
+						createSingleIntervall(0, target, 0, function(singleIntervall){
 							intervall.push(singleIntervall);
 						});
 					}
 					else{
 						var output = target + "s @ " + $("#intensityHtml").text() + "%";
 						$("select[name='intervallList']").append(new Option(output, 'a'));
-						createSingleIntervall("null", target, $("#intensityHtml").text(), function(singleIntervall){
+						createSingleIntervall(0, target, $("#intensityHtml").text(), function(singleIntervall){
 							intervall.push(singleIntervall);
 						});
 					}
@@ -319,12 +327,12 @@ $(document).ready(function(){
 			
 			toPostPackage.workout = workout;
 			toPostPackage.event = eventObject;
-			//alert(JSON.stringify(toPostPackage));			
-			document.getElementById('console').innerHTML = JSON.stringify(toPostPackage) ;
+			
+            //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
             
             postJson(JSON.stringify(toPostPackage), postworkout, function(message){
             
-                document.getElementById("console").innerHTML = message;
+                //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
             
             });
 		}
@@ -355,8 +363,16 @@ $(document).ready(function(){
 			
 			toPostPackage.workout = workout;
 			toPostPackage.event = eventObject;
-			//alert(JSON.stringify(toPostPackage));
-			document.getElementById('console').innerHTML = JSON.stringify(toPostPackage) ;
+			
+			//FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
+            
+            //Sends hhtt post to the postworkout url defined in restUrl.js
+            postJson(JSON.stringify(toPostPackage), postworkout, function(message){
+                
+                //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
+            
+            });
+            
 		}
 		//nothing happens
 		else{
@@ -601,8 +617,9 @@ $(document).ready(function(){
   
         }
         
+        //To send a json use this, make sure received json follows convention
+        //convention on param with success: true or false and the message: "blabla"
         var postJson = function(theJson, theUrl, callback){
-            
             
             $.ajax({
                 url: theUrl,
@@ -612,23 +629,29 @@ $(document).ready(function(){
                 contentType: "application/json",
                 cache: false,
                 timeout: 5000,
-                /*complete: function() {
+                complete: function() {
                     //called when complete
-                    callback("Operation treated successfully ");
-                },*/
+                    //callback("Operation treated successfully ");
+                    Notifier.info('Saving ...');
+                },
 
                 success: function(data) {
-      
-                    callback('Sending: ' + data);
+                    //var res =jQuery.parseJSON(data);
+                    //callback('Sending: ' + data);
+                    if(data.success){
+                        Notifier.success(data.message);
+                    }
+                    else{
+                       Notifier.error(data.message); 
+                    }
                 },
 
                 error: function() {
-                    callback('Operation failed');
+                    //callback('Operation failed');
+                    Notifier.error('Could not send data to server');
                 },
             });
-         
-         
-            
+    
         }
         
 

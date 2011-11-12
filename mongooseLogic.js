@@ -29,7 +29,7 @@ newParcour.save(function(err){
         result.parcours.push(newParcourReference);
         result.save(function(err){
           if(err){
-             console.log("error in save: " + err);  
+             console.log("Error in save: " + err);  
           }else{
               
           }
@@ -101,7 +101,7 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
     //The workout array starts on 1 Jan 2011, all other positions in array are 
     //relative to this start day. To find the year/month of an array loc use modulo
     arrayLocation = 1 + (((parseInt(eventDate.getFullYear())) - 2011)*12) + parseInt(eventDate.getMonth());
-    console.log(arrayLocation);
+    //console.log(arrayLocation);
     //console.log(eventDate.getMonth());
     console.log('Searching for userId in event ref collection: ' + userId);
     CalendarEventReference.findOne({ id: userId }, function(err, resultReference){
@@ -109,10 +109,10 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
         if(err){
             console.log('Error in finding calendar reference collection: ' + err); 
             callbackVar = "not instantiated";  
-            callback("Cant find CalendarEventReference for user, callback: " + callbackVar);
+            callback(callbackVar);
         }
         else{
-            console.log(resultReference.ref.length);
+            //console.log(resultReference.ref.length);
             var initialRefLength = resultReference.ref.length;
             if(resultReference.ref.length <= arrayLocation){
                 console.log("In if");
@@ -136,11 +136,10 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
                 if(err){
                     console.log('Error in finding calendar reference: ' + err);
                     callbackVar = "not instantiated";  
-                    callback("Cant save allEvents in CalendarEventReference");
+                    callback(callbackVar);
                 }
                 else{
-                    console.log('Succesfully saved Event');
-                    callbackVar = "not instantiated";   
+                    console.log('Succesfully saved Event'); 
                     callback("Successfully saved Workout and Reference");
                 }      
             });
@@ -163,6 +162,7 @@ var saveWorkout = function(workoutObject, callback){
     
     if(workoutObject.type === "intervall"){
        
+       console.log(JSON.stringify(workoutObject.intervalls));
        //We rewrite the parcour name, not just the id, because we dont want
        //to http request just to get the name
        theWorkout = new CardioWorkout({ 
@@ -177,7 +177,7 @@ var saveWorkout = function(workoutObject, callback){
        
        theWorkout.save(function(err){
             if(err){
-                console.log("error in save: " + err);  
+                console.log("Error in save: " + err);  
                 callbackValue = "not instantiated";
                 callback(callbackValue);
             }else{
@@ -231,7 +231,7 @@ var getWorkout = function(workoutId, callback){
     CardioWorkout.findOne({ _id: workoutId }, function(err, result){
     var callB;
         if(err || result === null){
-            console.log("error in save: " + err + " - Parcour returned for " +  parcourId + " : " + result);
+            console.log("error in find: " + err + " - Parcour returned for " +  parcourId + " : " + result);
             callB = "No Document found: " + err;
             callback(callB);
         }else{
@@ -244,6 +244,29 @@ var getWorkout = function(workoutId, callback){
   
 }
 
+var getMonthEvent = function(userId, year, month, callback){
+    
+    var callB;
+    
+    CalendarEventReference.findOne({ _id: userId}, function(err, result){
+    
+        if(err || result === null){
+            console.log("No document found or: " + err);
+            callB = "not instantiated";
+            callback(callB);
+        }else{
+            
+           var arrayLocation = 1 + ((year - 2011)*12) + month;
+           if(result.ref.length ­> arrayLocation){
+           callB = result.ref[arrayLocation].allEvents; 
+           callback(callB); 
+           }
+        } 
+        
+        
+    });
+}
+
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
@@ -252,3 +275,4 @@ exports.getParcour = getParcour;
 exports.saveWorkout = saveWorkout;
 exports.saveEvent = saveEvent;
 exports.getWorkout = getWorkout;
+exports.getMonthEvent = getMonthEvent;

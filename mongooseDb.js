@@ -105,10 +105,10 @@ var CalendarEventReference = new Schema({
     
 });
 
-
+//If a value is zero, means it wasnt instantiated by the user
 var IntervallUnit = new Schema({
    
-   distance     :String,
+   distance     :Number,
    time         :Number,
    intensity    :Number 
        
