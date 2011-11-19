@@ -121,7 +121,8 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
  ----------------------------- Get Testing Area ---------------------------<br>
 /parcour/list/:userId | ex: /parcour/list/100000268779394 <br>
 /parcour/:parcourObjectId | ex: /parcour/4e962d381c49265e4d000020 <br>
-
+/event/:year/:month/:userId | ex: /event/2011/11/100000268779394 <br>
+/workout/:workoutid   |  ex: /workout/4eb3218b32bac49d3d000002 <br>
 httpGet url: <input type="text" id="getUrl" placeholder="" /> <br>
 
 <input type="submit" value="Get request" id="submitGet" /><br>
@@ -196,12 +197,12 @@ var getJson = function(){
     timeout: 5000,
     complete: function() {
       //called when complete
-      document.getElementById("getResult").innerHTML = donnee;
+      document.getElementById("getResult").innerHTML = JSON.stringify(donnee);
     },
 
     success: function(data) {
      donnee = data; 
-     document.getElementById("getResult").innerHTML = donnee;
+     document.getElementById("getResult").innerHTML = JSON.stringify(donnee);
    },
 
     error: function() {

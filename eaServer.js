@@ -66,6 +66,7 @@ everyauth.facebook
         } else {
             user = result;
         }
+        //console.log(user);
         promise.fulfill(user);
         });
         return promise;

@@ -2,6 +2,8 @@
 <head>
 <title>WC</title>
 <link type="text/css" href="/css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+<link href="/dropdown/jqDropDown.css" media="screen" rel="Stylesheet" type="text/css"/> 
+
 <script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
@@ -14,6 +16,8 @@
 <script src='/jquery.corner.js'></script>
 <script src='/timepicker.js'></script>
 <script src='/notifier.js'></script>
+<script src='/dropdown/jqDropDown.jquery.js'></script>
+<script src='/dropdown/jqDropDown.jquery.min.js'></script>
 <!-- Homemade plugins -->
 <script src='/moduleJquery.js'></script>
 <script src='/globalVar.js'></script>
@@ -171,7 +175,7 @@ View Results, comments and stats.
 		Partner search option
 	</div>
 
-	<select title="Select Course" id="parcourSelection">
+	<select title="Select Course" id="parcourSelection" color="black">
 		<option value="4e962d381c49265e4d000020">Pres de la maison - 5km</option>
 		<option value="5390093547">Aylmer aller retour - 18.5km </option>
 	</select>
@@ -217,7 +221,7 @@ View Results, comments and stats.
 			
 			<div style="float: left;">
 				Target
-				<div id="radio2" ">
+				<div id="radio2">
 					<input type="radio" id="radioMeters" name="radio2"  /><label for="radioMeters">m</label>
 					<input type="radio" id="radioSeconds" name="radio2" checked="checked" /><label for="radioSeconds">s</label>
 				</div>

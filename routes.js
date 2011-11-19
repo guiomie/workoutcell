@@ -9,7 +9,8 @@ module.exports = function(app) {
     });
     
     app.get('/view/:htmlpage', function(req, res){
-        if(req.loggedIn) {
+        console.log(req.loggedIn);
+        if(true) {
           res.sendfile('./views/' + req.params.htmlpage + '.html');
         }
         else{
@@ -57,12 +58,10 @@ module.exports = function(app) {
          mongooseLogic.getWorkout(req.params.workoutid, function(message){
 
             if(message === "not instantiated"){
-                res.contentType('application/json');
-                res.send("{ state: 'failed," + message + " '}");
+                res.json("{ success: false, message:'Failed to find workout'}");
             }
             else{
-                res.contentType('application/json');
-                res.send(message);    
+                res.json(message);    
             }
          
          });
@@ -77,11 +76,11 @@ module.exports = function(app) {
         
             if(object === "not instantiated"){
                 
-                res.json({ success: false, message: 'Failed to find Events'});    
+                res.json({ success: false, message: 'No calendar events for this month'});    
             }
             else{
                 
-               res.json(object); 
+               res.json({ success: true, message: object}); 
             }
         
         });

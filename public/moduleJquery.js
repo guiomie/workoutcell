@@ -1,7 +1,8 @@
 $(document).ready(function(){
 		panelState = 'Create';
 		p = 0;
-		var intervall = new Array();
+		var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
+        var intervall = new Array();
 		var tempCell = new Array();
 		var selectedMap = "no map"; 
         
@@ -22,10 +23,7 @@ $(document).ready(function(){
             },     
             viewDisplay: function(view) {
                 
-                var d = $('#calendar').fullCalendar('getDate');
-                var month = d.getMonths();
-                var year = d.getYears();
-                
+                updateCalendar();
                 
             }
 		});
@@ -52,6 +50,12 @@ $(document).ready(function(){
 		
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 		
+        $("#parcourSelection").jqDropDown({
+        
+            defaultOption: 'Please select an option',
+            width: 25 
+        });
+        
         
         //Behavior of when the map is clicked
         $("#dropdownMap").click(function() { 
@@ -333,7 +337,7 @@ $(document).ready(function(){
             postJson(JSON.stringify(toPostPackage), postworkout, function(message){
             
                 //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
-            
+                updateCalendar();
             });
 		}
 		//distance training
@@ -370,7 +374,7 @@ $(document).ready(function(){
             postJson(JSON.stringify(toPostPackage), postworkout, function(message){
                 
                 //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
-            
+                updateCalendar();
             });
             
 		}
@@ -654,6 +658,30 @@ $(document).ready(function(){
     
         }
         
+        //will remove everything in the calendar then
+        //takes the current displayed month and go gets the data
+        function updateCalendar(){
+            
+            var d = $('#fullcalendar').fullCalendar('getDate');
+                //alert(d);
+                
+            var month = d.getMonth() + 1;
+            var year = d.getFullYear();
+            var theGetUrl = "/event/" + year + "/" + month + "/" + authId
 
-			
+            $('#fullcalendar').fullCalendar( 'removeEvents' );
+            $.getJSON(theGetUrl, function(data) {
+                if(data.success){
+                    $('#fullcalendar').fullCalendar( 'addEventSource', data.message );  
+                    appStatus.lastFetchedMonth = month;
+                }
+                else{
+                //something wrong
+                Notifier.success(data.message);
+                }   
+            }); 
+            
+        }
+
+//END OF MODULE FUNCTIONS
 });

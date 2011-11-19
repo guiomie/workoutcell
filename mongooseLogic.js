@@ -225,45 +225,60 @@ var saveWorkout = function(workoutObject, callback){
 };
 
 var getWorkout = function(workoutId, callback){
-   
-    //var myObjectId = ObjectId.fromString(workoutId); 
-    //console.log("Searching for parcour at: " + myObjectId);
-    CardioWorkout.findOne({ _id: workoutId }, function(err, result){
-    var callB;
-        if(err || result === null){
-            console.log("error in find: " + err + " - Parcour returned for " +  parcourId + " : " + result);
-            callB = "No Document found: " + err;
-            callback(callB);
-        }else{
-            //console.log(userId + " : " + result);
-            callB = result; 
-            callback(callB);
-        } 
-     
-  });
+    
+    //Verify the object is a valid objectid
+    if(workoutId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ getWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        //var myObjectId = ObjectId.fromString(workoutId); 
+        //console.log("Searching for parcour at: " + workoutId);
+        CardioWorkout.findOne({ _id: workoutId }, function(err, result){
+            var callB;
+            if(err || result === null){
+                console.log("error in find: " + err + " @ workoutId = " + workoutId);
+                callB = "No Document found: " + err;
+                callback(callB);
+            }else{
+                //console.log(userId + " : " + result);
+                callB = result; 
+                callback(callB);
+            }  
+        });
+    }
   
 }
 
 var getMonthEvent = function(userId, year, month, callback){
     
-    var callB;
+    var callB = "not instantiated";
     
-    CalendarEventReference.findOne({ _id: userId}, function(err, result){
+    CalendarEventReference.findOne({ id: userId}, function(err, result){
     
         if(err || result === null){
-            console.log("No document found or: " + err);
+            //console.log("No document found or: " + err);
             callB = "not instantiated";
             callback(callB);
-        }else{
-            
-           var arrayLocation = 1 + ((year - 2011)*12) + month;
-           if(result.ref.length ­> arrayLocation){
-           callB = result.ref[arrayLocation].allEvents; 
-           callback(callB); 
+        }
+        else{
+            //transform month and year into location
+           var arrayLocation = ((parseInt(year) - 2011)*12) + parseInt(month);
+           //console.log("Looking if " + arrayLocation + " is smaller then " + result.ref.length);
+           if(result.ref.length > arrayLocation && parseInt(year) > 2010){
+                //console.log("Getting data in array");
+                callB = result.ref[arrayLocation].allEvents; 
+                callback(callB); 
+           }
+           else{
+            //console.log("Invalid month or year");
+            callB = "not instantiated";
+            callback(callB);
+           
            }
         } 
-        
-        
+ 
     });
 }
 
