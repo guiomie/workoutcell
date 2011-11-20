@@ -50,11 +50,12 @@ $(document).ready(function(){
 		
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 		
+        /*
         $("#parcourSelection").jqDropDown({
         
             defaultOption: 'Please select an option',
             width: 25 
-        });
+        });*/
         
         
         //Behavior of when the map is clicked
@@ -106,6 +107,12 @@ $(document).ready(function(){
 			}
 		});
 		
+        
+        // Remove last added segment on map trace
+    	$('#undoTrace').click(function(){
+			undoLast();
+		});
+        
 		// Event for when press delete icon
 		$('#deleteTrace').click(function(){
 			clearMap();
@@ -478,7 +485,7 @@ $(document).ready(function(){
 		/* Definitions of custom made functions, location is here to ease rest of general code */
 		
 		function UIreposition(url){
-
+            
 			if(panelState !== 'View'){	
 				// Change calendar size
 				$("#fullcalendar").animate({ 
@@ -497,7 +504,11 @@ $(document).ready(function(){
 				});	
 			}
 			
-			document.getElementById('View').innerHTML = " HttpRequest to " + url;
+            $.getJSON(url, function(data) {
+                     document.getElementById('View').innerHTML = JSON.stringify(data); 
+            });
+            
+		
 			//httprequest to get training via event.url
 			
 			//template generator for json received via httprequest
@@ -536,15 +547,6 @@ $(document).ready(function(){
 			var type = $('input[type=radio][name=radio1]:checked + label').text();;
 			return type;
 		
-		}
-		
-		function updateCalendarData(event){
-		
-		//gets the user data
-		//this will actually not be a new array but = httget 
-		var events = new Array(); 
-		events[0] = event;
-		$('#fullcalendar').fullCalendar( 'addEventSource', events )
 		}
 		
 		function createIntervallArray(inputName, callback){
@@ -670,10 +672,10 @@ $(document).ready(function(){
             var theGetUrl = "/event/" + year + "/" + month + "/" + authId
 
             $('#fullcalendar').fullCalendar( 'removeEvents' );
+            
             $.getJSON(theGetUrl, function(data) {
                 if(data.success){
                     $('#fullcalendar').fullCalendar( 'addEventSource', data.message );  
-                    appStatus.lastFetchedMonth = month;
                 }
                 else{
                 //something wrong

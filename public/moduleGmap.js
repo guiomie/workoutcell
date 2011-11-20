@@ -3,6 +3,7 @@ var poly;
 var distance = 0;
 var markerArray = [];
 var bikeLayer = null;
+var lastAddedDistance = [];
 
 function initialize() {
 	
@@ -55,12 +56,33 @@ function updateDistance(poly){
 	if(polypath.getLength() !== 1){
 		var latLngB = polypath.getAt(polypath.getLength() - 1);
 		var latLngA = polypath.getAt(polypath.getLength() - 2);
-		distance = distance + 
-		google.maps.geometry.spherical.computeDistanceBetween (latLngA, latLngB);
+		var theDistance = google.maps.geometry.spherical.computeDistanceBetween (latLngA, latLngB);
+        lastAddedDistance.push(Math.round(theDistance*100)/100000);
+        distance = distance + theDistance;
 		document.getElementById('distance').innerHTML = Math.round(distance*100)/100000;
 		
 	}
 	
+}
+
+function undoLast(){
+ 
+    //Delete last stroke
+    var tempoPathArray = poly.getPath();
+    tempoPathArray.removeAt(tempoPathArray.getLength()-1);
+    poly.setPath(tempoPathArray);  
+    //Delete last marker in global var and on map
+    markerArray[markerArray.length-1].setMap(null);
+    markerArray.pop();
+    //Adjust distance and the pop deletes last element and returns it
+    if(lastAddedDistance.length === 1){
+       clearMap(); 
+    }
+    else{
+        var adjustedDistance = document.getElementById('distance').innerHTML - lastAddedDistance.pop();;
+        document.getElementById('distance').innerHTML = Math.round(adjustedDistance*10000)/10000;
+    }
+
 }
 
 function clearMap(){
@@ -78,7 +100,7 @@ function clearMap(){
 	poly = new google.maps.Polyline(polyOptions);
 	poly.setMap(map);
 	distance = 0;
-	document.getElementById('distance').innerHTML = Math.round(distance) + ' meters';		
+	document.getElementById('distance').innerHTML = Math.round(distance);		
 	
 	//clear markers on map
 	if (markerArray) {
@@ -86,5 +108,7 @@ function clearMap(){
 			markerArray[i].setMap(null);
 		}
 	}
-	
+	//empty array of distances
+    lastAddedDistance = [];
+    
 }
