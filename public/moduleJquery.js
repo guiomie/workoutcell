@@ -5,11 +5,7 @@ $(document).ready(function(){
         var intervall = new Array();
 		var tempCell = new Array();
 		var selectedMap = "no map"; 
-        
-        var dropdownMapState = true;
-		var dropdownCreateState = true;
-        
-        
+
 		$('#fullcalendar').fullCalendar({
 			// put your options and callbacks here
 			height: 600,
@@ -50,17 +46,11 @@ $(document).ready(function(){
 		
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 		
-        /*
-        $("#parcourSelection").jqDropDown({
-        
-            defaultOption: 'Please select an option',
-            width: 25 
-        });*/
-        
-        
+
         //Behavior of when the map is clicked
         $("#dropdownMap").click(function() { 
-    
+            
+
             
         }); 
         
@@ -134,39 +124,45 @@ $(document).ready(function(){
 			//poly is a global variable declared in moduleGmap
 			//Essential to brake circular reference, else stringify will fail
 			poly.setMap(null);
-			var polyPath = poly.getPath().b; 
-			var markers = markerArray; 
-			var nameOfCourse = $("input[type=text][id=courseName]").val();
+			var polypathObject = poly.getPath().getArray();
+			var markersObject;             
+    		var nameOfCourse = $("input[type=text][id=courseName]").val();
 			var totalDistance = document.getElementById('distance').innerHTML;
+            
+            markertTitleArray(markerArray, function(titleArray){
+               
+               markerLatLngArray(markerArray, function(latArray){
+               
+                    markersObject = { titles: titleArray, latlng: latArray };
+               });
+            });
+            			
+			if(polypathObject.length === 0 || markerArray.length === 0 || nameOfCourse === "" ){
 			
-			
-			if(polyPath.length === 0 || markerArray.length === 0 || nameOfCourse === "" ){
-			
-			alert("Missing data Entry. Create course or make sure a name is entered");
-			
-			}else
-			{
-				var newParcour = {
-			
-					name         : nameOfCourse,
-					markerArray  : markers,
-					distance     : totalDistance,
-					pathArray    : polyPath
+			    //alert("Missing data Entry. Create course or make sure a name is entered");
+			    Notifier.error("Please fill in all required inputs");
+			}
+            else{
+                var object = { markers: markersObject, polylines: polypathObject};
+				var content = JSON.stringify(object);
 
-				}
-			
-				var httpRequestUrl = restPost_newParcour; 
-				//Clear UI
-				document.getElementById('distance').innerHTML = "0";
-				$("input[type=text][id=courseName]").val("");
-				document.getElementById('traceLabel').innerHTML = "Map saved";
-				//Essential to brake circular reference, else stringify will fail
+				var httpRequestUrl = restPost_newParcour + nameOfCourse + "/" + totalDistance; 
+
+				//Essential to break circular reference, else stringify will fail
 				clearMap();
-				//TO IMPLEMENT *************
-				//Send to server via httppost
-				document.getElementById('map_option').innerHTML = JSON.stringify(newParcour);
-				
-				
+
+				//Send to server via httppost			
+                postJson(content, httpRequestUrl, function(){
+                   //reinitialise maps and lcear ui
+                   distance = 0;
+                   markerArray = [];
+                   lastAddedDistance = [];
+                   $("#courseName").val('');
+                   document.getElementById('distance').innerHTML = "0";
+                   //populate dropdowns with new user data
+                   refreshDropdown();
+                });
+				//alert(JSON.stringify(newParcour));
 			}
 			
 			//Message box creates bug in UI
@@ -585,30 +581,21 @@ $(document).ready(function(){
 		
 		function getSelectedParcour(selectId, callback){
 		
-		document.getElementById().innerHTML = $("#" + selectId).val();
+		    document.getElementById().innerHTML = $("#" + selectId).val();
 		
 		}
-		
-
-       
-        var clickedDropdown = function(lastClickState, dropdownId){
-            
-            if(lastClickState){
-                lastClickState = false;
-                $('#' + dropdownId).empty();
-                var url = getParcourList; //Reference to url declared in restUrl.js
-                $.get(url, function(data){
-                    populateDroplist(dropdownId, data, function(res){ });
-                }, "json");
-            }else{
-                clickedOnce = true;
-                //document.getElementById("getResult").innerHTML = $("#dropdown").val();
-            }
-            
-        }
         
         //Will take a JSON for string argumen (array of maps) and will populate drop list
-        var populateDroplist = function(dropdownName, string, callback){
+        var populateDroplist = function(dropdownName, string){
+            
+            //Clear old guy
+            $('#' + dropdownName)
+                .find('option')
+                .remove()
+                .end()
+                //.append('<option value="whatever">text</option>')
+                //.val('whatever')
+            ;
             
             var droplistHtml = "<option> </option>" ;
             var array = {};
@@ -616,12 +603,18 @@ $(document).ready(function(){
             $(droplistHtml).appendTo("#" + dropdownName);
   
             for(i = 0; i < obj.length;i++){
-                droplistHtml = "<option value='" +  obj[i].realId + "'>"+ obj[i].name+ "-" + obj[i].distance+"km </option>";
+                droplistHtml = "<option value='" +  obj[i].realId + "'>"+ obj[i].name+"</option>";
                 $(droplistHtml).appendTo("#" + dropdownName);
-            }
-            callback(droplistHtml);
-  
+            } 
         }
+        
+         function getJson(url, callback){
+
+            $.get(url, function(data){
+                callback(data);   
+            }, "json");
+        }
+        
         
         //To send a json use this, make sure received json follows convention
         //convention on param with success: true or false and the message: "blabla"
@@ -637,8 +630,9 @@ $(document).ready(function(){
                 timeout: 5000,
                 complete: function() {
                     //called when complete
-                    //callback("Operation treated successfully ");
+                    
                     Notifier.info('Saving ...');
+
                 },
 
                 success: function(data) {
@@ -646,15 +640,18 @@ $(document).ready(function(){
                     //callback('Sending: ' + data);
                     if(data.success){
                         Notifier.success(data.message);
+                         callback();
                     }
                     else{
                        Notifier.error(data.message); 
+                       callback();
                     }
                 },
 
                 error: function() {
                     //callback('Operation failed');
                     Notifier.error('Could not send data to server');
+                     callback();
                 },
             });
     
@@ -684,6 +681,30 @@ $(document).ready(function(){
             }); 
             
         }
+        
+        
+        var refreshDropdown = function(){
+         
+            getJson(getParcourList, function(data){
+               
+               //will populate dropdown with parcour list
+               populateDroplist("dropdownMap", data);
+               populateDroplist("parcourSelection", data);
+               
+            });  
+        }
 
+        $("#dropdownMap").change(function() { 
+            
+            var url = getParcour + $(this).val();
+            $.get(url, function(data){
+
+                document.getElementById('console').innerHTML = JSON.stringify(data);
+            
+            }, "json");
+            
+        }); 
+        
+        
 //END OF MODULE FUNCTIONS
 });

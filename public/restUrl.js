@@ -5,17 +5,19 @@
 
 
 //upload new parcous - POST
-var restPost_newParcour = "/parcour/" + userGroup + "/" + authId;
+var restPost_newParcour = "/parcour/" + authId + "/";
 var getParcourList = "/parcour/list/" + authId;
 var postworkout = "/workout/" + authId;
-
+var getParcour = "/parcour/";
 
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
     
-    restPost_newParcour = "/parcour/" + userGroup + "/" + authId;
+    restPost_newParcour = "/parcour/" + authId + "/";
     getParcourList = "/parcour/list/" + authId;
     postworkout = "/workout/" + authId;
+    getParcour = "/parcour/";
+    
     
 }

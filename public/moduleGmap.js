@@ -22,7 +22,8 @@ function initialize() {
 		strokeColor: '#000000',
 		strokeOpacity: 1.0,
 		strokeWeight: 3
-	}	
+	}
+    
 	poly = new google.maps.Polyline(polyOptions);
 	poly.setMap(map);
 	
@@ -111,4 +112,23 @@ function clearMap(){
 	//empty array of distances
     lastAddedDistance = [];
     
+}
+
+function markertTitleArray(array, callback){
+    var callbackArray = [];
+    
+    for(i=0; i < array.length; i++){      
+        callbackArray.push(array[i].getTitle());           
+    }
+    
+    callback(callbackArray);         
+}
+        
+function markerLatLngArray(array, callback){
+    var callbackArray = [];
+    
+    for(i=0; i < array.length; i++){
+        callbackArray.push(array[i].getPosition());            
+    }
+    callback(callbackArray);
 }

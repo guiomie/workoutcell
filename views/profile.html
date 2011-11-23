@@ -126,7 +126,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
 httpGet url: <input type="text" id="getUrl" placeholder="" /> <br>
 
 <input type="submit" value="Get request" id="submitGet" /><br>
-<select id="dropdown" style='width: 120px;'> <option>Click to load...</option> </select> <br>
+<select id="dropdown" style='width: 120px;'> <option value="value">Click to load...</option> <option value="value2">Click to load 2...</option></select> <br>
 <div id="command">  </div>
 <div id="getResult">  </div>
 
@@ -140,22 +140,10 @@ $('#submitGet').click(function() {
 
 });
 
-var clickedOnce = true;
 
-$("#dropdown").click(function() { 
-    
-    if(clickedOnce){
-        clickedOnce = false;
-        $('#dropdown').empty();
-        var url = "/parcour/list/" + authId; 
-        $.get(url, function(data){
-            populateDroplist("dropdown", data, function(res){
-            });
-        }, "json");
-   }else{
-    clickedOnce = true;
-     document.getElementById("getResult").innerHTML = $("#dropdown").val();
-   }
+$("#dropdown").change(function() { 
+
+    alert($(this).val());
 
 }); 
 

@@ -93,10 +93,17 @@ module.exports = function(app) {
     //To test auth code with it also 
     app.post("/parcour/:userId/:name/:distance", function(req, res){
        
-       //saveParcour = function(jsonString, distance, name, userId)
-      //console.log(JSON.stringify(req.body)); 
+      //console.log(req.body); 
       mongooseLogic.saveParcour(req.body, req.params.distance, req.params.name,
-      req.params.userId);
+      req.params.userId, function(mess){
+      
+        if(mess === "success"){
+            res.json({ success: true, message: "Parcour '" + req.params.name + "' was saved"});
+        }    
+        else{
+            res.json({ success: false, message: mess });   
+        }
+      });
        
         
     });

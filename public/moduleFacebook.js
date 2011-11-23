@@ -3,6 +3,8 @@ var authId = "empty";
 var userObject = "empty";
 //Simply to help augment futur scalibility issues. Will need usergroup created in session info one day
 var userGroup = "group1";  
+
+
   FB.init({
     appId  : globalAppid,
     status : true, // check login status
@@ -20,8 +22,9 @@ var userGroup = "group1";
       initPage();
     }
   });
-  
-  function initPage(){
+
+
+function initPage(){
     
     FB.api('/me', function(response) {
     initGlobalVar();
@@ -31,8 +34,9 @@ var userGroup = "group1";
     document.getElementById('profileLink').innerHTML =  name ;
     document.getElementById('xfbmlPic').innerHTML =  pictureTag ;
     FB.XFBML.parse(document.getElementById('xfbmlPic'));
-    
+
     });
     
- 
-  }
+
+
+}

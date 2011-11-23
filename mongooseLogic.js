@@ -2,10 +2,10 @@ var ObjectId = require('./node_modules/mongoose').Types.ObjectId;
 
 //**************************PARCOUR LOGIC **************************************
 //Save a parcour un referencial collection and in data collection
-var saveParcour = function(jsonString, distance, name, userId){
+var saveParcour = function(jsonString, distance, name, userId, callback){
     
 var newParcour = new Parcour();
-newParcour.content = jsonString;
+newParcour.content = JSON.stringify(jsonString);
 newParcour.distance = distance;
 newParcour.name = name;
 
@@ -17,21 +17,24 @@ newParcourReference.distance = distance;
 newParcour.save(function(err){
 
   if(err) { 
-    console.log("error in save: " + err); 
+    console.log("error in save: " + err);
+    callback("Couldn't save document, Database error");
   }else{
     
     GeneralReference.findOne({ id: userId}, function(err, result){
  
       if(err || result === null){
-        console.log("error in save: " + err + " - User returned for " + userId + " : " + result); 
+        console.log("error in save: " + err + " - User returned for " + userId + " : " + result);
+        callback("Couldn't find users General Reference Collection");
       }else{
         
         result.parcours.push(newParcourReference);
         result.save(function(err){
           if(err){
-             console.log("Error in save: " + err);  
+             console.log("Error in save: " + err); 
+             callback("Couldn't save Parcour Reference");
           }else{
-              
+             callback("success");
           }
         });
       }
@@ -48,7 +51,7 @@ var getParcourList = function(userId, callback){
    GeneralReference.findOne({ id: userId}, function(err, result){
     var callB;
      if(err || result === null){
-       console.log("error in save: " + err + " - User returned for " + userId + " : " + result);
+       console.log("Error in getParcourList: " + err + " - User returned for " + userId + " : " + result);
        callB = "No Document found: " + err; 
      }else{
        console.log(userId + " : " + result);
@@ -61,17 +64,17 @@ var getParcourList = function(userId, callback){
 
 var getParcour = function(parcourId, callback){
    
-   var myObjectId = ObjectId.fromString(parcourId); 
-    console.log("Searching for parcour at: " + myObjectId);
-   Parcour.findOne({ _id: parcourId }, function(err, result){
-    var callB;
-     if(err || result === null){
-       console.log("error in save: " + err + " - Parcour returned for " +  parcourId + " : " + result);
-       callB = "No Document found: " + err; 
-     }else{
-       //console.log(userId + " : " + result);
-       callB = result; 
-     } 
+   //var myObjectId = ObjectId.fromString(parcourId); 
+    console.log("Searching for parcour");
+    Parcour.findOne({ _id: parcourId }, function(err, result){
+       var callB;
+       if(err || result === null){
+          console.log("Error in getParcour: " + err + " - Parcour returned for " +  parcourId + " : " + result);
+          callB = "No Document found: " + err; 
+       }else{
+         //console.log(userId + " : " + result);
+         callB = result; 
+       } 
      callback(callB);
   });
   
