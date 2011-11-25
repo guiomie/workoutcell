@@ -132,3 +132,39 @@ function markerLatLngArray(array, callback){
     }
     callback(callbackArray);
 }
+
+
+function loadPolylines(arrayPath){
+    var path = new google.maps.MVCArray();
+    var polyOptions = {
+    	strokeColor: '#000000',
+		strokeOpacity: 1.0,
+		strokeWeight: 3
+	}
+    
+    $.each(arrayPath, function(key, val) {
+            path.push(new google.maps.LatLng(val.Pa, val.Qa));
+    })
+    
+    poly = new google.maps.Polyline(polyOptions);
+    poly.setPath(path);
+    poly.setMap(map);
+ 
+}
+
+function loadMarkers(arrayLatLng, arrayTitle){
+
+    //alert(arrayLatLng + " : " + arrayTitle);
+    for(i = 0; i < arrayLatLng.length; i++){
+        var pos = new google.maps.LatLng(arrayLatLng[i].Pa, arrayLatLng[i].Qa);
+        
+        var marker = new google.maps.Marker({
+            position: pos,
+            title: JSON.stringify(arrayTitle[i]),
+            map: map
+        });
+        markerArray.push(marker);   
+        
+    }
+
+}

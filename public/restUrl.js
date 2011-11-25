@@ -19,5 +19,4 @@ var initGlobalVar = function(){
     postworkout = "/workout/" + authId;
     getParcour = "/parcour/";
     
-    
 }

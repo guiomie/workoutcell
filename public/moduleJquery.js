@@ -681,8 +681,7 @@ $(document).ready(function(){
             }); 
             
         }
-        
-        
+
         var refreshDropdown = function(){
          
             getJson(getParcourList, function(data){
@@ -693,18 +692,42 @@ $(document).ready(function(){
                
             });  
         }
+        
+        //unelegant way of loading dropdown with latest parcours
+        $("#dropdownMap").mouseover(function() {
+           
+           refreshDropdown();
+           
+        });
+        
+        $("#parcourSelection").mouseover(function() {
+           
+           refreshDropdown();
+           
+        });
+        
 
         $("#dropdownMap").change(function() { 
             
             var url = getParcour + $(this).val();
             $.get(url, function(data){
-
-                document.getElementById('console').innerHTML = JSON.stringify(data);
-            
+                clearMap();
+                var receivedObject = jQuery.parseJSON(data);
+                var contentObject = jQuery.parseJSON(receivedObject.content);
+                
+                loadPolylines(contentObject.polylines);
+                
+                loadMarkers(contentObject.markers.latlng, contentObject.markers.titles);
+                document.getElementById('distance').innerHTML = receivedObject.distance;
+                //document.getElementById('console').innerHTML = JSON.stringify(contentObject.polylines);
+                
+                
+                
             }, "json");
             
         }); 
         
+
         
 //END OF MODULE FUNCTIONS
 });
