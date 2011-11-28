@@ -27,6 +27,52 @@ $(document).ready(function(){
 		$('#mainContent').corner();
 		$('#profilePic').corner();
 		
+        $("#targetType").click(function(){
+            
+            if( $("#targetType").text() === "%"){
+                document.getElementById('targetType').innerHTML = "watt";
+                $( "#sliderIntensity" ).slider({min: 0, max: 600 });
+            }
+            else if($("#targetType").text() === "watt"){
+                document.getElementById('targetType').innerHTML = "bpm";
+                $( "#sliderIntensity" ).slider({min: 0, max: 300 });
+                
+            }
+            else if($("#targetType").text() === "bpm"){
+                
+                $("#sliderIntensity" ).slider( "destroy" );
+                $("#sliderIntensity" ).slider({ 
+                    orientation: "vertical", 
+                    range: true, 
+                    min: 0, max: 300, 
+                    values: [30, 60],
+                    slide: function( event, ui ) {  
+				        document.getElementById('targetType').innerHTML = "min: " + Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60));
+			            document.getElementById('intensityHtml').innerHTML = "max: " + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60));
+                    } 
+                });
+                document.getElementById('targetType').innerHTML = "min: " + Math.floor(30 / 60) +":" + (30 - (Math.floor(30 / 60) * 60));
+    		    document.getElementById('intensityHtml').innerHTML = "max: " + Math.floor(60 / 60) +":" + (60 - (Math.floor(60 / 60) * 60));
+                
+            }
+            else{ //time intervall
+                document.getElementById('targetType').innerHTML = "%";
+                $("#sliderIntensity" ).slider( "destroy" );
+                $( "#sliderIntensity" ).slider({
+    		        orientation: "vertical",
+			        range: "min",
+		        	min: 0,
+			        max: 100,
+			        value: 40,
+			        slide: function( event, ui ) {
+				        document.getElementById('intensityHtml').innerHTML = ui.value;
+			        }
+		        });
+                document.getElementById('intensityHtml').innerHTML = 40;
+            }
+            
+        });
+        
 		//Date picker is ISO 8601
 		$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
 	    $( "#datepicker" ).datepicker();

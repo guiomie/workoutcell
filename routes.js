@@ -1,4 +1,5 @@
-var mongooseLogic = require('./mongooseLogic');
+
+ var mongooseLogic = require('./mongooseLogic');
 
 
 module.exports = function(app) {
@@ -10,8 +11,9 @@ module.exports = function(app) {
     
     app.get('/view/:htmlpage', function(req, res){
         console.log(req.loggedIn);
+        
         if(true) {
-          res.sendfile('./views/' + req.params.htmlpage + '.html');
+            res.sendfile('./views/' + req.params.htmlpage + '.html');
         }
         else{
         
