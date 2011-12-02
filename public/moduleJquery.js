@@ -2,10 +2,34 @@ $(document).ready(function(){
 		panelState = 'Create';
 		p = 0;
 		var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
+        //Data for ajax intervall content
         var intervall = new Array();
 		var tempCell = new Array();
 		var selectedMap = "no map"; 
+        //Data for intervall list
+        var tempIntervall = [];
+        var minSlider = 0;
+        var maxSlider = 0;
+        
+        $('#scrollbar1').tinyscrollbar();
 
+        $('#description').qtip({
+            content: {
+               text: "<textarea rows='5' cols='20' id='descriptionInput'>Enter Description</textarea>" 
+            },
+            show: {
+               event: 'click', // Don't specify a show event...
+               ready: false // ... but show the tooltip when ready
+            },
+            position: {
+               my: 'top center', // Use the corner...
+               at:'bottom center' // ...and opposite corner
+            },
+            hide: 'click', // Don't specify a hide event either!
+            
+        });
+        
+        
 		$('#fullcalendar').fullCalendar({
 			// put your options and callbacks here
 			height: 600,
@@ -23,11 +47,11 @@ $(document).ready(function(){
                 
             }
 		});
-		
+        
 		$('#mainContent').corner();
 		$('#profilePic').corner();
 		
-        $("#targetType").click(function(){
+        $("#lbl_intensity").click(function(){
             
             if( $("#targetType").text() === "%"){
                 document.getElementById('targetType').innerHTML = "watt";
@@ -42,17 +66,35 @@ $(document).ready(function(){
                 
                 $("#sliderIntensity" ).slider( "destroy" );
                 $("#sliderIntensity" ).slider({ 
+                    orientation: "vertical",
+                    disabled: true
+                });
+                var maskedZero = "<FONT COLOR=WHITE> 0 </FONT>";
+                document.getElementById('lbl_intensity').innerHTML = "Metric <br> disabled";
+                document.getElementById('targetType').innerHTML = maskedZero;
+    		    document.getElementById('intensityHtml').innerHTML = maskedZero;
+                
+            }
+            else if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
+                
+                $("#sliderIntensity" ).slider( "destroy" );
+                $("#sliderIntensity" ).slider({ 
                     orientation: "vertical", 
+                    disabled: false,
                     range: true, 
                     min: 0, max: 300, 
                     values: [30, 60],
                     slide: function( event, ui ) {  
-				        document.getElementById('targetType').innerHTML = "min: " + Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60));
-			            document.getElementById('intensityHtml').innerHTML = "max: " + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60));
+				       
+                        document.getElementById('targetType').innerHTML = "min";
+			            document.getElementById('intensityHtml').innerHTML =Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60))+ "-" + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60));
+                        minSlider = ui.values[0];
+                        maxSlider = ui.values[1];
                     } 
                 });
-                document.getElementById('targetType').innerHTML = "min: " + Math.floor(30 / 60) +":" + (30 - (Math.floor(30 / 60) * 60));
-    		    document.getElementById('intensityHtml').innerHTML = "max: " + Math.floor(60 / 60) +":" + (60 - (Math.floor(60 / 60) * 60));
+                document.getElementById('lbl_intensity').innerHTML = "Range";
+                document.getElementById('targetType').innerHTML = "min";
+    		    document.getElementById('intensityHtml').innerHTML = Math.floor(30 / 60) + ":" + (30 - (Math.floor(30 / 60) * 60)) + "-" + Math.floor(60 / 60) +":" + (60 - (Math.floor(60 / 60) * 60));
                 
             }
             else{ //time intervall
@@ -69,6 +111,7 @@ $(document).ready(function(){
 			        }
 		        });
                 document.getElementById('intensityHtml').innerHTML = 40;
+                document.getElementById('lbl_intensity').innerHTML = "Intensity";
             }
             
         });
@@ -211,87 +254,95 @@ $(document).ready(function(){
 				//alert(JSON.stringify(newParcour));
 			}
 			
-			//Message box creates bug in UI
-			//alert(JSON.stringify(newParcour) + " @ " + httpRequestUrl);
-			
-
-			/*THIS CODE WORKS TO PUT COORDINATES BACK IN MAP 
-			
-			//var obj = jQuery.parseJSON(polyPath);
-			
-			var polyOptions = {
-				strokeColor: '#000000',
-				strokeOpacity: 1.0,
-				strokeWeight: 3
-			}	
-			
-			var insertedPoly = new google.maps.Polyline(polyOptions);
-			//insertedPoly.setPath(obj);
-			
-			for(i=0;i < polyPath.length;i++){
-			
-			var path = poly.getPath();
-			path.push(polyPath[i]);
-			insertedPoly.setPath(path);
-			}
-			alert(JSON.stringify(insertedPoly));
-			insertedPoly.setMap(map); */
-			
-			
-			//when successfully sent, delete map data
-			
 		});
 		
 		 $('#addIntervall').click(function(){
-		
+		    
 			var target = $("input[type=text][id=unitInput]").val();
 			var option = $('input[type=radio][name=radio2]:checked').attr('id');
-			if(target !== ""){
-				if (option === 'radioMeters'){
-					if($("#intensityHtml").text() === '0' || $("#intensityHtml").text() === 'n/a'){
-						$("select[name='intervallList']").append(new Option(target + "m", 'a'));
-						createSingleIntervall(target, 0, 0, function(singleIntervall){
-							intervall.push(singleIntervall);
-						});
-					}
-					else{
-						var output = target + "m @ " + $("#intensityHtml").text() + "%";
-						$("select[name='intervallList']").append(new Option(output, 'a'));
-						createSingleIntervall(target, 0, $("#intensityHtml").text(), function(singleIntervall){
-							intervall.push(singleIntervall);
-						});
-					}
+				
+            var intensityMetric = document.getElementById('targetType').innerHTML;
+            var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
+            var intensityTime = [];    
+                if (option === 'radioMeters'){
+					var str = target+"m @"+ intensityWorth + " " + intensityMetric;
+                    if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
+                        str = target+"m";
+                        intensityMetric = 0;
+                        intensityWorth = 0;
+                    }
+                    if(document.getElementById('targetType').innerHTML === "min"){
+                        intensityWorth = 0;    
+                    }
+                    tempIntervall.push(str);
+                    printArray(tempIntervall, function(html){
+                        document.getElementById('overview').innerHTML = html;
+                        $("#scrollbar1").tinyscrollbar_update();
+                    });
+                    
+                    intensityTime.push(minSlider);
+                    intensityTime.push(maxSlider);
+
+                    var intervallObject = {
+                        targetUnit     : "m",
+                        targetValue    : target,
+                        intensityUnit  : intensityMetric,
+                        intensityValue : intensityWorth, 
+                        intensityRange : intensityTime
+                    }
+                    
+                    intervall.push(intervallObject);
+
 				}
 				else if(option === 'radioSeconds'){
-			
-					if($("#intensityHtml").text() === '0' || $("#intensityHtml").text() === 'n/a'){
-						$("select[name='intervallList']").append(new Option(target + "s", 'a'));
-						createSingleIntervall(0, target, 0, function(singleIntervall){
-							intervall.push(singleIntervall);
-						});
-					}
-					else{
-						var output = target + "s @ " + $("#intensityHtml").text() + "%";
-						$("select[name='intervallList']").append(new Option(output, 'a'));
-						createSingleIntervall(0, target, $("#intensityHtml").text(), function(singleIntervall){
-							intervall.push(singleIntervall);
-						});
-					}
+			        var str = target+"s @"+ intensityWorth + " " + intensityMetric;
+                    if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
+                        str = target+"s";
+                        intensityMetric = 0;
+                        intensityWorth = 0;
+                    }
+                    if(document.getElementById('targetType').innerHTML === "min"){
+                        intensityWorth = 0;    
+                    }
+                    tempIntervall.push(str);
+                    printArray(tempIntervall, function(html){
+                        document.getElementById('overview').innerHTML = html;
+                        $("#scrollbar1").tinyscrollbar_update();
+                    });
+                    
+                    intensityTime.push(minSlider);
+                    intensityTime.push(maxSlider);
+
+                    var intervallObject = {
+                        targetUnit     : "s",
+                        targetValue    : target,
+                        intensityUnit  : intensityMetric,
+                        intensityValue : intensityWorth, 
+                        intensityRange : intensityTime
+                    }
+                    
+                    intervall.push(intervallObject);
+
 				}
 				else{
 				
 				}
-			}
+                //alert(JSON.stringify(intervall));
 		});
 		
 		$('#removeIntervall').click(function(){
 		
-		//delete in global array
+		//delete in global array and temp array
 		//get index value to delete proper value in array
-			var index = document.getElementById('intervallList').selectedIndex;
-			$("select[name='intervallList'] :selected").remove();
+			//var index = document.getElementById('intervallList').selectedIndex;
+			//$("select[name='intervallList'] :selected").remove();
 			//Update intervall array
-			intervall.splice(index,1);
+			tempIntervall.pop();
+            intervall.pop();
+            printArray(tempIntervall, function(html){
+                document.getElementById('overview').innerHTML = html;
+                $("#scrollbar1").tinyscrollbar_update();
+            });
 		});
 		
 		//You can only enter numerical number in the field with this event
@@ -352,14 +403,18 @@ $(document).ready(function(){
 		
 		var basicEndDate = $("#datepicker").datepicker( "getDate" );
 		basicEndDate.setMinutes($('#timepickerStop').datetimepicker('getDate').getMinutes());
-		basicEndDate.setHours($('#timepickerStop').datetimepicker('getDate').getHours());
-
-		
+		basicEndDate.setHours($('#timepickerStop').datetimepicker('getDate').getHours());		
 		//Select info from opened accordion and create JS object / JSON 
 		//returns index of accordion
 		var activeAccordion = $( "#accordion" ).accordion( "option", "active" );
 		//interval training
-		
+        var varDescription = "none";
+        if($('#descriptionInput').val() !== 'Enter Description'){
+            varDescription = $('#descriptionInput').val();
+		}
+        else{
+            
+        }
 		
 		//Intervall Training
 		if(activeAccordion === 1){
@@ -372,7 +427,7 @@ $(document).ready(function(){
 			sport       : selectedSport,
 			type        : "intervall",
 			intervalls  : intervall, 
-			description : "none",
+			description : varDescription,
 			cell        : tempCell,
 			parcour     : parcourId,
 			results     : "not entered"
@@ -382,7 +437,7 @@ $(document).ready(function(){
 			toPostPackage.event = eventObject;
 			
             //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
-            
+            //alert(JSON.stringify(workout));
             postJson(JSON.stringify(toPostPackage), postworkout, function(message){
             
                 //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
@@ -406,7 +461,7 @@ $(document).ready(function(){
 					sport       : selectedSport,
 					type        : "distance",
 					distance    : distanceObject,
-					description : "none",
+					description : varDescription,
 					cell        : tempCell,
 					parcour     : parcourId,
 					results     : "not entered"
@@ -432,17 +487,13 @@ $(document).ready(function(){
 		
 		
 		}
-		
-		
-		//Test by putting json right in calendar
-		
-		//According to type of training select proper httprequest url (swim, bike, run)
-		
+        
 		//empty intervall array so it doesnt accumulate
 		intervall = new Array();
-		cell = new Array();
+		tempIntervall = [];
+        cell = new Array();
 		document.getElementById('intervallList').length = 0;
-		
+		document.getElementById('overview').innerHTML = " ";
 		});
 		
 		//Modification of UI based on user selection
@@ -770,10 +821,28 @@ $(document).ready(function(){
                 
                 
             }, "json");
-            
+
         }); 
         
+        
+        var timeStringToSeconds = function(string, callback){
+            var splittedArray = string.split(":");
+            callback((parseInt(splittedArray[0]) * 60) + parseInt(splittedArray[1]));
+        }
 
+        var printArray = function(array, callback){
+            var finalHtml ="";
+            
+            if(array.length === 0){
+                callback(finalHtml);
+            }
+            else{
+                for(i = 0; i < array.length; i++){
+                    finalHtml = finalHtml + "<br>" + array[i];    
+                }
+                callback(finalHtml);
+            }
+        }
         
 //END OF MODULE FUNCTIONS
 });

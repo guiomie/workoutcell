@@ -114,11 +114,20 @@ var IntervallUnit = new Schema({
        
 });
 
+var singleIntervall = new Schema({
+    targetUnit     : String,
+    targetValue    : Number,
+    intensityUnit  : String,
+    intensityValue : Number, 
+    intensityRange : [Number] //TIME IN SECONDS
+});
+
+
 var CardioWorkout = new Schema({
 
     sport         :String,
     type          :String,
-    intervalls    :[IntervallUnit],
+    intervalls    :[singleIntervall],
     distance      :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
     description   :String,
     cell          :[Number], //Temporarly not a basicCell,
