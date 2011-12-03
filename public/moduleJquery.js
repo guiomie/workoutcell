@@ -1,5 +1,5 @@
 $(document).ready(function(){
-		panelState = 'Create';
+    	panelState = 'Create';
 		p = 0;
 		var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
         //Data for ajax intervall content
@@ -50,7 +50,7 @@ $(document).ready(function(){
         
 		$('#mainContent').corner();
 		$('#profilePic').corner();
-		
+
         $("#lbl_intensity").click(function(){
             
             if( $("#targetType").text() === "%"){
@@ -85,7 +85,7 @@ $(document).ready(function(){
                     min: 0, max: 300, 
                     values: [30, 60],
                     slide: function( event, ui ) {  
-				       
+
                         document.getElementById('targetType').innerHTML = "min";
 			            document.getElementById('intensityHtml').innerHTML =Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60))+ "-" + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60));
                         minSlider = ui.values[0];
@@ -121,7 +121,7 @@ $(document).ready(function(){
 	    $( "#datepicker" ).datepicker();
 		$('#timepickerStart').timepicker({timeFormat: 'hh:mm'});
 		$('#timepickerStop').timepicker({});
-		
+
 		/* To redo later, intent is to block entry of over time smaller then start time
 		$('#timepickerStop').click(function(){
 		var time = $('#timepickerStart').datetimepicker('getDate');
@@ -129,12 +129,12 @@ $(document).ready(function(){
 		$('#timepickerStop').timepicker({ hourMin: 5});
 		//alert(hours);
 		}); */
-		
+
 		$( "#radio, #radio1, #radio2, #radio3,#radio4" ).buttonset();
 		$( "#accordion" ).accordion({ autoHeight: false });
-		
+
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
-		
+
 
         //Behavior of when the map is clicked
         $("#dropdownMap").click(function() { 
@@ -156,14 +156,14 @@ $(document).ready(function(){
 				} 
 			}
 		});
-				
+
 		// Dialog Link
 		$('#dialog_link').click(function(){
 			$('#dialog').dialog('open');
 			return false;
 		});
-		
-		
+
+
 		$( "#sliderIntensity" ).slider({
 			orientation: "vertical",
 			range: "min",
@@ -174,7 +174,7 @@ $(document).ready(function(){
 				document.getElementById('intensityHtml').innerHTML = ui.value;
 			}
 		});
-		
+
 		$( "#sliderIntensity2" ).slider({
 			orientation: "vertical",
 			range: "min",
@@ -185,7 +185,7 @@ $(document).ready(function(){
 				document.getElementById('intensityHtml2').innerHTML = ui.value;
 			}
 		});
-		
+
         
         // Remove last added segment on map trace
     	$('#undoTrace').click(function(){
@@ -196,7 +196,7 @@ $(document).ready(function(){
 		$('#deleteTrace').click(function(){
 			clearMap();
 		});
-		
+
 		// Event for when press delete icon
 		$('#bikeTrace').click(function(){
 			if(bikeLayer.getMap() === null){
@@ -206,9 +206,9 @@ $(document).ready(function(){
 				bikeLayer.setMap(null);
 			}
 		});
-		
+
 		$('#saveTrace').click(function(){
-			
+
 			//generate json format
 			//poly is a global variable declared in moduleGmap
 			//Essential to brake circular reference, else stringify will fail
@@ -217,7 +217,6 @@ $(document).ready(function(){
 			var markersObject;             
     		var nameOfCourse = $("input[type=text][id=courseName]").val();
 			var totalDistance = document.getElementById('distance').innerHTML;
-            
             markertTitleArray(markerArray, function(titleArray){
                
                markerLatLngArray(markerArray, function(latArray){
