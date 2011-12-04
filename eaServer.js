@@ -27,6 +27,7 @@ CalendarEvent = mongooseDb.CalendarEvent;
 CardioWorkout = mongooseDb.CardioWorkout;
 BasicCell = mongooseDb.BasicCell;
 IntervallUnit = mongooseDb.IntervallUnit;
+SingleIntervallResult = mongooseDb.SingleIntervallResult;
 
 everyauth.helpExpress(app);
 

@@ -122,19 +122,24 @@ var singleIntervall = new Schema({
     intensityRange : [Number] //TIME IN SECONDS
 });
 
+var SingleIntervallResult = new Schema({ 
+   type        :String,  // either m for meters or s for seconds
+   value       :Number,
+   completed   :Boolean 
+});
+
 
 var CardioWorkout = new Schema({
 
-    sport         :String,
-    type          :String,
-    intervalls    :[singleIntervall],
-    distance      :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
-    description   :String,
-    cell          :[Number], //Temporarly not a basicCell,
-    parcour       :{id: ObjectId, name: String},
-    results       : String
-    
-    
+    sport                 :String,
+    type                  :String,
+    intervalls            :[singleIntervall],
+    distance              :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
+    description           :String,
+    cell                  :[Number], //Temporarly not a basicCell,
+    parcour               :{id: ObjectId, name: String},
+    distanceResult        :{type: String, value:Number, completed:Boolean},
+    intervallResult       :[SingleIntervallResult] 
 });
 
 /*
@@ -162,7 +167,6 @@ mongoose.model('PersonnaReference', PersonnaReference);
 mongoose.model('ParcourReference', ParcourReference);
 mongoose.model('Parcour', Parcour);
 
- 
 mongoose.model('CalendarEventReference', CalendarEventReference);  
 mongoose.model('CalendarMonth', CalendarMonth);  
 mongoose.model('CalendarEvent', CalendarEvent);  
@@ -172,6 +176,7 @@ mongoose.model('CardioWorkout', CardioWorkout);
 //mongoose.model('DistanceUnit', DistanceUnit);
 mongoose.model('BasicCell', BasicCell);
 mongoose.model('IntervallUnit',IntervallUnit);
+mongoose.model('SingleIntervallResult', SingleIntervallResult);
 //Export models
 
 var User = exports.User = mongoose.model('User');
@@ -189,3 +194,4 @@ var CalendarEvent = exports.CalendarEvent = mongoose.model('CalendarEvent');
 var CardioWorkout = exports.CardioWorkout = mongoose.model('CardioWorkout');
 var BasicCell = exports.BasicCell = mongoose.model('BasicCell');
 var IntervallUnit = exports.IntervallUnit = mongoose.model('IntervallUnit');
+var SingleIntervallResult = exports.SingleIntervallResult = mongoose.model('SingleIntervallResult');

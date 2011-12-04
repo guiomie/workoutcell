@@ -157,11 +157,17 @@ var saveWorkout = function(workoutObject, callback){
     
     var theWorkout = "not instantiated";
     var callbackValue = "not instantiated";
+    var receivedParcour = {};
     
-    var receivedParcour = {
-        id: ObjectId(workoutObject.parcour.id), 
-        name: workoutObject.parcour.name        
-    };
+    if(workoutObject.parcour.id === "none"){
+        receivedParcour = {};
+    }
+    else{
+        receivedParcour = {
+            id: ObjectId(workoutObject.parcour.id), 
+            name: workoutObject.parcour.name        
+        };
+    }
     
     if(workoutObject.type === "intervall"){
        
@@ -169,13 +175,13 @@ var saveWorkout = function(workoutObject, callback){
        //We rewrite the parcour name, not just the id, because we dont want
        //to http request just to get the name
        theWorkout = new CardioWorkout({ 
-            sport         :workoutObject.sport, 
-            type          :workoutObject.type,
-            intervalls    :workoutObject.intervalls,
-            description   :workoutObject.description,
-            cell          :workoutObject.cell,
-            parcour       :receivedParcour,
-            results       :workoutObject.results
+            sport              :workoutObject.sport, 
+            type               :workoutObject.type,
+            intervalls         :workoutObject.intervalls,
+            description        :workoutObject.description,
+            cell               :workoutObject.cell,
+            parcour            :receivedParcour,
+            //intervallResult    :[]
        }); 
        
        theWorkout.save(function(err){
@@ -190,7 +196,6 @@ var saveWorkout = function(workoutObject, callback){
         });  
     }
     else if(workoutObject.type === "distance" ){
-        
         var distanceValues = {
             targetType     :workoutObject.distance.targetType, 
             minValue       :workoutObject.distance.minValue,
@@ -199,13 +204,13 @@ var saveWorkout = function(workoutObject, callback){
         };
         
         theWorkout = new CardioWorkout({ 
-            sport         :workoutObject.sport, 
-            type          :workoutObject.type,
-            distance      :distanceValues,
-            description   :workoutObject.description,
-            cell          :workoutObject.cell,
-            parcour       :receivedParcour,
-            results       :workoutObject.results
+            sport                :workoutObject.sport, 
+            type                 :workoutObject.type,
+            distance             :distanceValues,
+            description          :workoutObject.description,
+            cell                 :workoutObject.cell,
+            parcour              :receivedParcour,
+            distanceResult       :{}
        }); 
        
        theWorkout.save(function(err){

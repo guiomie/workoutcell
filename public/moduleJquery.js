@@ -327,6 +327,8 @@ $(document).ready(function(){
 				
 				}
                 //alert(JSON.stringify(intervall));
+                minSlider = 0;
+                maxSlider = 0;
 		});
 		
 		$('#removeIntervall').click(function(){
@@ -693,7 +695,7 @@ $(document).ready(function(){
                 //.val('whatever')
             ;
             
-            var droplistHtml = "<option> </option>" ;
+            var droplistHtml = "<option value='none'>No parcour </option>" ;
             var array = {};
             var obj = jQuery.parseJSON(string);
             $(droplistHtml).appendTo("#" + dropdownName);
