@@ -1,1 +1,2 @@
 -Date/time conversion from jquery to node
+-Implement Authentication to REST commands.

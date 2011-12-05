@@ -92,7 +92,7 @@ module.exports = function(app) {
     
     //HTTP POST REQUEST
     
-    //To test auth code with it also 
+
     app.post("/parcour/:userId/:name/:distance", function(req, res){
        
       //console.log(req.body); 
@@ -108,6 +108,32 @@ module.exports = function(app) {
       });
        
         
+    });
+    
+    //To post/update the results of a workout
+    
+    app.post("/result/:userId/:workoutId", function(req, res){
+        
+        var receivedJSON = req.body;    
+    
+        //Making sure the receive request is valid
+        if(typeof(receivedJSON.type) !== undefined && typeof(receivedJSON.load) !== undefined){
+        
+            mongooseLogic.saveResults(req.params.workoutId, receivedJSON, function(message){
+                if(message === "Success"){
+                    res.json({ success: true,  message: 'Result saved.'});    
+                }
+                else{
+                    res.json({ success: false,  message: 'Error in saving results. Error trace: ' + message});
+                }
+
+            });
+        
+        }
+        else{
+            res.json({ success: false,  message: 'Failed, Invalid object sent to server'});   
+        }
+           
     });
     
     

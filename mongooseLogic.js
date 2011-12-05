@@ -40,7 +40,7 @@ newParcour.save(function(err){
       }
     }); 
   }    
-});
+}); 
   
 }
 
@@ -232,6 +232,58 @@ var saveWorkout = function(workoutObject, callback){
         
 };
 
+
+var saveResults = function(workoutId, receivedResult, callback){
+    
+    if(workoutId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ getWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        //var myObjectId = ObjectId.fromString(workoutId); 
+        //console.log("Searching for parcour at: " + workoutId);
+        CardioWorkout.findOne({ _id: workoutId }, function(err, result){
+            if(err || result === null){
+                console.log("error in find: " + err + " @ workoutId = " + workoutId);
+                callback("No Document found: " + err);
+            }else{
+                //console.log(userId + " : " + result);
+                if(receivedResult.type === "distance"){   
+                   result.distanceResult = receivedResult.distanceResult;
+                   result.save(function(err){
+                        if(err){
+                            callback("Error in saving result: " + err);
+                        }else{
+                            callback("Success");
+                        }
+                    });
+                }
+                else if(receivedResult.type === "intervall"){
+                    if(receivedResult.intervallResult.length === result.intervalls.length){
+                        result.intervallResult = receivedResult.intervallResult; 
+                        result.save(function(err){
+                            if(err){
+                                callback("Error in saving result: " + err);
+                            }else{
+                                callback("Success");
+                            }
+                        });
+                    }
+                    else{
+                        callback("Mismatch in load intervall size and workout intervall size");
+                    }
+                    
+                }
+                else{
+                    callback("Invalid Result type, needs to be an intervall or distance based");    
+                }
+            }  
+        });
+    }     
+}
+
+
 var getWorkout = function(workoutId, callback){
     
     //Verify the object is a valid objectid
@@ -299,3 +351,4 @@ exports.saveWorkout = saveWorkout;
 exports.saveEvent = saveEvent;
 exports.getWorkout = getWorkout;
 exports.getMonthEvent = getMonthEvent;
+exports.saveResults = saveResults;
