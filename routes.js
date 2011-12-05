@@ -110,14 +110,13 @@ module.exports = function(app) {
         
     });
     
-    //To post/update the results of a workout
-    
+    //To post/update the results of a workout 
     app.post("/result/:userId/:workoutId", function(req, res){
         
         var receivedJSON = req.body;    
     
         //Making sure the receive request is valid
-        if(typeof(receivedJSON.type) !== undefined && typeof(receivedJSON.load) !== undefined){
+        if(typeof(receivedJSON.type) !== undefined){
         
             mongooseLogic.saveResults(req.params.workoutId, receivedJSON, function(message){
                 if(message === "Success"){

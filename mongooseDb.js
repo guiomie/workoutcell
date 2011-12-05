@@ -123,7 +123,7 @@ var singleIntervall = new Schema({
 });
 
 var SingleIntervallResult = new Schema({ 
-   type        :String,  // either m for meters or s for seconds
+   unit        :String,  // either m for meters or s for seconds
    value       :Number,
    completed   :Boolean 
 });
@@ -138,7 +138,7 @@ var CardioWorkout = new Schema({
     description           :String,
     cell                  :[Number], //Temporarly not a basicCell,
     parcour               :{id: ObjectId, name: String},
-    distanceResult        :{type: String, value:Number, completed:Boolean},
+    distanceResult        :{unit: String , value:Number, completed:Boolean},
     intervallResult       :[SingleIntervallResult] 
 });
 
