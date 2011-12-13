@@ -37,7 +37,7 @@ $(document).ready(function(){
 			eventClick: function(event) {	
 				if (event.url) {
 				//the launched function readjusts UI and send httprequest for view
-				UIreposition(event.url);
+				UIreposition(event.url, event.start, event.end);
 				return false;
 			    }
             },     
@@ -135,14 +135,6 @@ $(document).ready(function(){
 
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 
-
-        //Behavior of when the map is clicked
-        $("#dropdownMap").click(function() { 
-            
-
-            
-        }); 
-        
 		// Dialog			
 		$('#dialog').dialog({
 			autoOpen: false,
@@ -578,7 +570,7 @@ $(document).ready(function(){
 		
 		/* Definitions of custom made functions, location is here to ease rest of general code */
 		
-		function UIreposition(url){
+		function UIreposition(url, start, end){
             
 			if(panelState !== 'View'){	
 				// Change calendar size
@@ -599,7 +591,11 @@ $(document).ready(function(){
 			}
 			
             $.getJSON(url, function(data) {
-                     document.getElementById('View').innerHTML = JSON.stringify(data); 
+                     //document.getElementById('View').innerHTML = JSON.stringify(data); 
+                     
+                     initView(data, start, end);
+                     
+                     
             });
             
 		
@@ -738,18 +734,18 @@ $(document).ready(function(){
                     //callback('Sending: ' + data);
                     if(data.success){
                         Notifier.success(data.message);
-                         callback();
+                         callback(data.success);
                     }
                     else{
                        Notifier.error(data.message); 
-                       callback();
+                       callback(data.success);
                     }
                 },
 
                 error: function() {
                     //callback('Operation failed');
                     Notifier.error('Could not send data to server');
-                     callback();
+                     callback(false);
                 },
             });
     

@@ -235,6 +235,8 @@ var saveWorkout = function(workoutObject, callback){
 
 var saveResults = function(workoutId, receivedResult, callback){
     
+    console.log(JSON.stringify(receivedResult + " : " + workoutId));
+    
     if(workoutId.toString().length !== 24 ){
         
        console.log("Invalid objectId submitted @ getWorkout()");
@@ -249,7 +251,7 @@ var saveResults = function(workoutId, receivedResult, callback){
                 callback("No Document found: " + err);
             }else{
                 //console.log(userId + " : " + result);
-                if(receivedResult.type === "distance" && typeof(receivedResult.distanceResult) !== "undefined"){   
+                if(result.type === "distance" && typeof(receivedResult.distanceResult) !== "undefined"){   
                     var temp = {
                        unit       :receivedResult.distanceResult.unit, 
                        value      :receivedResult.distanceResult.value, 
@@ -260,18 +262,18 @@ var saveResults = function(workoutId, receivedResult, callback){
                     console.log(JSON.stringify(result.distanceResult));
                     result.save(function(err){
                         if(err){
-                            callback("Error in saving result: " + err);
+                            callback("Error in saving result (distance): " + err);
                         }else{
                             callback("Success");
                         }
                     });
                 }
-                else if(receivedResult.type === "intervall" && typeof(receivedResult.intervallResult) !== "undefined"){
+                else if(result.type === "intervall" && typeof(receivedResult.intervallResult) !== "undefined"){
                     if(receivedResult.intervallResult.length === result.intervalls.length){
                         result.intervallResult = receivedResult.intervallResult; 
                         result.save(function(err){
                             if(err){
-                                callback("Error in saving result: " + err);
+                                callback("Error in saving result (intervall): " + err);
                             }else{
                                 callback("Success");
                             }

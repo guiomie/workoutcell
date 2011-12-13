@@ -9,11 +9,12 @@ var restPost_newParcour = "/parcour/" + authId + "/";
 var getParcourList = "/parcour/list/" + authId;
 var postworkout = "/workout/" + authId;
 var getParcour = "/parcour/";
-
+var postResult = "/result/" + authId; //Followed by :workoutId
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
     
+    postResult = "/result/" + authId;
     restPost_newParcour = "/parcour/" + authId + "/";
     getParcourList = "/parcour/list/" + authId;
     postworkout = "/workout/" + authId;

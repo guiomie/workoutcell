@@ -1,16 +1,43 @@
 
 //Required to keep status on what type of view we are in
-var viewMode = "view";
-
+//var viewMode = "view";
+var startDate;
+var endDate;
 
 //This function is called to initialised, or reload a workout view
-function initView(workoutObject) {
+function initView(workoutObject, start, end ) {
     
-	if(typeof fetched.workout.parcour.name !== "undefined"){
+    
+    var now = new Date();
+    jQuery.timeago.settings.allowFuture = true;
+    
+    if(now<start){
+        document.getElementById('viewDate').innerHTML = jQuery.timeago(start);  
+    }
+    else{
+        document.getElementById('viewDate').innerHTML = jQuery.timeago(end);
+    }
+    
+    //Show timing in a qtip
+    $('#iconShowTime').qtip({
+        content: {
+            text: "From " + start.getHours() + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
+                  " to " + end.getHours() + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
+        },
+        position: {
+            my: 'top center',
+            at:'bottom center'
+        }     
+    });
+    
+     initToggleButton(workoutObject);
+    
+    
+	if(typeof(workoutObject.parcour) !== "undefined" ){
 		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
 	}
 
-	if(typeof workoutObject.description !== "undefined"){
+	if(typeof(workoutObject.description) !== "undefined"){
 		document.getElementById('description').innerHTML = "Description <br>" + workoutObject.description;
 	}
 	//Input are type of workout and intervall of distance parameters, if the other one is ""
@@ -39,7 +66,8 @@ function renderDetails(object, callback){
 	var distance = object.distance;
 	var intervallResult = object.intervallResult;
 	var distanceResult = object.distanceResult
-	var output = "";
+	var sport = object.sport;
+    var output = "";
 	
 	if(type === 'distance'){
 		var resultHtml = "No Results";
@@ -59,9 +87,9 @@ function renderDetails(object, callback){
 			
 		
 			if(distance.intensity === "0"){
-				output = '&nbsp;Run of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters <br>' + resultHtml ;
+				output = sport +' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters <br>' + resultHtml ;
 			}else{
-				output = '&nbsp;Run of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters at an intensity of ' + 
+				output = sport + ' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters at an intensity of ' + 
 					distance.intensity + ' %<br>' + resultHtml;
 			}
 		
@@ -77,9 +105,9 @@ function renderDetails(object, callback){
 			}
 			
 			if(distance.intensity === "0"){
-				output = '&nbsp;Run of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes <br>' + resultHtml ;
+				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes <br>' + resultHtml ;
 			}else{
-				output = '&nbsp;Run of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
+				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
 				distance.intensity + ' %<br>' + resultHtml;
 			}
 		
@@ -145,14 +173,11 @@ function resultsEditable(object, callback){
 	var type = object.type;
 	var intervalls = object.intervalls;
 	var distance = object.distance;
-	var intervallResult = object.intervallResult;
+	var sport = object.sport;
+    var intervallResult = object.intervallResult;
 	var distanceResult = object.distanceResult
-	
-	var totalDistance = 0;
-	var totalTime = 0;
 	var output = "";
-	var divId = "editable";
-	var divMinuteId = "min"
+
 	
 	if(type === 'distance'){
 		var resultHtml;
@@ -160,11 +185,11 @@ function resultsEditable(object, callback){
 		
 			if(distance.intensity === "0"){
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' value='0' id='hours' style='width:20; height: 20px;' /> hours, <input type='text' value='0' id='minutes' style='width:20; height: 20px;' /> minutes and <input type='text' value='0' id='seconds' style='width:20; height: 20px;' /> seconds";
-				output = '&nbsp;Run of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters<br>' + resultHtml;
+				output = sport + ' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters<br>' + resultHtml;
 				
 			}else{
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' value='0' id='hours' style='width:20; height: 20px;' /> hours, <input type='text' value='0' id='minutes' style='width:20; height: 20px;' /> minutes and <input type='text' value='0' id='seconds' style='width:20; height: 20px;' /> seconds";
-				output = '&nbsp;Run of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters at an intensity of ' + 
+				output = sport + ' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters at an intensity of ' + 
 					distance.intensity + ' %<br>' + resultHtml;
 			}
 		
@@ -173,10 +198,10 @@ function resultsEditable(object, callback){
 		
 			if(distance.intensity === "0"){
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' id='km' value='0' style='width:20; height: 20px;' /> km, <input type='text' value='0' id='m' style='width:20; height: 20px;' /> m";
-				output = '&nbsp;Run of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes<br>' + resultHtml;
+				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes<br>' + resultHtml;
 			}else{
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' id='km' value='0' style='width:20; height: 20px;' /> km, <input type='text' value='0' id='m' style='width:20; height: 20px;' /> m";
-				output = '&nbsp;Run of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
+				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
 				distance.intensity + ' %<br>' + resultHtml;
 			}
 		
@@ -230,15 +255,20 @@ function resultsEditable(object, callback){
 	callback(output);	
 }
 
+var  initToggleButton = function(object){
+
 $('#toggleEdit').click(function(){
-    var resultArray = [];
-	var result = {};
-	if(viewMode === "edit"){			
+    //var resultArray = [];
+	var result;
+    var viewMode = document.getElementById("toggleEdit").innerHTML;
+	if(viewMode === "(Save results)"){			
 		//Create data
-		if(fetched.workout.type === "intervall"){
-			for(i=0; i < fetched.workout.intervalls.length;i++){	
+		if(object.type === "intervall"){
+			
+            result = [];
+            for(i=0; i <object.intervalls.length;i++){	
 				var unit;
-				if(fetched.workout.intervalls[i].targetUnit=== 'm'){
+				if(object.intervalls[i].targetUnit=== 'm'){
 					unit = 's';
 				}
 				else{
@@ -249,50 +279,74 @@ $('#toggleEdit').click(function(){
 					value       : $('#text'+i.toString()).val(),
 					completed   : $('#checkbox'+i.toString()).is(':checked')
 				}
-				resultArray.push(temp);	
+				result.push(temp);	
 			}
 				
 			//document.getElementById('console').innerHTML = JSON.stringify(resultArray);
 			//alert(JSON.stringify(resultArray));
 			}
-		else{
-			if(fetched.workout.distance.targetType === 'Kilometers'){				
-				var totalSecond = (3600 * parseInt($('#hours').val())) + (60 * parseInt($('#minutes').val())) + parseInt($('#seconds').val());		
+		else{ //In both cases we transform in 
+			if(object.distance.targetType === 'Kilometers'){				
+				//var totalSecond = (3600 * parseInt($('#hours').val())) + (60 * parseInt($('#minutes').val())) + parseInt($('#seconds').val());		
 				result = {
 					unit        : 's',
-					value       : totalSecond,
+					value       : (3600 * parseInt($('#hours').val())) + (60 * parseInt($('#minutes').val())) + parseInt($('#seconds').val()),
 					completed   : $('#checkbox'.toString()).is(':checked')
 				}	
 			}
-			else if(fetched.workout.distance.targetType === 'Time'){  		
-				var totalMeters = (1000 * parseInt($('#km').val())) + parseInt($('#m').val());		
-				result = {
+			else if(object.distance.targetType === 'Time'){  		
+				//var totalMeters = (1000 * parseInt($('#km').val())) + parseInt($('#m').val());		
+				//alert($('#km').val() + "+" + $('#m').val() + "=" + totalMeters);
+                result = {
 					unit        : 'm',
-					value       : totalMeters,
+					value       : (1000 * parseInt($('#km').val())) + parseInt($('#m').val()),
 					completed   : $('#checkbox'.toString()).is(':checked')
 				}
 			}
 			else{
 				
 			}
-			//document.getElementById('console').innerHTML = JSON.stringify(result);
+			
+            //Sending compiled data to update results in workout collection
+            var theUrl = postResult + "/" + object._id;
+            postJson(JSON.stringify(result), theUrl, function(success){
+                
+                if(success){
+                    (object.type === "intervall") ? object.intervallResult = result : object.distanceResult = result;
+                    renderDetails(object, function(output){
+    		            document.getElementById('typeDetail').innerHTML = output;
+			            document.getElementById('toggleEdit').innerHTML = "(Edit results)";
+			            viewMode = "view";
+    		        });	                     
+                }
+                else{              
+                    renderDetails(object, function(output){
+        	            document.getElementById('typeDetail').innerHTML = output;
+			            document.getElementById('toggleEdit').innerHTML = "(Edit results)";
+			            viewMode = "view";
+    		        }); 
+                }
+
+            });
+            
+            //document.getElementById('console').innerHTML = JSON.stringify(result);
 			//alert(JSON.stringify(result));
 		}
-		renderDetails(fetched.workout, function(output){
+		renderDetails(object, function(output){
 			document.getElementById('typeDetail').innerHTML = output;
 			document.getElementById('toggleEdit').innerHTML = "(Edit results)";
 			viewMode = "view";
 		});		
 	}
 	else{
-		resultsEditable(fetched.workout.type, fetched.workout.intervalls, fetched.workout.distance, function(output){
+		resultsEditable(object, function(output){
 			document.getElementById('typeDetail').innerHTML = output;
 			document.getElementById('toggleEdit').innerHTML = "(Save results)";
 			viewMode = "edit";
 		});
 	}
 });
-
+}
 //Takes seconds, and returns a document with hour, minute and seconds paramteres
 function secondsToTime(secs){
     var hours = Math.floor(secs / (60 * 60));
@@ -309,4 +363,53 @@ function secondsToTime(secs){
 		"s": seconds
 	};
 	return obj;
+}
+
+
+function doubleMinutes(min){
+    
+    if (min > 10)
+    {
+        return  "0" + min;
+    }
+    else{
+        return min;     
+    }
+}
+
+ var postJson = function(theJson, theUrl, callback){
+            
+    $.ajax({
+        url: theUrl,
+        type: "POST",
+        dataType: "json",
+        data: theJson,
+        contentType: "application/json",
+        cache: false,
+        timeout: 5000,
+        complete: function() {
+        //called when complete
+            Notifier.info('Saving ...');
+        },
+
+        success: function(data) {
+            //var res =jQuery.parseJSON(data);
+            //callback('Sending: ' + data);
+            if(data.success){
+                Notifier.success(data.message);
+                callback(data.success);
+            }
+            else{
+                Notifier.error(data.message); 
+                callback(data.success);
+            }
+        },
+
+        error: function() {
+            //callback('Operation failed');
+            Notifier.error('Could not send data to server');
+            callback(false);
+        },
+    });
+    
 }

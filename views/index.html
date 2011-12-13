@@ -1,8 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://www.facebook.com/2008/fbml">
 <head>
-<title>WC</title>
+<title>WorkoutCell - Train properly, train socially!</title>
 <link type="text/css" href="/css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
-<link href="/dropdown/jqDropDown.css" media="screen" rel="Stylesheet" type="text/css"/> 
+<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
+<link type="text/css" rel="stylesheet" href="/css/jquery.qtip.min.css" />
 
 <script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -16,6 +17,9 @@
 <script src='/jquery.corner.js'></script>
 <script src='/timepicker.js'></script>
 <script src='/notifier.js'></script>
+<script src='/jquery.timeago.js'></script>
+<script src='/jquery.tinyscrollbar.min.js'></script>
+<script src='/jquery.qtip.js'></script>
 
 <!-- Homemade plugins -->
 <script src='/moduleJquery.js'></script>
@@ -23,10 +27,7 @@
 <script src='/moduleFacebook.js'></script>
 <script src='/moduleGmap.js'></script>
 <script src='/restUrl.js'></script>
-<script src='/jquery.tinyscrollbar.min.js'></script>
-<script src='/jquery.qtip.js'></script>
-<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
-<link type="text/css" rel="stylesheet" href="/css/jquery.qtip.min.css" />
+<script src='/moduleView.js'></script>
 
 
 <style type="text/css">
@@ -120,7 +121,34 @@
 <!-- Load the training viewer -->
 <div id="View" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 
-View Results, comments and stats.
+<div id="viewLayout" style="width: 500px; float: top;">
+
+    <div id="basicInfo" style="font-size: 15px;">
+	
+		<ul id="icons" class="ui-widget ui-helper-clearfix">
+			<div id="viewDate" style="font-family: impact; font-size: 20px; float:left;"> </div>
+			<li class="ui-state-default ui-corner-all" title="View your cell" id="showCell" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+			<li class="ui-state-default ui-corner-all" title="View your rating" id="showRating" style="float: right;"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" id="showTime" style="float: right;"><span class="ui-icon ui-icon-clock" id="iconShowTime"></span></li>
+		</ul>
+		
+		<div id="statement"> </div>
+	
+		<span id="parcour"> </span>
+	
+		<div id="description">   </div>
+	
+		<br>Planned workout <span id="toggleEdit" style="font-size: 10px;">(Edit results)</span>
+		<div id="typeDetail">   </div>
+
+		<br>Comments
+		<div id="comments">
+			No comments yet. 	
+		</div>
+
+	</div>
+
+</div>
 
 </div>
 <!-- Load the mapping planner -->
