@@ -123,7 +123,7 @@ module.exports = function(app) {
                     res.json({ success: true,  message: 'Result saved.'});    
                 }
                 else{
-                    res.json({ success: false,  message: 'Error in saving results. Error trace: ' + message});
+                    res.json({ success: false,  message: 'Error in saving results. Trace: ' + message});
                 }
 
             });

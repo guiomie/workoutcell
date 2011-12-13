@@ -30,8 +30,7 @@ function initView(workoutObject, start, end ) {
         }     
     });
     
-     initToggleButton(workoutObject);
-    
+     
     
 	if(typeof(workoutObject.parcour) !== "undefined" ){
 		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
@@ -43,8 +42,12 @@ function initView(workoutObject, start, end ) {
 	//Input are type of workout and intervall of distance parameters, if the other one is ""
 	renderDetails(workoutObject, function(output){
 		document.getElementById('typeDetail').innerHTML = output;
+        
 	});
 	
+    $('#toggleEdit').unbind('click').click(function(){
+        initToggleButton(workoutObject);
+    });
     /*
 	renderCell(fetched.workout.cell, function(output){
 	
@@ -76,7 +79,7 @@ function renderDetails(object, callback){
 			if(typeof(distanceResult) !== "undefined"){
 				value = (distanceResult.completed) ? "Completed" : "Not Completed";
 				resultHtml = value;
-				if(distanceResult.value !== 0){
+				if(distanceResult.value !== "0"){
 					var timeObject = secondsToTime(distanceResult.value);
 					hour = (timeObject.h > 0) ? (timeObject.h + " hour(s) ") : "";
 					minute = (timeObject.m > 0) ? (timeObject.m + " minute(s) ") : "";
@@ -99,7 +102,7 @@ function renderDetails(object, callback){
 			if(typeof(distanceResult) !== "undefined"){
 				value = (distanceResult.completed) ? "Completed" : "Not Completed";
 				resultHtml = value;
-				if(distanceResult.value !== 0){
+				if(distanceResult.value !== "0"){
 					resultHtml = resultHtml + " in " + (distanceResult.value/1000) + " km";
 				}	
 			}
@@ -136,7 +139,7 @@ function renderDetails(object, callback){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed" : "Not Completed";	
-					resultHtml = (intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml + '<br>');
+					resultHtml = (intervallResult[i].value !== "0") ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml + '<br>');
 				}
 				
 				var rangeHtml =   " from <span id='unitSeconds'>" + intervalls[i].intensityRange[0] + "</span> s to " + "<span id='unitSeconds'>" + intervalls[i].intensityRange[1] + "</span> s";
@@ -147,7 +150,7 @@ function renderDetails(object, callback){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed" : "Not Completed";	
-					resultHtml = (intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml+ '<br>');
+					resultHtml = (intervallResult[i].value !== "0") ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml+ '<br>');
 				}
 				
 				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
@@ -255,9 +258,9 @@ function resultsEditable(object, callback){
 	callback(output);	
 }
 
-var  initToggleButton = function(object){
+function initToggleButton (object){
 
-$('#toggleEdit').click(function(){
+
     //var resultArray = [];
 	var result;
     var viewMode = document.getElementById("toggleEdit").innerHTML;
@@ -306,47 +309,40 @@ $('#toggleEdit').click(function(){
 			else{
 				
 			}
+		}
 			
-            //Sending compiled data to update results in workout collection
-            var theUrl = postResult + "/" + object._id;
-            postJson(JSON.stringify(result), theUrl, function(success){
+        //Sending compiled data to update results in workout collection
+        var theUrl = postResult + "/" + object._id;
+        postJson(JSON.stringify(result), theUrl, function(success){
                 
-                if(success){
-                    (object.type === "intervall") ? object.intervallResult = result : object.distanceResult = result;
-                    renderDetails(object, function(output){
-    		            document.getElementById('typeDetail').innerHTML = output;
-			            document.getElementById('toggleEdit').innerHTML = "(Edit results)";
-			            viewMode = "view";
-    		        });	                     
-                }
-                else{              
-                    renderDetails(object, function(output){
-        	            document.getElementById('typeDetail').innerHTML = output;
-			            document.getElementById('toggleEdit').innerHTML = "(Edit results)";
-			            viewMode = "view";
-    		        }); 
-                }
-
-            });
+            if(success){
+                (object.type === "intervall") ? object.intervallResult = result : object.distanceResult = result;
+                renderDetails(object, function(output){
+    		        document.getElementById('typeDetail').innerHTML = output;
+			        document.getElementById('toggleEdit').innerHTML = "(Edit results)";
+    		    });	                     
+            }
+            else{              
+                renderDetails(object, function(output){
+        	        document.getElementById('typeDetail').innerHTML = output;
+			        document.getElementById('toggleEdit').innerHTML = "(Edit results)";
+    		    }); 
+            }
+        });
             
             //document.getElementById('console').innerHTML = JSON.stringify(result);
 			//alert(JSON.stringify(result));
-		}
-		renderDetails(object, function(output){
-			document.getElementById('typeDetail').innerHTML = output;
-			document.getElementById('toggleEdit').innerHTML = "(Edit results)";
-			viewMode = "view";
-		});		
+
+	
 	}
 	else{
 		resultsEditable(object, function(output){
 			document.getElementById('typeDetail').innerHTML = output;
 			document.getElementById('toggleEdit').innerHTML = "(Save results)";
-			viewMode = "edit";
 		});
 	}
-});
 }
+
 //Takes seconds, and returns a document with hour, minute and seconds paramteres
 function secondsToTime(secs){
     var hours = Math.floor(secs / (60 * 60));

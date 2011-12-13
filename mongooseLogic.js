@@ -251,11 +251,11 @@ var saveResults = function(workoutId, receivedResult, callback){
                 callback("No Document found: " + err);
             }else{
                 //console.log(userId + " : " + result);
-                if(result.type === "distance" && typeof(receivedResult.distanceResult) !== "undefined"){   
+                if(result.type === "distance"){ //&& typeof(receivedResult.distanceResult) !== "undefined"){   
                     var temp = {
-                       unit       :receivedResult.distanceResult.unit, 
-                       value      :receivedResult.distanceResult.value, 
-                       completed  :receivedResult.distanceResult.completed
+                       unit       :receivedResult.unit, 
+                       value      :receivedResult.value, 
+                       completed  :receivedResult.completed
                     }
                     
                     result.distanceResult = temp;
@@ -268,9 +268,9 @@ var saveResults = function(workoutId, receivedResult, callback){
                         }
                     });
                 }
-                else if(result.type === "intervall" && typeof(receivedResult.intervallResult) !== "undefined"){
-                    if(receivedResult.intervallResult.length === result.intervalls.length){
-                        result.intervallResult = receivedResult.intervallResult; 
+                else if(result.type === "intervall" && typeof(receivedResult.length) !== "undefined"){ // && typeof(receivedResult.intervallResult) !== "undefined"){
+                    if(receivedResult.length === result.intervalls.length){
+                        result.intervallResult = receivedResult; 
                         result.save(function(err){
                             if(err){
                                 callback("Error in saving result (intervall): " + err);
