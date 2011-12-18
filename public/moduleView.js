@@ -19,20 +19,6 @@ function initView(workoutObject, start, end ) {
         document.getElementById('viewDate').innerHTML = jQuery.timeago(end);
     }
     
-    //Show timing in a qtip
-    $('#iconShowTime').qtip({
-        content: {
-            text: "From " + start.getHours() + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
-                  " to " + end.getHours() + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
-        },
-        position: {
-            my: 'top center',
-            at:'bottom center'
-        }     
-    });
-    
-     
-    
     if(typeof(workoutObject.parcour) !== "undefined" ){
 		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
 	}
@@ -57,8 +43,41 @@ function initView(workoutObject, start, end ) {
 		//document.getElementById('cell').innerHTML = output;
 	
 	});*/
-
-
+    
+    //LOADING ALL QTIPS FOR THE PAGE
+     
+        
+    $("#viewOptions").qtip({
+        id: 'themeroller',
+        content: {
+            text: "Share this workout <br> Delete this workout" 
+        },
+        show: {
+            event: 'click', 
+            ready: false 
+        },
+        hide: 'click',
+        style: {
+           widget: true 
+        },
+        position: {
+           my: 'top center',
+           at: 'bottom center'
+        },
+    });
+    
+    //Show timing in a qtip
+    $('#iconShowTime').qtip({
+        content: {
+            text: "From " + start.getHours() + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
+                  " to " + end.getHours() + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
+        },
+        position: {
+            my: 'top center',
+            at:'bottom center'
+        }     
+    });
+    
 }
 
 

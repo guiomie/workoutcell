@@ -351,6 +351,59 @@ var getMonthEvent = function(userId, year, month, callback){
     });
 }
 
+//Remove specific workout from its workoutid
+var deleteWorkout = function(workoutId, callback){
+    
+    //Verify the object is a valid objectid
+    if(workoutId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ deleteWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        //var myObjectId = ObjectId.fromString(workoutId); 
+        //console.log("Searching for parcour at: " + workoutId);
+        CardioWorkout.remove({ _id: workoutId }, function (err) {
+            if (err) { 
+                callback("Error in deletion. Stack Trace: " + err); 
+            }
+            else{
+                
+                
+            }
+                callback("Success");        
+        });
+
+    }
+  
+}
+
+var deleteEvent = function(eventId, callback){
+    
+    //Verify the object is a valid objectid
+    if(eventId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ deleteEvent()");
+       callback("Invalid objectId for eventId");
+    }
+    else{
+        //var myObjectId = ObjectId.fromString(workoutId); 
+        //console.log("Searching for parcour at: " + workoutId);
+        CalendarEventReference.remove({ _id: workoutId }, function (err) {
+            if (err) { 
+                callback("Error in deletion. Stack Trace: " + err); 
+            }
+            else{
+                
+                
+            }
+                callback("Success");        
+        });
+
+    }
+  
+}
+
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 

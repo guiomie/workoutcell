@@ -861,9 +861,10 @@ $(document).ready(function(){
                event: 'click', 
                ready: false 
             },
-            
-            hide: 'click'
-            
+            hide: 'click',
+            style: {
+                widget: true 
+            }    
         });
         
         $("#intervallDesc").qtip({
@@ -874,7 +875,10 @@ $(document).ready(function(){
                 event: 'click', 
                 ready: false 
             },
-            hide: 'click'
+            hide: 'click',
+            style: {
+                widget: true 
+            }
         });
         
         
@@ -888,12 +892,13 @@ $(document).ready(function(){
                         event: 'click', 
                         ready: false 
                     },
-                    hide: 'click'
+                    hide: 'click',
+                    style: {
+                        widget: true 
+                    }
                 });  
             }
         }
-        
-        
-        
+       
 //END OF MODULE FUNCTIONS
 });
