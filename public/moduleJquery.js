@@ -5,31 +5,17 @@ $(document).ready(function(){
         //Data for ajax intervall content
         var intervall = new Array();
 		var tempCell = new Array();
+        var tempIntDesc = [];
 		var selectedMap = "no map"; 
         //Data for intervall list
         var tempIntervall = [];
         var minSlider = 0;
         var maxSlider = 0;
-        
+        var applicationVariables = {
+            calendarFirstLoad   : true
+        }
         $('#scrollbar1').tinyscrollbar();
 
-        $('#description').qtip({
-            content: {
-               text: "<textarea rows='5' cols='20' id='descriptionInput'>Enter Description</textarea>" 
-            },
-            show: {
-               event: 'click', // Don't specify a show event...
-               ready: false // ... but show the tooltip when ready
-            },
-            position: {
-               my: 'top center', // Use the corner...
-               at:'bottom center' // ...and opposite corner
-            },
-            hide: 'click', // Don't specify a hide event either!
-            
-        });
-        
-        
 		$('#fullcalendar').fullCalendar({
 			// put your options and callbacks here
 			height: 600,
@@ -43,7 +29,15 @@ $(document).ready(function(){
             },     
             viewDisplay: function(view) {
                 
-                updateCalendar();
+                if(applicationVariables.calendarFirstLoad){
+                    setTimeout(function() {
+                        updateCalendar();
+                    }, 1000);
+                    applicationVariables.calendarFirstLoad = false;
+                }
+                else{
+                    updateCalendar();
+                }
                 
             }
 		});
@@ -51,22 +45,22 @@ $(document).ready(function(){
 		$('#mainContent').corner();
 		$('#profilePic').corner();
 
-        $("#lbl_intensity").click(function(){
+        $("#swapIntensity").click(function(){
             
             if( $("#targetType").text() === "%"){
                 document.getElementById('targetType').innerHTML = "watt";
-                $( "#sliderIntensity" ).slider({min: 0, max: 600 });
+                $( "#sliderIntensity" ).slider({min: 0, max: 600, step: 10 });
             }
             else if($("#targetType").text() === "watt"){
                 document.getElementById('targetType').innerHTML = "bpm";
-                $( "#sliderIntensity" ).slider({min: 0, max: 300 });
+                $( "#sliderIntensity" ).slider({min: 0, max: 300, step: 5 });
                 
             }
             else if($("#targetType").text() === "bpm"){
                 
                 $("#sliderIntensity" ).slider( "destroy" );
                 $("#sliderIntensity" ).slider({ 
-                    orientation: "vertical",
+                    //orientation: "vertical",
                     disabled: true
                 });
                 var maskedZero = "<FONT COLOR=WHITE> 0 </FONT>";
@@ -79,9 +73,10 @@ $(document).ready(function(){
                 
                 $("#sliderIntensity" ).slider( "destroy" );
                 $("#sliderIntensity" ).slider({ 
-                    orientation: "vertical", 
+                    //orientation: "vertical", 
                     disabled: false,
                     range: true, 
+                    step: 5,
                     min: 0, max: 300, 
                     values: [30, 60],
                     slide: function( event, ui ) {  
@@ -101,8 +96,9 @@ $(document).ready(function(){
                 document.getElementById('targetType').innerHTML = "%";
                 $("#sliderIntensity" ).slider( "destroy" );
                 $( "#sliderIntensity" ).slider({
-    		        orientation: "vertical",
+    		        //orientation: "vertical",
 			        range: "min",
+                    step: 5,
 		        	min: 0,
 			        max: 100,
 			        value: 40,
@@ -157,8 +153,9 @@ $(document).ready(function(){
 
 
 		$( "#sliderIntensity" ).slider({
-			orientation: "vertical",
+			//orientation: "horizontal",
 			range: "min",
+            step: 5,
 			min: 0,
 			max: 100,
 			value: 40,
@@ -170,6 +167,7 @@ $(document).ready(function(){
 		$( "#sliderIntensity2" ).slider({
 			orientation: "vertical",
 			range: "min",
+            step: 5,
 			min: 0,
 			max: 100,
 			value: 40,
@@ -247,16 +245,17 @@ $(document).ready(function(){
 			
 		});
 		
-		 $('#addIntervall').click(function(){
+		 $('#addIntervalli').click(function(){
 		    
 			var target = $("input[type=text][id=unitInput]").val();
 			var option = $('input[type=radio][name=radio2]:checked').attr('id');
-				
+			var intervallDescription = $("#intervallDescInput").val();
+            alert(intervallDescription);
             var intensityMetric = document.getElementById('targetType').innerHTML;
             var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
             var intensityTime = [];    
                 if (option === 'radioMeters'){
-					var str = target+"m @"+ intensityWorth + " " + intensityMetric;
+					var str = target+"m @"+ intensityWorth + " " + intensityMetric + "<span class='ui-icon ui-icon-plus' id='qtipIntervall" + tempIntervall.length +"'></span><br>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
                         str = target+"m";
                         intensityMetric = 0;
@@ -266,9 +265,13 @@ $(document).ready(function(){
                         intensityWorth = 0;    
                     }
                     tempIntervall.push(str);
+                    tempIntDesc.push(intervallDescription);
+                    
                     printArray(tempIntervall, function(html){
+                        //document.getElementById('overview').innerHTML = "";
                         document.getElementById('overview').innerHTML = html;
                         $("#scrollbar1").tinyscrollbar_update();
+                        loadDynamicQtip((tempIntervall.length - 1),  tempIntDesc);
                     });
                     
                     intensityTime.push(minSlider);
@@ -279,14 +282,15 @@ $(document).ready(function(){
                         targetValue    : target,
                         intensityUnit  : intensityMetric,
                         intensityValue : intensityWorth, 
-                        intensityRange : intensityTime
+                        intensityRange : intensityTime,
+                        description    : intervallDescription
                     }
                     
                     intervall.push(intervallObject);
 
 				}
 				else if(option === 'radioSeconds'){
-			        var str = target+"s @"+ intensityWorth + " " + intensityMetric;
+			        var str = target+"s @"+ intensityWorth + " " + intensityMetric + "<span class='ui-icon ui-icon-plus' id='qtipIntervall" + tempIntervall.length +"'></span><br>";;
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
                         str = target+"s";
                         intensityMetric = 0;
@@ -299,6 +303,7 @@ $(document).ready(function(){
                     printArray(tempIntervall, function(html){
                         document.getElementById('overview').innerHTML = html;
                         $("#scrollbar1").tinyscrollbar_update();
+                        loadDynamicQtip((tempIntervall.length - 1), intervallDescription);
                     });
                     
                     intensityTime.push(minSlider);
@@ -309,7 +314,8 @@ $(document).ready(function(){
                         targetValue    : target,
                         intensityUnit  : intensityMetric,
                         intensityValue : intensityWorth, 
-                        intensityRange : intensityTime
+                        intensityRange : intensityTime,
+                        description    : intervallDescription
                     }
                     
                     intervall.push(intervallObject);
@@ -319,11 +325,11 @@ $(document).ready(function(){
 				
 				}
                 //alert(JSON.stringify(intervall));
-                minSlider = 0;
-                maxSlider = 0;
+                //minSlider = 0;
+                //maxSlider = 0;
 		});
 		
-		$('#removeIntervall').click(function(){
+		$('#removeIntervalli').click(function(){
 		
 		//delete in global array and temp array
 		//get index value to delete proper value in array
@@ -829,17 +835,62 @@ $(document).ready(function(){
 
         var printArray = function(array, callback){
             var finalHtml ="";
-            
             if(array.length === 0){
                 callback(finalHtml);
             }
             else{
                 for(i = 0; i < array.length; i++){
-                    finalHtml = finalHtml + "<br>" + array[i];    
+                    finalHtml = finalHtml + array[i]; 
+                    
+                    
+    
                 }
                 callback(finalHtml);
             }
         }
+        
+        
+        $('#descriptionButton').qtip({
+            content: {
+               text: "<textarea rows='5' cols='20' id='descriptionInput'>Enter Description</textarea>" 
+            },
+            show: {
+               event: 'click', 
+               ready: false 
+            },
+            
+            hide: 'click'
+            
+        });
+        
+        $("#intervallDesc").qtip({
+            content: {
+                text: "<textarea rows='5' cols='20' id='intervallDescInput'>Enter the description of this single intervall (not required) </textarea>" 
+            },
+            show: {
+                event: 'click', 
+                ready: false 
+            },
+            hide: 'click'
+        });
+        
+        
+        var loadDynamicQtip = function(a, descTable){
+            for(i = 0; i <= a; i++){  
+                $("#qtipIntervall" + i).qtip({
+                    content: {
+                        text: descTable[i]
+                    },
+                    show: {
+                        event: 'click', 
+                        ready: false 
+                    },
+                    hide: 'click'
+                });  
+            }
+        }
+        
+        
         
 //END OF MODULE FUNCTIONS
 });

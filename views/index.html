@@ -5,7 +5,7 @@
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
 <link type="text/css" rel="stylesheet" href="/css/jquery.qtip.min.css" />
 
-<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/js/jquery-1.7.1.js"></script>
 <script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -55,8 +55,8 @@
 			.ui-timepicker-div td { font-size: 90%; }
             
             /* For the horizontal scroll */
-            #scrollbar1 { width: 80px; clear: both; margin: 20px 0 10px; }
-            #scrollbar1 .viewport { width: 70px; height: 100px; overflow: hidden; position: relative; }
+            #scrollbar1 { width: 175px; clear: both; margin: 20px 0 10px; }
+            #scrollbar1 .viewport { width: 160px; height: 100px; overflow: hidden; position: relative; }
             #scrollbar1 .overview { list-style: none; position: absolute; left: 0; top: 0; }
             #scrollbar1 .thumb .end,
             #scrollbar1 .thumb { background-color: #8FBF89; }
@@ -218,7 +218,7 @@
 	    <option value="none"> Click to load... </option>	
 	</select>
 	
-    <div id="description">Description</div>
+    <div id="descriptionButton" style="width: 73px; padding-top: 5px; margin: 0 auto; cursor: default;"><span>Description</span><span class="ui-icon ui-icon-plus" style="float: right;"></span></div>
     
 	<p> 
 	<div id="radio1">
@@ -256,43 +256,52 @@
 	<h3><a href="#">Intervall</a></h3>
 	<div id="intervall" >
 		
-		
-			<span id="sliderIntensity" style="height:100px; float: left; margin-right: 5px;"></span>
-			
-			<span style="float: left;">
-				Target
-				<div id="radio2">
-					<input type="radio" id="radioMeters" name="radio2"  /><label for="radioMeters">m</label>
-					<input type="radio" id="radioSeconds" name="radio2" checked="checked" /><label for="radioSeconds">s</label>
-				</div>
-				Value <br>
-				<input type="text" id="unitInput" size="4" ></input><br>
-				<span id="lbl_intensity">Intensity</span><br>
-				<div>
-					<span id="intensityHtml" >0</span><div id="targetType">%</div>
-				</div>
-			</span>
-
-		<div >
-			
-            <div>
-			    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-plus" id="addIntervall" style="height: 20px; width: 30px"><span class="ui-icon ui-icon-plus"></span></li>
-			    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-minus" id="removeIntervall" style="height: 20px; width: 30px"><span class="ui-icon ui-icon-minus"></span></li>
-			</div>
-			<!--
-            <div class="scrollable" >
-			    <select size="7" style="width:90px;" name="intervallList" id="intervallList"> </select>
-		    </div>-->
+			<div style="height: 30px; width: 180px;  margin: 0 auto;">
+                
+                <div style="float: left;">
+                    Target
+				    <div id="radio2">
+					    <input type="radio" id="radioMeters" name="radio2"  /><label for="radioMeters">m</label>
+					    <input type="radio" id="radioSeconds" name="radio2" checked="checked" /><label for="radioSeconds">s</label>
+				    </div>
+                </div>               
+                
+                 <div style="float: right; padding-left: 6px; padding-top: 5px;">
+        	       <li><span class="ui-icon ui-icon-plus" id="addIntervalli"></span></li>
+			       <li><span class="ui-icon ui-icon-minus" id="removeIntervalli"></span></li>
+		        </div>
+                
+                <div style="float: left;">
+                    Value <br>
+				    <input type="text" id="unitInput" size="3" ></input>
+			    </div>
+                
+                <div style="float: left; right; padding-left: 10px; padding-top: 10px;">
+    			    <ul id="icons" class="ui-widget ui-helper-clearfix"><li class="ui-state-default ui-corner-all" title="Add a description" id="intervallDesc">
+                        <span class="ui-icon ui-icon-note"></span></li></ul>
+			    </div>
+         
+            </div>
             
-            <span id="scrollbar1">
+            <div style="height: 20px; width: 175px;  margin: 0 auto; padding-top: 20px;">        
+                <span id="sliderIntensity" style="width:100px; float: left; margin-top: 8px;"></span>
+                <div style="float: right;">
+                    <div id="swapIntensity" style="cursor: default;"><span id="lbl_intensity">Intensity</span><span class="ui-icon ui-icon-arrowrefresh-1-s" style="float: right;"></span></div>
+                    <span id="intensityHtml" >0</span><span id="targetType">%</span>
+                </div>
+            </div>
+        
+			
+                
+
+            <div id="scrollbar1" style="height: 80px; width: 175px; padding-right: 10px; ">
                 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 	            <div class="viewport">
-		               <div class="overview" id="overview">
-
-		               </div>
+		        <div class="overview" id="overview">
+		        </div>
 	            </div>
-            </span>
-        </div>
+            </div>
+                
 		
 	</div>
 	

@@ -79,7 +79,7 @@ function renderDetails(object, callback){
 			if(typeof(distanceResult) !== "undefined"){
 				value = (distanceResult.completed) ? "Completed" : "Not Completed";
 				resultHtml = value;
-				if(distanceResult.value !== "0"){
+				if(distanceResult.value !== "0" && distanceResult.value !== 0){
 					var timeObject = secondsToTime(distanceResult.value);
 					hour = (timeObject.h > 0) ? (timeObject.h + " hour(s) ") : "";
 					minute = (timeObject.m > 0) ? (timeObject.m + " minute(s) ") : "";
@@ -102,7 +102,7 @@ function renderDetails(object, callback){
 			if(typeof(distanceResult) !== "undefined"){
 				value = (distanceResult.completed) ? "Completed" : "Not Completed";
 				resultHtml = value;
-				if(distanceResult.value !== "0"){
+				if(distanceResult.value !== "0" && distanceResult.value !== 0){
 					resultHtml = resultHtml + " in " + (distanceResult.value/1000) + " km";
 				}	
 			}
@@ -139,7 +139,7 @@ function renderDetails(object, callback){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed" : "Not Completed";	
-					resultHtml = (intervallResult[i].value !== "0") ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml + '<br>');
+					resultHtml = (intervallResult[i].value !== "0" && intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml + '<br>');
 				}
 				
 				var rangeHtml =   " from <span id='unitSeconds'>" + intervalls[i].intensityRange[0] + "</span> s to " + "<span id='unitSeconds'>" + intervalls[i].intensityRange[1] + "</span> s";
@@ -150,7 +150,7 @@ function renderDetails(object, callback){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed" : "Not Completed";	
-					resultHtml = (intervallResult[i].value !== "0") ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml+ '<br>');
+					resultHtml = (intervallResult[i].value !== "0" && intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml+ '<br>');
 				}
 				
 				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
