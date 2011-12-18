@@ -365,21 +365,19 @@ var deleteWorkout = function(workoutId, callback){
         //console.log("Searching for parcour at: " + workoutId);
         CardioWorkout.remove({ _id: workoutId }, function (err) {
             if (err) { 
+                console.log("In deleteWorkout Failed");
                 callback("Error in deletion. Stack Trace: " + err); 
             }
             else{
-                
-                
-            }
-                callback("Success");        
+                console.log("In deleteWorkout success");
+                callback("Success");      
+            }      
         });
-
-    }
-  
+    }  
 }
 
-var deleteEvent = function(eventId, callback){
-    
+var deleteEvent = function(eventId, userId, month, year, callback){
+    var arrayLocation = ((parseInt(year) - 2011)*12) + parseInt(month);
     //Verify the object is a valid objectid
     if(eventId.toString().length !== 24 ){
         
@@ -389,19 +387,35 @@ var deleteEvent = function(eventId, callback){
     else{
         //var myObjectId = ObjectId.fromString(workoutId); 
         //console.log("Searching for parcour at: " + workoutId);
-        CalendarEventReference.remove({ _id: workoutId }, function (err) {
-            if (err) { 
+        CalendarEventReference.findOne({ id: userId }, function (err, result) {
+            if (err || result === null) { 
+                console.log("In deleteEvent error(1)");
                 callback("Error in deletion. Stack Trace: " + err); 
             }
             else{
+                console.log(result.ref.length + " vs " + arrayLocation);
+                if(typeof(result.ref.length) !== "undefined" && result.ref.length > arrayLocation){
+                    //Mongoose special command to .id to search an _id
+                    result.ref[arrayLocation].allEvents.id(eventId).remove();
+                    result.save(function (err) {
+                        if (err) { 
+                            console.log("In deleteEvent error(2)");
+                            callback("Error in deletion. Stack Trace: " + err); 
+                        }
+                        else{
+                            console.log("In deleteEvent Success");
+                            callback("Success");      
+                        }      
+                    });
                 
-                
+                }
+                else{
+                    console.log("In deleteEvent error(3)");
+                    callback("Error, couldnt find calendar event");
+                }                   
             }
-                callback("Success");        
         });
-
     }
-  
 }
 
 //*****************Exports*****************************************
@@ -414,3 +428,5 @@ exports.saveEvent = saveEvent;
 exports.getWorkout = getWorkout;
 exports.getMonthEvent = getMonthEvent;
 exports.saveResults = saveResults;
+exports.deleteWorkout = deleteWorkout;
+exports.deleteEvent = deleteEvent;

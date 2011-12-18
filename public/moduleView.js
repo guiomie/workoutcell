@@ -50,7 +50,7 @@ function initView(workoutObject, start, end ) {
     $("#viewOptions").qtip({
         id: 'themeroller',
         content: {
-            text: "Share this workout <br> Delete this workout" 
+            text: $('#viewOptionsContent').html() 
         },
         show: {
             event: 'click', 
@@ -63,7 +63,7 @@ function initView(workoutObject, start, end ) {
         position: {
            my: 'top center',
            at: 'bottom center'
-        },
+        }
     });
     
     //Show timing in a qtip
@@ -78,6 +78,12 @@ function initView(workoutObject, start, end ) {
         }     
     });
     
+    //On load attach handler to delete button
+    $("#deleteWorkout").live("click",function(){
+       
+       alert(workoutObject.start);
+        
+    });
 }
 
 
