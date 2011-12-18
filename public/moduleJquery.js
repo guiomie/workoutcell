@@ -250,14 +250,13 @@ $(document).ready(function(){
 			var target = $("input[type=text][id=unitInput]").val();
 			var option = $('input[type=radio][name=radio2]:checked').attr('id');
 			var intervallDescription = $("#intervallDescInput").val();
-            alert(intervallDescription);
             var intensityMetric = document.getElementById('targetType').innerHTML;
             var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
             var intensityTime = [];    
                 if (option === 'radioMeters'){
-					var str = target+"m @"+ intensityWorth + " " + intensityMetric + "<span class='ui-icon ui-icon-plus' id='qtipIntervall" + tempIntervall.length +"'></span><br>";
+					var str = "<div><div style='float: left'>" +target+"m @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = target+"m";
+                        str = "<div><div style='float: left'>" + target + "m" + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length + "' style='float: right'></div></div>";
                         intensityMetric = 0;
                         intensityWorth = 0;
                     }
@@ -290,9 +289,9 @@ $(document).ready(function(){
 
 				}
 				else if(option === 'radioSeconds'){
-			        var str = target+"s @"+ intensityWorth + " " + intensityMetric + "<span class='ui-icon ui-icon-plus' id='qtipIntervall" + tempIntervall.length +"'></span><br>";;
+			        var str = "<div><div style='float: left'>" + target+"s @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = target+"s";
+                        str = "<div><div style='float: left'>" + target+"s"+ "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
                         intensityMetric = 0;
                         intensityWorth = 0;
                     }
@@ -300,10 +299,12 @@ $(document).ready(function(){
                         intensityWorth = 0;    
                     }
                     tempIntervall.push(str);
+                    tempIntDesc.push(intervallDescription);
+                    
                     printArray(tempIntervall, function(html){
                         document.getElementById('overview').innerHTML = html;
                         $("#scrollbar1").tinyscrollbar_update();
-                        loadDynamicQtip((tempIntervall.length - 1), intervallDescription);
+                        loadDynamicQtip((tempIntervall.length - 1), tempIntDesc);
                     });
                     
                     intensityTime.push(minSlider);
@@ -338,9 +339,11 @@ $(document).ready(function(){
 			//Update intervall array
 			tempIntervall.pop();
             intervall.pop();
+            tempIntDesc.pop();
             printArray(tempIntervall, function(html){
                 document.getElementById('overview').innerHTML = html;
                 $("#scrollbar1").tinyscrollbar_update();
+                loadDynamicQtip((tempIntervall.length - 1),  tempIntDesc);
             });
 		});
 
