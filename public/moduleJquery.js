@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    	panelState = 'Create';
+        panelState = 'Create';
 		p = 0;
 		var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
         //Data for ajax intervall content
@@ -216,7 +216,7 @@ $(document).ready(function(){
             });
             			
 			if(polypathObject.length === 0 || markerArray.length === 0 || nameOfCourse === "" ){
-			
+
 			    //alert("Missing data Entry. Create course or make sure a name is entered");
 			    Notifier.error("Please fill in all required inputs");
 			}
@@ -242,22 +242,21 @@ $(document).ready(function(){
                 });
 				//alert(JSON.stringify(newParcour));
 			}
-			
+
 		});
-		
+
 		 $('#addIntervalli').click(function(){
-		    
+
 			var target = $("input[type=text][id=unitInput]").val();
 			var option = $('input[type=radio][name=radio2]:checked').attr('id');
 			var intervallDescription = $("#intervallDescInput").val();
-            alert(intervallDescription);
             var intensityMetric = document.getElementById('targetType').innerHTML;
             var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
             var intensityTime = [];    
                 if (option === 'radioMeters'){
-					var str = target+"m @"+ intensityWorth + " " + intensityMetric + "<span class='ui-icon ui-icon-plus' id='qtipIntervall" + tempIntervall.length +"'></span><br>";
+					var str = "<div><div style='float: left'>" +target+"m @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = target+"m";
+                        str = "<div><div style='float: left'>" + target + "m" + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length + "' style='float: right'></div></div>";
                         intensityMetric = 0;
                         intensityWorth = 0;
                     }
@@ -290,9 +289,9 @@ $(document).ready(function(){
 
 				}
 				else if(option === 'radioSeconds'){
-			        var str = target+"s @"+ intensityWorth + " " + intensityMetric + "<span class='ui-icon ui-icon-plus' id='qtipIntervall" + tempIntervall.length +"'></span><br>";;
+			        var str = "<div><div style='float: left'>" + target+"s @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = target+"s";
+                        str = "<div><div style='float: left'>" + target+"s"+ "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
                         intensityMetric = 0;
                         intensityWorth = 0;
                     }
@@ -300,10 +299,12 @@ $(document).ready(function(){
                         intensityWorth = 0;    
                     }
                     tempIntervall.push(str);
+                    tempIntDesc.push(intervallDescription);
+                    
                     printArray(tempIntervall, function(html){
                         document.getElementById('overview').innerHTML = html;
                         $("#scrollbar1").tinyscrollbar_update();
-                        loadDynamicQtip((tempIntervall.length - 1), intervallDescription);
+                        loadDynamicQtip((tempIntervall.length - 1), tempIntDesc);
                     });
                     
                     intensityTime.push(minSlider);
@@ -322,15 +323,15 @@ $(document).ready(function(){
 
 				}
 				else{
-				
+
 				}
                 //alert(JSON.stringify(intervall));
                 //minSlider = 0;
                 //maxSlider = 0;
 		});
-		
+
 		$('#removeIntervalli').click(function(){
-		
+
 		//delete in global array and temp array
 		//get index value to delete proper value in array
 			//var index = document.getElementById('intervallList').selectedIndex;
@@ -338,12 +339,14 @@ $(document).ready(function(){
 			//Update intervall array
 			tempIntervall.pop();
             intervall.pop();
+            tempIntDesc.pop();
             printArray(tempIntervall, function(html){
                 document.getElementById('overview').innerHTML = html;
                 $("#scrollbar1").tinyscrollbar_update();
+                loadDynamicQtip((tempIntervall.length - 1),  tempIntDesc);
             });
 		});
-		
+
 		//You can only enter numerical number in the field with this event
 		$("input[type=text][id=unitInput]").keydown(function(event) {
 			// Allow only backspace and delete
@@ -357,13 +360,13 @@ $(document).ready(function(){
 				}   
 			}
 		});
-		
+
 		//hover states on the static widgets
 		$('#dialog_link, ul#icons li').hover(
 			function() { $(this).addClass('ui-state-hover'); }, 
 			function() { $(this).removeClass('ui-state-hover'); }
 		);
-		
+
 		//Button pushed in Distance type
 		$("#radio3").click(function(event) { 
 			var option = $('input[type=radio][name=radio3]:checked').attr('id');
@@ -375,31 +378,31 @@ $(document).ready(function(){
 				document.getElementById('smallLabel').innerHTML = "min";
 			}
 		});
-		
+
 		//Data validation and compilation before submitting to server
 		$("#push").click(function(event) {
 		var selectedSport = $('input[type=radio][name=radio1]:checked + label').text();
     	//var parcourId = $("#parcourSelection").val();
 		var parcourId = {
-		
+
 			id     :  $("#parcourSelection").val(),
 			name   :  $('#parcourSelection :selected').text()
-		
+
 		};
 		var postUrl = "/workout/" + authId + "/" + selectedSport;
 		var workout;
 		var eventObject;
 		var toPostPackage = {
-		
+
 			workout  : "null",
 			event    : "null" 
-		
+
 		};
 		//Getting dates
 		var basicStartDate = $("#datepicker").datepicker( "getDate" );
 		basicStartDate.setMinutes($('#timepickerStart').datetimepicker('getDate').getMinutes());
 		basicStartDate.setHours($('#timepickerStart').datetimepicker('getDate').getHours());
-		
+
 		var basicEndDate = $("#datepicker").datepicker( "getDate" );
 		basicEndDate.setMinutes($('#timepickerStop').datetimepicker('getDate').getMinutes());
 		basicEndDate.setHours($('#timepickerStop').datetimepicker('getDate').getHours());		
@@ -414,14 +417,14 @@ $(document).ready(function(){
         else{
             
         }
-		
+
 		//Intervall Training
 		if(activeAccordion === 1){
 			//updateCalendarData(eventObject);
 			//alert(JSON.stringify(intervall));
-			
+
 			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
-			
+
 			workout = {
 			sport       : selectedSport,
 			type        : "intervall",
@@ -431,10 +434,10 @@ $(document).ready(function(){
 			parcour     : parcourId,
 			results     : "not entered"
 			}
-			
+
 			toPostPackage.workout = workout;
 			toPostPackage.event = eventObject;
-			
+
             //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
             //alert(JSON.stringify(workout));
             postJson(JSON.stringify(toPostPackage), postworkout, function(message){
@@ -451,11 +454,11 @@ $(document).ready(function(){
 			var minInputValue = $("input[type=text][id=smallInput]").val();
 			var maxInputValue = $("input[type=text][id=bigInput]").val();
 			var intensityValue = document.getElementById('intensityHtml2').innerHTML;
-			
+
 			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
-			
+
 			createSingleDistance(distanceType, minInputValue, maxInputValue, intensityValue, function(distanceObject){
-			
+
 				workout = {
 					sport       : selectedSport,
 					type        : "distance",
@@ -467,10 +470,10 @@ $(document).ready(function(){
 				}
 
 			});
-			
+
 			toPostPackage.workout = workout;
 			toPostPackage.event = eventObject;
-			
+
 			//FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
             
             //Sends hhtt post to the postworkout url defined in restUrl.js
@@ -483,8 +486,8 @@ $(document).ready(function(){
 		}
 		//nothing happens
 		else{
-		
-		
+
+
 		}
         
 		//empty intervall array so it doesnt accumulate
@@ -494,7 +497,7 @@ $(document).ready(function(){
 		document.getElementById('intervallList').length = 0;
 		document.getElementById('overview').innerHTML = " ";
 		});
-		
+
 		//Modification of UI based on user selection
 		//rather complex, watch out for any modifications
 		$("#radio4").click(function(event) { 
@@ -502,7 +505,7 @@ $(document).ready(function(){
 			if (target.text() == 'View'){
 				//this if statement blocks reloading of widget if already selected
 				if(panelState !== 'View'){
-					
+
 					// Change calendar size
 					$("#fullcalendar").animate({ 
 						height: "500px", 
@@ -514,7 +517,7 @@ $(document).ready(function(){
 					);
 					//Transit between user panel functionality 
 					$("#" + panelState).hide("slide", {}, 1000, function(){
-				
+
 						$("#View").show("slide", {}, 1000);
 						panelState = 'View';
 					});	
@@ -534,7 +537,7 @@ $(document).ready(function(){
 					);
 					//Transit between user panel functionality
 					$("#" + panelState).hide("slide", {}, 1000, function(){
-				
+
 						$("#Create").show("slide", {}, 1000);
 						panelState = 'Create';
 					});
@@ -565,17 +568,17 @@ $(document).ready(function(){
 				}
 			}
 			else{
-			
-			
+
+
 			}
 			/*
 			*/
 		}); 
-		
-		
-		
+
+
+
 		/* Definitions of custom made functions, location is here to ease rest of general code */
-		
+
 		function UIreposition(url, start, end){
             
 			if(panelState !== 'View'){	
@@ -592,10 +595,10 @@ $(document).ready(function(){
 				$("#" + panelState).hide("slide", {}, 1000, function(){
 					$("#View").show("slide", {}, 1000);
 					panelState = 'View';
-					
+
 				});	
 			}
-			
+
             $.getJSON(url, function(data) {
                      //document.getElementById('View').innerHTML = JSON.stringify(data); 
                      
@@ -604,14 +607,14 @@ $(document).ready(function(){
                      
             });
             
-		
+
 			//httprequest to get training via event.url
-			
+
 			//template generator for json received via httprequest
-			
+
 		} //end of function UIreposition
-		
-		
+
+
 		//Simple function to an object that you can put in the calendar
 		function createEvent(debut, fin, fullDay, titre, adresse, sport){
 			var coleur = "#CCFFCC";
@@ -624,7 +627,7 @@ $(document).ready(function(){
 			else{   //Run
 				coleur = "#CC9966";
 			}
-			
+
 			var singleEvent = {
 			//id      : Number,  Not needed for now
 			title   : titre,
@@ -634,55 +637,55 @@ $(document).ready(function(){
 			url     : adresse,
 			color   : coleur
 			}
-			
+
 			return singleEvent;
 		}
-		
+
 		function createTitleCalendar(debut){
-		
+
 			var type = $('input[type=radio][name=radio1]:checked + label').text();;
 			return type;
-		
+
 		}
-		
+
 		function createIntervallArray(inputName, callback){
 			$("select[name='" + inputName + "']").length;
-		
+
 		}
-		
+
 		function createSingleIntervall(laDistance, laTime, leIntensity, callback){
     		
 			var object = {
-			
+
 				distance: laDistance,
 				time: laTime,
 				intensity: leIntensity
-			
+
 			}
-			
+
 			callback(object);
 		}
-		
+
 		function createSingleDistance(leTargetType, theMinValue, theMaxValue, theIntensity, callback){
-			
+
 
 			var object = {
-				
+
 				targetType  : leTargetType,
 				minValue    : theMinValue,
 				maxValue    : theMaxValue,
 				intensity   : theIntensity
-				
+
 			}
 
 			callback(object);
-		
+
 		}
-		
+
 		function getSelectedParcour(selectId, callback){
-		
+
 		    document.getElementById().innerHTML = $("#" + selectId).val();
-		
+
 		}
         
         //Will take a JSON for string argumen (array of maps) and will populate drop list

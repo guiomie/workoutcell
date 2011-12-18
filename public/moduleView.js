@@ -1,4 +1,5 @@
 
+
 //Required to keep status on what type of view we are in
 //var viewMode = "view";
 var startDate;
@@ -32,7 +33,7 @@ function initView(workoutObject, start, end ) {
     
      
     
-	if(typeof(workoutObject.parcour) !== "undefined" ){
+    if(typeof(workoutObject.parcour) !== "undefined" ){
 		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
 	}
 
@@ -42,9 +43,11 @@ function initView(workoutObject, start, end ) {
 	//Input are type of workout and intervall of distance parameters, if the other one is ""
 	renderDetails(workoutObject, function(output){
 		document.getElementById('typeDetail').innerHTML = output;
-        
+        if(workoutObject.type === "intervall"){
+            loadDynamicQtip(workoutObject.intervalls.length, workoutObject.intervalls);
+        }
 	});
-	
+
     $('#toggleEdit').unbind('click').click(function(){
         initToggleButton(workoutObject);
     });
@@ -54,8 +57,8 @@ function initView(workoutObject, start, end ) {
 		//document.getElementById('cell').innerHTML = output;
 	
 	});*/
-	
-	
+
+
 }
 
 
@@ -68,10 +71,11 @@ function renderDetails(object, callback){
 	var intervalls = object.intervalls;
 	var distance = object.distance;
 	var intervallResult = object.intervallResult;
-	var distanceResult = object.distanceResult
+	var distanceResult = object.distanceResult;
 	var sport = object.sport;
+    var description = object.description;
     var output = "";
-	
+
 	if(type === 'distance'){
 		var resultHtml = "No Results";
 		if(distance.targetType === 'Kilometers'){
@@ -87,18 +91,18 @@ function renderDetails(object, callback){
 					resultHtml = resultHtml + " in " + hour + minute + second;
 				}	
 			}
-			
-		
+
+
 			if(distance.intensity === "0"){
 				output = sport +' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters <br>' + resultHtml ;
 			}else{
 				output = sport + ' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters at an intensity of ' + 
 					distance.intensity + ' %<br>' + resultHtml;
 			}
-		
+
 		}
 		else if(distance.targetType === 'Time'){
-			
+
 			if(typeof(distanceResult) !== "undefined"){
 				value = (distanceResult.completed) ? "Completed" : "Not Completed";
 				resultHtml = value;
@@ -106,67 +110,70 @@ function renderDetails(object, callback){
 					resultHtml = resultHtml + " in " + (distanceResult.value/1000) + " km";
 				}	
 			}
-			
+
 			if(distance.intensity === "0"){
 				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes <br>' + resultHtml ;
 			}else{
 				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
 				distance.intensity + ' %<br>' + resultHtml;
 			}
-		
+
 		}
 		else{
-		
+
 		}
 	}
 	else if(type === 'intervall'){
-		
+
 		for(i = 0; i < intervalls.length; i++){
-			
+
 			//Intervall training without any intensity objective, requires special handling
 			if(intervalls[i].intensityUnit === "0"){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed <br>" : "Not Completed <br>";	
 				}
-				
-				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + '<br> ' +resultHtml;
-				
+
+				output = output + "<div style='height: 20px; background-color: #e2f1d5; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit +
+                     "</div><div class='ui-icon ui-icon-tag' id='qtipIntervallView" + i + "' style='float: right'></div></div><div style='font-size: 10px;'>" + resultHtml + "</div>";
+
 
 			} //Intervall training with a range, requires special handling
 			else if(intervalls[i].intensityUnit === "min"){
-				
+
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed" : "Not Completed";	
 					resultHtml = (intervallResult[i].value !== "0" && intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml + '<br>');
 				}
-				
+
 				var rangeHtml =   " from <span id='unitSeconds'>" + intervalls[i].intensityRange[0] + "</span> s to " + "<span id='unitSeconds'>" + intervalls[i].intensityRange[1] + "</span> s";
-				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + rangeHtml + '<br>' +	resultHtml;
+				output = output + "<div style='height: 20px; background-color: #e2f1d5; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + rangeHtml + 
+                    "</div><div class='ui-icon ui-icon-tag' id='qtipIntervallView" + i + "' style='float: right'></div></div><div style='font-size: 10px;'>" +	resultHtml + "</div>";
 			}
 			else{
-				
+
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed" : "Not Completed";	
 					resultHtml = (intervallResult[i].value !== "0" && intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml+ '<br>');
 				}
-				
-				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
-					intervalls[i].intensityValue + '&nbsp;' + intervalls[i].intensityUnit + '<br>' + resultHtml;		
+
+				output = output + "<div style='height: 20px; background-color: #e2f1d5; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
+					intervalls[i].intensityValue + '&nbsp;' + intervalls[i].intensityUnit + 
+                    "</div><div class='ui-icon ui-icon-tag' id='qtipIntervallView" + i + "' style='float: right'></div></div><div style='font-size: 10px;'>"+ resultHtml + "</div>";		
 			}
-		
+
 		}
-		
+
 		output = output + '&nbsp;Total intervalls: ' + (intervalls.length);
 	}
 	else{ // Other type 
-	
+
 	}
-	
+
 	callback(output);
-	
+
 }
 
 //This function object like previously displayed, but it will remove any result
@@ -181,24 +188,24 @@ function resultsEditable(object, callback){
 	var distanceResult = object.distanceResult
 	var output = "";
 
-	
+
 	if(type === 'distance'){
 		var resultHtml;
 		if(distance.targetType === 'Kilometers'){
-		
+
 			if(distance.intensity === "0"){
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' value='0' id='hours' style='width:20; height: 20px;' /> hours, <input type='text' value='0' id='minutes' style='width:20; height: 20px;' /> minutes and <input type='text' value='0' id='seconds' style='width:20; height: 20px;' /> seconds";
 				output = sport + ' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters<br>' + resultHtml;
-				
+
 			}else{
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' value='0' id='hours' style='width:20; height: 20px;' /> hours, <input type='text' value='0' id='minutes' style='width:20; height: 20px;' /> minutes and <input type='text' value='0' id='seconds' style='width:20; height: 20px;' /> seconds";
 				output = sport + ' of ' + distance.maxValue + ' kilometers and ' + distance.minValue + ' meters at an intensity of ' + 
 					distance.intensity + ' %<br>' + resultHtml;
 			}
-		
+
 		}
 		else if(distance.targetType === 'Time'){
-		
+
 			if(distance.intensity === "0"){
 				resultHtml = " Completed <input type=checkbox id='checkbox'> in <input type='text' id='km' value='0' style='width:20; height: 20px;' /> km, <input type='text' value='0' id='m' style='width:20; height: 20px;' /> m";
 				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes<br>' + resultHtml;
@@ -207,16 +214,16 @@ function resultsEditable(object, callback){
 				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
 				distance.intensity + ' %<br>' + resultHtml;
 			}
-		
+
 		}
 		else{
-			
+
 		}
 	}
 	else if(type === 'intervall'){
-		
+
 		for(i = 0; i < intervalls.length; i++){
-			
+
 			//Intervall training without any intensity objective, requires special handling
 			if(intervalls[i].intensityUnit === "0"){
 				var resultHtml = "";
@@ -227,7 +234,7 @@ function resultsEditable(object, callback){
 					resultHtml = " - Completed <input type=checkbox id=checkbox"+i+"> in <input type='text' id=text"+i+" value='0' style='width:20; height: 20px;' /> m";
 				}
 				output = output + '&nbsp;' + intervalls[i].targetValue + intervalls[i].targetUnit + resultHtml + '<br> ';
-				
+
 				//totalDistance = totalDistance + parseInt(intervalls[i].distance);
 
 			} //Intervall training with a range, requires special handling
@@ -247,13 +254,13 @@ function resultsEditable(object, callback){
 				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at '
 					+ intervalls[i].intensityValue + '&nbsp;' + intervalls[i].intensityUnit + resultHtml + '<br>';		
 			}
-		
+
 		}
-		
+
 		output = output + '&nbsp;Total intervalls: ' + (intervalls.length);
 	}
 	else{ // Other type 
-	
+
 	}	
 	callback(output);	
 }
@@ -267,7 +274,7 @@ function initToggleButton (object){
 	if(viewMode === "(Save results)"){			
 		//Create data
 		if(object.type === "intervall"){
-			
+
             result = [];
             for(i=0; i <object.intervalls.length;i++){	
 				var unit;
@@ -284,7 +291,7 @@ function initToggleButton (object){
 				}
 				result.push(temp);	
 			}
-				
+
 			//document.getElementById('console').innerHTML = JSON.stringify(resultArray);
 			//alert(JSON.stringify(resultArray));
 			}
@@ -307,10 +314,10 @@ function initToggleButton (object){
 				}
 			}
 			else{
-				
+
 			}
 		}
-			
+
         //Sending compiled data to update results in workout collection
         var theUrl = postResult + "/" + object._id;
         postJson(JSON.stringify(result), theUrl, function(success){
@@ -333,7 +340,7 @@ function initToggleButton (object){
             //document.getElementById('console').innerHTML = JSON.stringify(result);
 			//alert(JSON.stringify(result));
 
-	
+
 	}
 	else{
 		resultsEditable(object, function(output){
@@ -407,5 +414,20 @@ function doubleMinutes(min){
             callback(false);
         },
     });
-    
+        
+}
+
+var loadDynamicQtip = function(a, descTable){
+    for(i = 0; i < a; i++){  
+        $("#qtipIntervallView" + i).qtip({
+            content: {
+                text: descTable[i].description
+                },
+            show: {
+                event: 'click', 
+                ready: false 
+                },
+            hide: 'click'
+        });  
+    }
 }
