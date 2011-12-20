@@ -99,15 +99,15 @@ module.exports = function(app) {
          
          mongooseLogic.deleteEvent(req.params.eventid, req.params.userid, req.params.month, req.params.year,  function(message){
             if(message !== "Success"){
-                res.json("{ success: false, message:'Failed to delete workout.'}");
+                res.json({ success: false, message:'Failed to delete workout.'});
             }
             else{
                 mongooseLogic.deleteWorkout(req.params.workoutid, function(message){
                     if(message !== "Success"){
-                        res.json("{ success: false, message:'Failed to delete calendar event.'}");    
+                        res.json({ success: false, message:'Failed to delete calendar event.'});    
                     }
                     else{
-                        res.json("{ success: true, message:'Deleted workout with success.'}");
+                        res.json({ success: true, message:'Deleted workout with success.'});
                     }
                 });
             }

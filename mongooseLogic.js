@@ -385,7 +385,7 @@ var deleteEvent = function(eventId, userId, month, year, callback){
        callback("Invalid objectId or input for eventId");
     }
     else{
-        var arrayLocation = ((parseInt(year) - 2011)*12) + parseInt(month);
+        var arrayLocation = 1 + ((parseInt(year) - 2011)*12) + parseInt(month);
         //var myObjectId = ObjectId.fromString(workoutId); 
         //console.log("Searching for parcour at: " + workoutId);
         CalendarEventReference.findOne({ id: userId }, function (err, result) {

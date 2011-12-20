@@ -90,19 +90,19 @@ function initView(workoutObject, event) {
     
     //On load attach handler to delete button
     $("#deleteWorkout").live("click",function(){
-        var url = deleteWorkout + "/" + start.getFullYear() + "/" + start.getMonth() + "/" + workoutObject._id + "/" + eventId;    ///:year/:month/:workoutid/:eventid
-        $.get(url, function(data){
-            
-            if(data.success){
-                Notifier.success(data.message);
-                UIrepositionCreate();
-            }
-            else{
-                Notifier.error(data.message);       
-            }
         
-        }, "json");
-        
+        concatenateStrings([deleteWorkout, "/", start.getFullYear(), "/", start.getMonth(),
+        "/", workoutObject._id, "/", eventId], function(url){
+            $.get(url, function(data){
+                if(data.success){
+                    Notifier.success(data.message);
+                    UIrepositionCreate();
+                }
+                else{
+                    Notifier.error(data.message);       
+                }
+            }, "json");
+        });
     });
 }
 
@@ -475,4 +475,16 @@ var loadDynamicQtip = function(a, descTable){
             hide: 'click'
         });  
     }
+}
+
+//adding stuff to an array seems to be to long, so added async to block execution
+var concatenateStrings = function(array, callback){
+    var str = "";
+    if($.isArray(array)){
+        for(i=0; i < array.length;i++){
+            str = str + array[i];
+        }  
+        callback(str);
+    }
+       
 }
