@@ -377,14 +377,15 @@ var deleteWorkout = function(workoutId, callback){
 }
 
 var deleteEvent = function(eventId, userId, month, year, callback){
-    var arrayLocation = ((parseInt(year) - 2011)*12) + parseInt(month);
+    
     //Verify the object is a valid objectid
-    if(eventId.toString().length !== 24 ){
+    if(eventId.toString().length !== 24 || !isNumber(month) || !isNumber(year) || month < 1 || year < 2011){
         
-       console.log("Invalid objectId submitted @ deleteEvent()");
-       callback("Invalid objectId for eventId");
+       console.log("Invalid objectId or input submitted @ deleteEvent()");
+       callback("Invalid objectId or input for eventId");
     }
     else{
+        var arrayLocation = ((parseInt(year) - 2011)*12) + parseInt(month);
         //var myObjectId = ObjectId.fromString(workoutId); 
         //console.log("Searching for parcour at: " + workoutId);
         CalendarEventReference.findOne({ id: userId }, function (err, result) {
@@ -394,7 +395,8 @@ var deleteEvent = function(eventId, userId, month, year, callback){
             }
             else{
                 console.log(result.ref.length + " vs " + arrayLocation);
-                if(typeof(result.ref.length) !== "undefined" && result.ref.length > arrayLocation){
+                if(typeof(result.ref.length) !== "undefined" && result.ref.length > arrayLocation 
+                    && result.ref[arrayLocation].allEvents.id(eventId) !== null){
                     //Mongoose special command to .id to search an _id
                     result.ref[arrayLocation].allEvents.id(eventId).remove();
                     result.save(function (err) {
@@ -417,6 +419,12 @@ var deleteEvent = function(eventId, userId, month, year, callback){
         });
     }
 }
+
+//Validates numbers
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;

@@ -29,12 +29,15 @@ function initPage(){
     FB.api('/me', function(response) {
     initGlobalVar();
     userObject = response;
-    var pictureTag = '<fb:profile-pic uid="' + authId + '" facebook-logo="false" linked="true" width="80" height="80" size="thumb"></fb:profile-pic>'; 
-    var name = userObject.name;
-    document.getElementById('profileLink').innerHTML =  name ;
+    var pictureTag = '<fb:profile-pic uid="' + authId + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+    //var name = userObject.name;
+    var first = userObject.first_name;
+    var last = userObject.last_name;
+    document.getElementById('firstName').innerHTML =  first;
+    document.getElementById('lastName').innerHTML =  last ;
     document.getElementById('xfbmlPic').innerHTML =  pictureTag ;
     FB.XFBML.parse(document.getElementById('xfbmlPic'));
-
+    $('#xfbpic').corner();
     });
     
 

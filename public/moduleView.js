@@ -6,8 +6,11 @@ var startDate;
 var endDate;
 
 //This function is called to initialised, or reload a workout view
-function initView(workoutObject, start, end ) {
+function initView(workoutObject, event) {
     
+    var start = event.start;
+    var end = event.end;
+    var eventId = event._id;
     
     var now = new Date();
     jQuery.timeago.settings.allowFuture = true;
@@ -56,13 +59,20 @@ function initView(workoutObject, start, end ) {
             event: 'click', 
             ready: false 
         },
-        hide: 'click',
+        hide: {
+            event: 'click'
+        },
         style: {
            widget: true 
         },
         position: {
            my: 'top center',
            at: 'bottom center'
+        },
+        events: {
+            render: function(event, api) {
+                api.elements.tooltip.click(api.hide);
+            }
         }
     });
     
@@ -80,8 +90,18 @@ function initView(workoutObject, start, end ) {
     
     //On load attach handler to delete button
     $("#deleteWorkout").live("click",function(){
-       
-       alert(workoutObject.start);
+        var url = deleteWorkout + "/" + start.getFullYear() + "/" + start.getMonth() + "/" + workoutObject._id + "/" + eventId;    ///:year/:month/:workoutid/:eventid
+        $.get(url, function(data){
+            
+            if(data.success){
+                Notifier.success(data.message);
+                UIrepositionCreate();
+            }
+            else{
+                Notifier.error(data.message);       
+            }
+        
+        }, "json");
         
     });
 }

@@ -75,20 +75,31 @@
 
 <div id='header' style="width:1000px; height: 100px;  margin-bottom: 20px; padding-bottom:10px;"> 
 	
-	&nbsp; &nbsp; <a href="viewYourProfile" id="profileLink" style="text-decoration: underline;">Guillaume Ouellet</a><br>
-	<div style="display: table-row; ">
-
-		<div id="profilePic" style="display: table-cell; width:100px; height: 100px; background-color:#FFFFFF;">
-	    <div id="xfbmlPic" style="padding-left: 10px; padding-top: 10px;">  </div>
-	
-		</div>
-
-	
-		<div id="navLink" style="display: table-cell; margin-left: 120px; font-size: medium; vertical-align: middle"> 
-			
-			 &nbsp; &nbsp; <a href="">> Social</a><br>
-			 &nbsp; &nbsp; <a href="">> Planner </a><br>
-			 &nbsp; &nbsp; <a href="">> Settings </a><br>
+    
+    
+	<a href="viewYourProfile" id="profileLink" style="text-decoration: underline;"></a><br>
+	<div>
+        
+        <div id="logo" style="float: left; width:100px; height: 100px; background-image:url('../img/logo.png');"></div>
+		
+        <div id="facebookProfile" style="float: left; width:300px; height: 120px; position:relative; margin-top: 10px; margin-left: 10px;">
+	        
+            <div id="xfbmlPic" style="float: left;">  </div>
+                
+            <div style="float: left; margin-left: 10px;">
+                <div id="firstName" style="font-size: 20px; color:#FDF5E6; font-family: impact;"> </div>
+                <div id="lastName" style="font-size: 20px; color:#FDF5E6; font-family: impact;"> </div>
+            </div>
+            
+            <div id="navLink" style="position:absolute;bottom:10; padding-bottom: 15px;"> 
+	            <ul id="icons" class="ui-widget ui-helper-clearfix">			
+			        <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Find athletes or coaches" id="goToSearch" style="float: right;"><span class="ui-icon ui-icon-search"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Manage your training schedule" id="goToPlanner" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+			        <li class="ui-state-default ui-corner-all" title="Manage your training schedule" id="goToPlanner" style="float: right;"><span class="ui-icon ui-icon-calendar"></span></li>			        
+                </ul>
+		    </div>
+            
 		</div>
 
 		<div id='pub' style="float:right; display: table-cell; "> 
@@ -133,7 +144,11 @@
             <li class="ui-state-default ui-corner-all" title="More options!" id="viewOptions" style="float: right; width: 15px;"><span class="ui-icon ui-icon-triangle-1-s" style="margin: 0 auto"></span></li>
 		</ul>
 		
-        <div id="viewOptionsContent" style="display: none;"><div>Share on Facebook</div><div>Invite a Cell</div><div id="deleteWorkout">Delete this Workout</div></div>
+        <div id="viewOptionsContent" style="display: none;">
+            <div style="padding-top: 3px;">Share on Facebook</div>
+            <div style="cursor :pointer; padding-top: 3px;">Invite a Cell</div>
+            <div id="deleteWorkout" style="cursor: pointer; padding-top: 3px;">Delete this Workout</div>
+        </div>
         
 		<div id="statement"> </div>
 	

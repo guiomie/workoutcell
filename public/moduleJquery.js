@@ -23,12 +23,12 @@ $(document).ready(function(){
 			eventClick: function(event) {	
 				if (event.url) {
 				//the launched function readjusts UI and send httprequest for view
-				UIreposition(event.url, event.start, event.end);
+				UIreposition(event); //event.url, event.start, event.end, event._id);
 				return false;
 			    }
             },     
             viewDisplay: function(view) {
-                
+                //Essential for first load, or calendar loads to fast without Fb authentication and cant find data
                 if(applicationVariables.calendarFirstLoad){
                     setTimeout(function() {
                         updateCalendar();
@@ -43,7 +43,7 @@ $(document).ready(function(){
 		});
         
 		$('#mainContent').corner();
-		$('#profilePic').corner();
+		$('#xfbmlPic').corner();
 
         $("#swapIntensity").click(function(){
             
@@ -579,7 +579,7 @@ $(document).ready(function(){
 
 		/* Definitions of custom made functions, location is here to ease rest of general code */
 
-		function UIreposition(url, start, end){
+		function UIreposition(event){
             
 			if(panelState !== 'View'){	
 				// Change calendar size
@@ -599,20 +599,29 @@ $(document).ready(function(){
 				});	
 			}
 
-            $.getJSON(url, function(data) {
-                     //document.getElementById('View').innerHTML = JSON.stringify(data); 
-                     
-                     initView(data, start, end);
-                     
-                     
+            $.getJSON(event.url, function(workout) {
+                     //document.getElementById('View').innerHTML = JSON.stringify(data);                
+                     //In moduleView.js
+                     initView(workout, event);       
             });
-            
-
-			//httprequest to get training via event.url
-
-			//template generator for json received via httprequest
 
 		} //end of function UIreposition
+        
+        function UIrepositionCreate(){
+            $("#fullcalendar").animate({ 
+					height: "600px", 
+					width: "800px", 
+			}, 1000, function(){
+				//resize calendar, seems to be a glitch
+				$('#fullcalendar').fullCalendar('render');
+			});
+			//Transit between user panel functionality
+			$("#" + panelState).hide("slide", {}, 1000, function(){
+
+				$("#Create").show("slide", {}, 1000);
+				panelState = 'Create';
+			});   
+        }
 
 
 		//Simple function to an object that you can put in the calendar

@@ -95,16 +95,14 @@ module.exports = function(app) {
     
     //This removes the workout first, if the workout is deleted, it then removes 
     //The calendar event reference
-    app.get("/workout/delete/:userid/:year/:month/:workoutid/:eventid", function(req, res){
-        
-        
-         mongooseLogic.deleteWorkout(req.params.workoutid, function(message){
-
+    app.get("/workout/delete/:userid/:year/:month/:workoutid/:eventid", function(req, res){       
+         
+         mongooseLogic.deleteEvent(req.params.eventid, req.params.userid, req.params.month, req.params.year,  function(message){
             if(message !== "Success"){
                 res.json("{ success: false, message:'Failed to delete workout.'}");
             }
             else{
-                mongooseLogic.deleteEvent(req.params.eventid, req.params.userid, req.params.month, req.params.year,  function(message){
+                mongooseLogic.deleteWorkout(req.params.workoutid, function(message){
                     if(message !== "Success"){
                         res.json("{ success: false, message:'Failed to delete calendar event.'}");    
                     }
