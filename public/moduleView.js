@@ -488,3 +488,18 @@ var concatenateStrings = function(array, callback){
     }
        
 }
+
+function UIrepositionCreate(){
+    $("#fullcalendar").animate({ 
+    	height: "600px", 
+		width: "800px", 
+	}, 1000, function(){
+		//resize calendar, seems to be a glitch
+		$('#fullcalendar').fullCalendar('render');
+	});
+	//Transit between user panel functionality
+	$("#" + panelState).hide("slide", {}, 1000, function(){
+		$("#Create").show("slide", {}, 1000);
+		panelState = 'Create';
+	});   
+}
