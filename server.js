@@ -37,11 +37,31 @@ everyauth.facebook
     mongooseDb.findOrCreateFacebookUser(fbUserMetadata, promise);
     return promise;*/
     //Verifies if user in database already
-    try{
-        var id = fbUserMetadata.id;
-        var promise = this.Promise();
+    //try{
+    var id = fbUserMetadata.id;
+    var promise = this.Promise();
+
+    User.findOne({ fbid: id}, function(err, user) {
+        if (err) return promise.fail(err);
+        if (user) return promise.fulfill(user);
+        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name}, function (err, user) {
+            if (err) return promise.fail(err);
+            promise.fulfill(user);
+            
+            GeneralReference.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err); 
+               
+            });            
+        });
+    });
+    return promise;
+
+        
+        /*
         User.findOne({ fbid: id}, function(err, result) {
         var user;
+        if (err) return promise.fail(err);
+        if (result) return promise.fulfill(result);
         if(!result) {
             //iniate also the users unique reference doc in ref collection
             var newUserRefDoc = new GeneralReference();
@@ -62,7 +82,7 @@ everyauth.facebook
     catch(err){
         console.log(err); 
      
-    }
+    }*/
   })
   .redirectPath('/view/profile');
   

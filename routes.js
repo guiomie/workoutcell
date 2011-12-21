@@ -1,5 +1,5 @@
 
- var mongooseLogic = require('./mongooseLogic');
+var mongooseLogic = require('./mongooseLogic');
 
 
 module.exports = function(app) {
@@ -12,7 +12,7 @@ module.exports = function(app) {
     app.get('/view/:htmlpage', function(req, res){
         console.log(req.loggedIn);
         
-        if(true) {
+        if(req.loggedIn) {
             res.sendfile('./views/' + req.params.htmlpage + '.html');
         }
         else{
@@ -226,10 +226,20 @@ module.exports = function(app) {
         }
     });
     app.get('/profile', function(req, res) {
-        console.log(everyauth.facebook.routes + everyauth.facebook.configurable()); // FTW!
-        res.send('Fb user is: ' + req.user + '<br>' + everyauth.facebook.user);
+        //console.log(everyauth.facebook.routes + everyauth.facebook.configurable()); // FTW!
+        res.send('Fb user is: ' + JSON.stringify(req.session.auth.facebook.user.id) + '<br>');
     });
     app.get('/authDetails', function(req, res) {
         res.send('<br>User info: ' + JSON.stringify(req.session));
     });
+}
+
+
+//Security measures implemented here
+
+var isAllowed = function(request, urlId){
+    
+    //if(request.session.auth.facebook.user.id === userId
+    
+    
 }

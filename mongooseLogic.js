@@ -80,6 +80,46 @@ var getParcour = function(parcourId, callback){
   
 }
 
+//NOT IMPLEMENTED YET 
+/*var deleteParcourReference = function(referenceId, userId, callback){
+    
+    //Verify the object is a valid objectid
+    if(referenceId.toString().length !== 24 || userId.toString().length !== 24){
+        
+       console.log("Invalid objectId or input submitted @ deleteParcourReference()");
+       callback("Invalid objectId or input");
+    }
+    else{
+        GeneralReference.findOne({ id: userId }, function (err, result) {
+            if (err || result === null) { 
+                console.log("In deleteParcourReference error(1)");
+                callback("Error in deletion. Stack Trace: " + err); 
+            }
+            else{
+                console.log(result.ref.length + " vs " + arrayLocation);
+                if( result.ref[arrayLocation].allEvents.id(eventId) !== null){
+                    //Mongoose special command to .id to search an _id
+                    result.save(function (err) {
+                        if (err) { 
+                            console.log("In deleteParcourReference error(2)");
+                            callback("Error in deletion. Stack Trace: " + err); 
+                        }
+                        else{
+                            console.log("In deleteEvent Success");
+                            callback("Success");      
+                        }      
+                    });
+                
+                }
+                else{
+                    console.log("In deleteParcourReference error(3)");
+                    callback("Error, couldnt find calendar event");
+                }                   
+            }
+        });
+    }
+}*/
+
 
 //****************WORKOUTS LOGIC ****************************************
 

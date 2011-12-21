@@ -244,6 +244,14 @@ $(document).ready(function(){
 			}
 
 		});
+        
+        //To send a delete trace to server
+        $('#unSaveTrace').click(function(){
+           
+           
+           
+            
+        });
 
 		 $('#addIntervalli').click(function(){
 
