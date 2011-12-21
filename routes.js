@@ -116,24 +116,55 @@ module.exports = function(app) {
        
     });
     
+    //!!!----Search -----!!!
+    
+    app.get("/search/fullname/:first/:last", function(req, res){
+        
+        var validRegEx = /^[^\\\/&]*$/;
+        
+        if(req.params.first.match(validRegEx) && req.params.last.match(validRegEx)){
+        
+            mongooseLogic.searchByFullName(req.params.first, req.params.last, function(msg){
+                if(msg === "failed"){
+                    res.json({ success: false, message:'Couldnt process search, internal error'});     
+                }
+                else{
+                    res.json({ success: true, message: msg});
+                }
+                
+                
+            });
+            
+        }
+        else{
+            res.json({ success: false, message:'Couldnt process search, invalid format submitted.'});   
+            
+        }
+        
+    });
     
     
     //HTTP POST REQUEST
     
 
     app.post("/parcour/:userId/:name/:distance", function(req, res){
-       
-      //console.log(req.body); 
-      mongooseLogic.saveParcour(req.body, req.params.distance, req.params.name,
-      req.params.userId, function(mess){
       
-        if(mess === "success"){
-            res.json({ success: true, message: "Parcour '" + req.params.name + "' was saved"});
-        }    
-        else{
-            res.json({ success: false, message: mess });   
-        }
-      });
+      if(isAllowed(req, req.params.userId)){
+        //console.log(req.body); 
+        mongooseLogic.saveParcour(req.body, req.params.distance, req.params.name,
+            req.params.userId, function(mess){
+      
+            if(mess === "success"){
+                res.json({ success: true, message: "Parcour '" + req.params.name + "' was saved"});
+            }    
+            else{
+                res.json({ success: false, message: mess });   
+            }
+        });
+      }
+      else{
+          res.json({ success: false, message: "Improper authentication" }); 
+      }
        
         
     });
@@ -239,7 +270,11 @@ module.exports = function(app) {
 
 var isAllowed = function(request, urlId){
     
-    //if(request.session.auth.facebook.user.id === userId
-    
-    
+    if(request.session.auth.facebook.user.id === urlId){
+       return true; 
+    }
+    else{
+      return false;     
+    }
+        
 }

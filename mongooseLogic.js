@@ -460,6 +460,42 @@ var deleteEvent = function(eventId, userId, month, year, callback){
     }
 }
 
+
+/////*********************** Social and SEARCH *****************************////
+
+/*var getSliceOfUsers = function(min, max, callback){
+    
+    
+    
+    
+    
+}*/
+
+var searchByFullName = function(first, last, callback){
+    
+    if(first !== "" && last !== ""){
+    
+        var query = User.find({});
+        query.where('firstName', first);
+        query.where('lastName', last);
+        query.limit(5);
+
+        query.exec(function (err, docs) {
+            if(err){
+                callback("failed");   
+            }
+            else{
+                callback(docs);    
+            }
+        });    
+    }
+    else{ 
+        callback("failed"); 
+    }
+    
+}
+
+
 //Validates numbers
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -478,3 +514,5 @@ exports.getMonthEvent = getMonthEvent;
 exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
+
+exports.searchByFullName = searchByFullName;

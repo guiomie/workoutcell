@@ -2,9 +2,6 @@ var fbId= "277924085557007";              // provided by facebook
 var fbSecret= "6a4c2dbefa84c7ba0d824ef981a2157f";          // provided by facebook
 var fbCallbackAddress= "/signin"; // this could point to your /signin page
 var cookieSecret = "cook";     // enter a random hash for security
-/*var emptyWorkoutRef = [{id: 0, allEvents: []}, {id: 1, allEvents: []}, {id: 2, allEvents: []}, {id: 3, allEvents: []}, {id: 4, allEvents: []}, 
-    {id: 5, allEvents: []}, {id: 6, allEvents: []}, {id: 7, allEvents: []}, {id: 8, allEvents: []}, {id: 9, allEvents: []}, 
-    {id: 10, allEvents: []}, {id: 11, allEvents: []} ];*/
 
 var express= require('express');
 var everyauth= require('everyauth');
@@ -40,10 +37,6 @@ everyauth.facebook
     //Define here for routing in case user decline app     
   })
   .findOrCreateUser( function (session, accessToken, accessTokExtra, fbUserMetadata) {
-    //BUGGED VERSION
-    /*var promise = new this.Promise();
-    mongooseDb.findOrCreateFacebookUser(fbUserMetadata, promise);
-    return promise;*/
     //Verifies if user in database already
     var id = fbUserMetadata.id;
     var promise = this.Promise();

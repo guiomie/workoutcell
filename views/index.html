@@ -28,7 +28,7 @@
 <script src='/moduleGmap.js'></script>
 <script src='/restUrl.js'></script>
 <script src='/moduleView.js'></script>
-
+<script src='/moduleHeaderMenu.js'></script>
 
 <style type="text/css">
 			/*demo page css*/
@@ -110,6 +110,13 @@
 
 </div>
 
+<div id="searchQtip" style="display: none;"> 
+    <input type="text" id="inputSearchUsers" size="12" ><span id="searchIconButton" class="ui-icon ui-icon-search" style="float: right; margin-top: 2px;"></span><br>  
+    Coach search: <input type="checkbox" id="coachesOnly"/>
+</div>
+
+<div id="searchDialog">  Empty for now </div>
+
 <div id='mainContent' style="align: center; width: 1030px; background-color:#FFFFFF; layer-background-color:#FFFFFF; padding-top: 20px; padding-left: 20px; padding-right: 20px; padding-bottom: 20px; height:600px;" > <!-- whole content except for header -->
 
 <!-- Full Calendar load -->
@@ -122,7 +129,6 @@
 			<input type="radio" id="radio43" name="radio" /><label for="radio43">Create</label> 
 		</div>
 </div>
-
 
 <!-- toolpane, contains 3 item that show up 1 at the time 
  No indent or wouldnt be readable-->
