@@ -917,7 +917,7 @@ $(document).ready(function(){
             }
         }
         
-        
+
         initHeaderBar();
        
 //END OF MODULE FUNCTIONS

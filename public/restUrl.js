@@ -11,6 +11,7 @@ var postworkout = "/workout/" + authId;
 var getParcour = "/parcour/";
 var postResult = "/result/" + authId; //Followed by :workoutId
 var deleteWorkout = "/workout/delete/" + authId;  //followed by /:year/:month/:workoutid/:eventid
+var searchFullName = "/search/fullname";  //:first/:last
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -21,5 +22,5 @@ var initGlobalVar = function(){
     postworkout = "/workout/" + authId;
     getParcour = "/parcour/";
     deleteWorkout = "/workout/delete/" + authId;
-    
+    searchFullName = "/search/fullname";
 }

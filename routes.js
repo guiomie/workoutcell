@@ -258,7 +258,7 @@ module.exports = function(app) {
     });
     app.get('/profile', function(req, res) {
         //console.log(everyauth.facebook.routes + everyauth.facebook.configurable()); // FTW!
-        res.send('Fb user is: ' + JSON.stringify(req.session.auth.facebook.user.id) + '<br>');
+        res.send('Fb user is: ' + JSON.stringify(req.session.auth.facebook) + '<br>');
     });
     app.get('/authDetails', function(req, res) {
         res.send('<br>User info: ' + JSON.stringify(req.session));
