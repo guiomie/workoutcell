@@ -247,6 +247,23 @@ module.exports = function(app) {
     //*************************************************************************
     //Facebook auth command samples
     //Sample of auth if statement
+    app.get('/hasRights', function(req, res){
+    
+        Permission.findOne({ firstName: req.session.auth.facebook.user.first_name, lastName: req.session.auth.facebook.user.last_name}, function(err, result){
+            console.log(JSON.stringify(result) + " for " + req.session.auth.facebook.user.first_name);
+            if(err){
+                res.redirect('/logout');
+            }
+            else if(result){
+                res.redirect('/view/profile');
+            }
+            else{
+                res.redirect('/logout');
+            }
+        });
+
+    });
+    
     app.get('/test', function(req, res) {
         //console.log(everyauth.facebook.routes + everyauth.facebook.configurable());  // FTW!
         if (req.loggedIn) {

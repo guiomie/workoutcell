@@ -14,7 +14,9 @@ var mongooseLogic = require('./mongooseLogic');
 //Import database models
 User = mongooseDb.User;
 GeneralReference = mongooseDb.GeneralReference;
+Permission = mongooseDb.Permission;
 PersonnaReference = mongooseDb.PersonnaReference;
+
 ParcourReference = mongooseDb.ParcourReference;
 Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
@@ -92,7 +94,8 @@ everyauth.facebook
      
     }*/
   })
-  .redirectPath('/view/profile');
+  //.redirectPath('/view/profile');
+  .redirectPath('/hasRights');
   
 app.configure(function(){
   app.use(express.static(__dirname + '/public'));

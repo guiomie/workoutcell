@@ -44,7 +44,8 @@ everyauth.facebook
     User.findOne({ fbid: id}, function(err, user) {
         if (err) return promise.fail(err);
         if (user) return promise.fulfill(user);
-        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name}, function (err, user) {
+        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name, 
+            location: fbUserMetadata.location.name }, function (err, user) {
             if (err) return promise.fail(err);
             promise.fulfill(user);
             

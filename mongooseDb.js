@@ -26,7 +26,16 @@ var User = new Schema({
     firstName  : String,   
     lastName   : String,
     email      : String,
+    location   : String,
     joinDate   : {type: Date, default: Date.now}
+});
+
+var Permission = new Schema({
+    
+   //fbid : Number
+    firstName  : String,   
+    lastName   : String
+    
 });
 
 
@@ -160,9 +169,20 @@ var BasicCell = new Schema({
     
 });
 
+//!!!!------ Notification System ------ !!!!!
+
+
+var NotificationReference = new Schema({
+    
+   id         :String,  //Facebook id
+   members    :[ObjectId]
+    
+});
+
 //Create models out of schema
 mongoose.model('User', User);
-mongoose.model('GeneralReference', GeneralReference);   
+mongoose.model('GeneralReference', GeneralReference);  
+mongoose.model('Permission', Permission);
 mongoose.model('PersonnaReference', PersonnaReference);
 
 mongoose.model('ParcourReference', ParcourReference);
@@ -182,8 +202,9 @@ mongoose.model('SingleIntervallResult', SingleIntervallResult);
 
 var User = exports.User = mongoose.model('User');
 var GeneralReference = exports.GeneralReference = mongoose.model('GeneralReference');
-
+var Permission = exports.Permission = mongoose.model('Permission');
 var PersonnaReference = exports.PersonnaReference = mongoose.model('PersonnaReference');
+
 var ParcourReference = exports.ParcourReference = mongoose.model('ParcourReference');
 var Parcour = exports.Parcour = mongoose.model('Parcour');
 

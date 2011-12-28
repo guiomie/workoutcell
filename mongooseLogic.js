@@ -496,6 +496,8 @@ var searchByFullName = function(first, last, callback){
 }
 
 
+/// Random functions
+
 //Validates numbers
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);

@@ -84,13 +84,14 @@ var renderSearchHtml = function(arrayResult, callback){
         callback();      
     }
     else{
-       var overallHtml = "";
+       var overallHtml = "<table width='100%'>";
        for(i = 0; i < arrayResult.length; i++){
           var pictureTag = '<fb:profile-pic uid="' + arrayResult[i].fbid + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
-          var name  = arrayResult[i].firstName + " " + arrayResult[i].lastName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span id='addToCell' style='float: right;'> Add to your cell</span>";
-          overallHtml = overallHtml + pictureTag + name;
+          var name  = "<div style='font-size: 12px; float:left;'><div style='font-weight:bold'>" + arrayResult[i].firstName + " " + arrayResult[i].lastName + "</div><div>" + arrayResult[i].location + "</div>";
+          var add = "<div id='addToCell' style='float: right; cursor:pointer'> Add to your cell</div>";
+          overallHtml = overallHtml + '<tr><td>' + pictureTag + '</td><td valign="middle">' + '</td><td valign="middle">' + name + '</td><td valign="middle"  width="99%">' + add + '</td></tr>';
        }
-       document.getElementById('searchDialog').innerHTML = overallHtml;
+       document.getElementById('searchDialog').innerHTML = overallHtml + '</table><br><br><span style="font-size: 15px;">Other users near you:</span>  <br> No one in your location';
        FB.XFBML.parse(document.getElementById('searchDialog'));
        callback();
     }  
