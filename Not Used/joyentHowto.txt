@@ -1,0 +1,6 @@
+1-make sure database params for mongodb are good ones
+2-git pull locally and remove node_modules folder
+3-Install dependencies globally, ssh in no.de and npm -g install
+4-adjust the package.json versions of the dependencies to match global npm 
+packages versions on smartmachine
+5-git push -f workoutcell.no.de:repo master 
