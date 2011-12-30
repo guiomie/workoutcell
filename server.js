@@ -14,12 +14,19 @@ var mongooseLogic = require('./mongooseLogic');
 //Import database models
 User = mongooseDb.User;
 GeneralReference = mongooseDb.GeneralReference;
+Permission = mongooseDb.Permission;
 PersonnaReference = mongooseDb.PersonnaReference;
+
 ParcourReference = mongooseDb.ParcourReference;
 Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
 CalendarMonth = mongooseDb.CalendarMonth;
 CalendarEvent = mongooseDb.CalendarEvent;
+//DistanceUnit = mongooseDb.DistanceUnit;
+CardioWorkout = mongooseDb.CardioWorkout;
+BasicCell = mongooseDb.BasicCell;
+IntervallUnit = mongooseDb.IntervallUnit;
+SingleIntervallResult = mongooseDb.SingleIntervallResult;
 
 everyauth.helpExpress(app);
 
@@ -32,60 +39,31 @@ everyauth.facebook
     //Define here for routing in case user decline app     
   })
   .findOrCreateUser( function (session, accessToken, accessTokExtra, fbUserMetadata) {
-    //BUGGED VERSION
-    /*var promise = new this.Promise();
-    mongooseDb.findOrCreateFacebookUser(fbUserMetadata, promise);
-    return promise;*/
     //Verifies if user in database already
-    //try{
     var id = fbUserMetadata.id;
     var promise = this.Promise();
-
+    
     User.findOne({ fbid: id}, function(err, user) {
         if (err) return promise.fail(err);
         if (user) return promise.fulfill(user);
-        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name, 
-            location: fbUserMetadata.location.name }, function (err, user) {
+        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name}, function (err, user) {
             if (err) return promise.fail(err);
             promise.fulfill(user);
             
             GeneralReference.create({ id: id}, function(err, ref){
-               if (err) return promise.fail(err); 
-               
-            });            
+               if (err) return promise.fail(err);   
+            }); 
+            
+            CalendarEventReference.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err);   
+            }); 
+            
         });
     });
     return promise;
-
-        
-        /*
-        User.findOne({ fbid: id}, function(err, result) {
-        var user;
-        if (err) return promise.fail(err);
-        if (result) return promise.fulfill(result);
-        if(!result) {
-            //iniate also the users unique reference doc in ref collection
-            var newUserRefDoc = new GeneralReference();
-            user = new User();
-            user.fbid = id;
-            newUserRefDoc.id = id;
-            user.firstName = fbUserMetadata.first_name;
-            user.lastName = fbUserMetadata.last_name;
-            user.save();
-            newUserRefDoc.save();
-        } else {
-            user = result;
-        }
-        promise.fulfill(user);
-        });
-        return promise;
-    }
-    catch(err){
-        console.log(err); 
-     
-    }*/
   })
-  .redirectPath('/view/profile');
+  //.redirectPath('/view/profile');
+  .redirectPath('/hasRights');
   
 app.configure(function(){
   app.use(express.static(__dirname + '/public'));
