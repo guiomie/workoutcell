@@ -17,6 +17,9 @@ GeneralReference = mongooseDb.GeneralReference;
 Permission = mongooseDb.Permission;
 PersonnaReference = mongooseDb.PersonnaReference;
 
+NotificationsReference = mongooseDb.NotificationsReference;
+Notification = mongooseDb.Notification;
+
 ParcourReference = mongooseDb.ParcourReference;
 Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
@@ -55,6 +58,10 @@ everyauth.facebook
             }); 
             
             CalendarEventReference.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err);   
+            }); 
+            
+            NotificationsReference.create({ id: id}, function(err, ref){
                if (err) return promise.fail(err);   
             }); 
             

@@ -91,6 +91,89 @@ module.exports = function(app) {
         
     });
     
+    //Adds a notification to the users queu
+    app.get("/notification/:userId/:type/:target", function(req, res){
+        
+        if(req.params.type === "joinMasterCell"){
+            mongooseLogic.saveFriendshipRequestToQueu(req.params.userId, 
+                req.params.target, function(mongooseRes){
+                    if(mongooseRes === "Success"){
+                        res.json({ success: true, message:'Request sent to join cell.'});
+                    }
+                    else{   
+                        res.json({ success: false, message:mongooseRes});
+                    }
+            });
+                
+        }
+        else{
+            res.json({ success: false, message:'Invalid parameter sent'});
+        }
+   
+    });
+    
+    //Receive all what is in pending  notification queu of use
+    app.get("/notification/queu/:userId/:min/:max", function(req, res){
+        
+        if(isAllowed(req, req.params.userId) && is_int(req.params.min) && is_int(req.params.max)){
+            
+            mongooseLogic.getPendingNotifications(req.params.userId, parseInt(req.params.min), 
+                parseInt(req.params.max), function(mongooseRes){
+                    if(mongooseRes === "not instantiated"){
+                        res.json({ success: false, message:"Couldnt find information"});
+                    }
+                    else{   
+                        res.json({ success: true, message:mongooseRes});
+                    }
+            });
+                
+        }
+        else{
+            res.json({ success: false, message:'Invalid parameter sent'});
+        }
+   
+    });
+    
+    app.get("/notification/joinMasterCell/:userId/:requester/:action", function(req,res){
+        
+        if(isAllowed(req, req.params.userId) && (req.params.action === "accept" 
+            || req.params.action=== "decline")){
+            
+            if(req.params.action === "accept"){
+                mongooseLogic.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
+                    if(mes === "Success"){
+                        res.json({ success: true, message: "Successfully added Friend to your cell"});
+                    }
+                    else{
+                        res.json({ success: false, message: mes});
+                    }
+             
+                });
+            }
+            else if(req.params.action === "decline"){
+                mongooseLogic.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
+                    if(mes === "Success"){
+                        res.json({ success: true, message: "Declined users frienship"});
+                    }
+                    else{
+                        res.json({ success: false, message: mes});
+                    }
+             
+                });
+            }
+            else{
+                res.json({ success: false, message:'Invalid parameter sent (1)'}); 
+             
+            }
+        
+        }
+        else{
+           res.json({ success: false, message:'Invalid parameter sent(2)'}); 
+        }
+        
+    });
+    
+    
     //----DELETION OF DATA -----------
     
     //This removes the workout first, if the workout is deleted, it then removes 
@@ -115,6 +198,7 @@ module.exports = function(app) {
          });
        
     });
+
     
     //!!!----Search -----!!!
     
@@ -294,4 +378,12 @@ var isAllowed = function(request, urlId){
       return false;     
     }
         
+}
+
+function is_int(value){ 
+  if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+      return true;
+  } else { 
+      return false;
+  } 
 }

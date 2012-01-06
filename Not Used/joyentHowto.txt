@@ -1,4 +1,6 @@
-1-make sure database params for mongodb are good ones
+1-make sure database params for mongodb are good ones and adjust javascript sdk and
+everyauth parameters are set to prod version appId
+hardcode appid in facebookModule.js, put minified jquery version
 2-git pull locally and remove node_modules folder
 3-Install dependencies globally, ssh in no.de and npm -g install
 4-adjust the package.json versions of the dependencies to match global npm 

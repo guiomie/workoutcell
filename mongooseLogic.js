@@ -421,7 +421,7 @@ var deleteEvent = function(eventId, userId, month, year, callback){
     //Verify the object is a valid objectid
     if(eventId.toString().length !== 24 || !isNumber(month) || !isNumber(year) || month < 1 || year < 2011){
         
-       console.log("Invalid objectId or input submitted @ deleteEvent()");
+       //console.log("Invalid objectId or input submitted @ deleteEvent()");
        callback("Invalid objectId or input for eventId");
     }
     else{
@@ -430,7 +430,7 @@ var deleteEvent = function(eventId, userId, month, year, callback){
         //console.log("Searching for parcour at: " + workoutId);
         CalendarEventReference.findOne({ id: userId }, function (err, result) {
             if (err || result === null) { 
-                console.log("In deleteEvent error(1)");
+                //console.log("In deleteEvent error(1)");
                 callback("Error in deletion. Stack Trace: " + err); 
             }
             else{
@@ -463,13 +463,145 @@ var deleteEvent = function(eventId, userId, month, year, callback){
 
 /////*********************** Social and SEARCH *****************************////
 
-/*var getSliceOfUsers = function(min, max, callback){
+//This will add a user friendship request in the users notification queu
+var saveFriendshipRequestToQueu = function(requestee, requester, callback){
+   
+    var pendingNotification = {
+        type      : "joinMasterCell", //joinMasterCell, workoutCell 
+        message   : " would like to be in your cell", //Name of person
+        refId     : requester,
+        date      : new Date()
+    }
     
+    NotificationsReference.findOne({ id: requestee}, function(err, result){
+        if(err || result === null){
+            console.log("No document found or: " + err + " - Result:" + result + " for " + requestee);
+            callback("Error in request (1). Stack Trace: " + err);
+        }
+        else{
+           result.pending.push(pendingNotification);
+           result.save(function (err) {
+                if (err) { 
+                    //console.log("In deleteEvent error(2)");
+                    callback("Error in saving request(2). Stack Trace: " + err); 
+                }
+                else{
+                    //console.log("In deleteEvent Success");
+                    callback("Success");      
+                }      
+            });  
+        }
+    });
     
+}
+
+//This will return the values in between the ranges in relation to the array size
+var getPendingNotifications = function(userId, rangeMin, rangeMax, callback){
     
+    NotificationsReference.findOne({ id: userId}, function(err, result){
+        if(err || result === null){
+            //console.log("No document found or: " + err);
+            callback("not instantiated");
+        }
+        else{
+            var length = result.pending.length;
+            if(length === 0){
+                
+               callback([]); 
+            }
+            else if(rangeMin < length || rangeMax > rangeMin){
+               var multiplicant = length / 10;
+               if(multiplicant <= 1){
+                   callback(result.pending);
+               }
+               else if(rangeMax <= 10){
+                  callback(result.pending.slice(0, 9));
+               }
+               else {
+                  callback(result.pending.slice(rangeMin, rangeMax));              
+               }
+                
+            }
+            else{
+              callback([]);     
+            }
     
+        }
+    });
     
-}*/
+}
+
+//This will go in the users pending notifications, remove the requesters id
+//and copy it to its friends list in the his general reference collection
+var acceptPendingFriendship = function(userId, requesterId, callback){
+    
+    NotificationsReference.findOne({ id: userId}, function(err, result){
+        if(err || result === null){
+            callback("Could not accept notification. Stack: " + err);
+        }
+        else{
+            var deletedRefId = 'unchanged';
+            for(i = 0; i < result.pending.length; i++){
+             
+               if( result.pending[i].refId === requesterId){
+                    //console.log(deletedRefId);
+                    deletedRefId = result.pending.splice(i, 1);
+                    //console.log(deletedRefId + " - " + JSON.stringify(result));
+                    result.save(function (err) {
+                        if (err) { 
+                            callback("Error in saving request(2). Stack Trace: " + err); 
+                        }
+                        else{
+                            GeneralReference.findOne({ id: userId}, function(err, result){
+                                if(err || result === null){
+                                    callback("Error in saving request(3). Stack Trace: " + err);  
+                                }
+                                else{
+                                    result.friends.push(parseInt(requesterId));    
+                                    result.save(function (err){
+                                        if (err) { 
+                                            callback("Error in saving request(2). Stack Trace: " + err); 
+                                        }
+                                        else{
+                                            callback("Success");
+                                            
+                                        }
+                                    });
+                                }
+                            }); 
+                        }
+                    });
+                }
+            }
+        }
+    });  
+}
+
+var declinePendingFriendship = function(userId, requesterId, callback){
+    
+    NotificationsReference.findOne({ id: userId}, function(err, result){
+        if(err || result === null){
+            callback("Could not accept notification. Stack: " + err);
+        }
+        else{
+            var deletedRefId = 'unchanged';
+            for(i = 0; i < result.pending.length; i++){
+               if( result.pending[i].refId === requesterId){
+                    deletedRefId = result.pending.splice(i, 1);
+                    result.save(function (err) {
+                        if (err) { 
+                            callback("Error in saving request(1). Stack Trace: " + err); 
+                        }
+                        else{
+                            callback("Success");
+                        }
+                    });
+               }
+            }
+            callback("Couldnt find user pending notifications");
+        }
+    });  
+}
 
 var searchByFullName = function(first, last, callback){
     
@@ -504,6 +636,7 @@ function isNumber(n) {
 }
 
 
+
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
@@ -518,3 +651,7 @@ exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 
 exports.searchByFullName = searchByFullName;
+exports.saveFriendshipRequestToQueu = saveFriendshipRequestToQueu;
+exports.getPendingNotifications = getPendingNotifications;
+exports.acceptPendingFriendship = acceptPendingFriendship;
+exports.declinePendingFriendship =declinePendingFriendship;

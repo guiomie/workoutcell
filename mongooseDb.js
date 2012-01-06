@@ -45,9 +45,10 @@ var Permission = new Schema({
 var GeneralReference = new Schema({
     
     id           : Number,
-    friends      : [PersonnaReference],
-    coaches      : [PersonnaReference],
-    parcours     : [ParcourReference]
+    friends      : [Number],    //Array of fbids
+    //coaches      : [PersonnaReference],  To be implemented in futur releases
+    parcours     : [ParcourReference],
+    //cells        : [CellReference]
         
 });
 
@@ -171,20 +172,39 @@ var BasicCell = new Schema({
 });
 
 //!!!!------ Notification System ------ !!!!!
+var Notification = new Schema({
 
+    type      : String, //joinMasterCell, workoutCell 
+	message   : String, //Name of person
+	refId     : String,
+	refOId    : ObjectId,
+	date      : Date, 
 
+});
+
+var NotificationsReference = new Schema({
+
+    id     : Number, //fbid
+	pending: [Notification]
+
+});
+
+/*
 var NotificationReference = new Schema({
     
    id         :String,  //Facebook id
    members    :[ObjectId]
     
-});
+});*/
 
 //Create models out of schema
 mongoose.model('User', User);
 mongoose.model('GeneralReference', GeneralReference);  
 mongoose.model('Permission', Permission);
 mongoose.model('PersonnaReference', PersonnaReference);
+
+mongoose.model('NotificationsReference', NotificationsReference);
+mongoose.model('Notification', Notification);
 
 mongoose.model('ParcourReference', ParcourReference);
 mongoose.model('Parcour', Parcour);
@@ -205,6 +225,10 @@ var User = exports.User = mongoose.model('User');
 var GeneralReference = exports.GeneralReference = mongoose.model('GeneralReference');
 var Permission = exports.Permission = mongoose.model('Permission');
 var PersonnaReference = exports.PersonnaReference = mongoose.model('PersonnaReference');
+
+var NotificationsReference = exports.NotificationsReference = mongoose.model('NotificationsReference');
+var Notification = exports.Notification = mongoose.model('Notification');
+
 
 var ParcourReference = exports.ParcourReference = mongoose.model('ParcourReference');
 var Parcour = exports.Parcour = mongoose.model('Parcour');
