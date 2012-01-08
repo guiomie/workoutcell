@@ -40,6 +40,12 @@ function initPage(){
     $('#xfbpic').corner();
     });
     
+}
 
 
+function getFriendsCell(fbId, callback){
+    
+    
+    
+    
 }

@@ -464,11 +464,11 @@ var deleteEvent = function(eventId, userId, month, year, callback){
 /////*********************** Social and SEARCH *****************************////
 
 //This will add a user friendship request in the users notification queu
-var saveFriendshipRequestToQueu = function(requestee, requester, callback){
+var saveFriendshipRequestToQueu = function(requester, requestee, requesterName, callback){
    
     var pendingNotification = {
         type      : "joinMasterCell", //joinMasterCell, workoutCell 
-        message   : " would like to be in your cell", //Name of person
+        message   : requesterName + " would like to be in your cell", //Name of person
         refId     : requester,
         date      : new Date()
     }
@@ -479,17 +479,24 @@ var saveFriendshipRequestToQueu = function(requestee, requester, callback){
             callback("Error in request (1). Stack Trace: " + err);
         }
         else{
-           result.pending.push(pendingNotification);
-           result.save(function (err) {
-                if (err) { 
-                    //console.log("In deleteEvent error(2)");
-                    callback("Error in saving request(2). Stack Trace: " + err); 
+            checkIfpending(requester, result.pending, function(mes){     
+                if(mes === "isNotPending"){
+                    result.pending.push(pendingNotification);
+                    result.save(function (err) {
+                        if (err) { 
+                            //console.log("In deleteEvent error(2)");
+                            callback("Error in saving request(2). Stack Trace: " + err); 
+                        }
+                        else{
+                            //console.log("In deleteEvent Success");
+                            callback("Success");      
+                        }      
+                    });
                 }
                 else{
-                    //console.log("In deleteEvent Success");
-                    callback("Success");      
-                }      
-            });  
+                    callback("Request is already pending");    
+                }
+            });
         }
     });
     
@@ -603,6 +610,39 @@ var declinePendingFriendship = function(userId, requesterId, callback){
     });  
 }
 
+var getFriendList = function(userId, callback){
+ 
+    GeneralReference.findOne({ id: userId}, function(err, result){
+        if(err || result === null){
+            console.log("For : " + userId + "  " + err + " : " + result);
+            callback("Error");
+        }
+        else{ 
+            if(result.friends.length == 0){
+                callback("Empty"); 
+            }
+            else{
+                callback(result.friends);    
+            }
+        }
+    });        
+}
+
+var getProfileSnippet = function(userId, callback){
+ 
+    User.findOne({ fbid: userId }, function(err, result){
+        if(err || result === null){
+            //console.log("For : " + userId + "  " + err + " : " + result);
+            callback("Error");
+        }
+        else{
+            var html = result.firstName + " " + result.lastName + "<br> <span class='btn_viewProfile' userId='" + 
+                    result.fbid + "' style='cursor: pointer;'> View Profile </span>";
+            callback(html);
+        }
+    }); 
+}
+
 var searchByFullName = function(first, last, callback){
     
     if(first !== "" && last !== ""){
@@ -635,7 +675,44 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+var checkIfpending = function(requester, array, callback){
+     
+    for(i = 0; i < array.length;i++){
+        if(array[i].type === "joinMasterCell" && array[i].refId === requester){
+            callback("isPending");  
+        }
+                
+    }
+    callback("isNotPending");
+}
 
+
+var isUserAFriend = function(userId, target, callback){
+    
+    GeneralReference.findOne({ id: userId}, function(err, result){
+        if(err || result === null){
+            console.log("For : " + userId + "  " + err + " : " + result);
+            callback(false);
+        }
+        else{ 
+            if(result.friends.length === 0){
+                callback(false); 
+            }
+            else{
+                var response = false;
+                for(i = 0; i < result.friends.length;i++){
+                    //console.log(result.friends[i]);
+                    if(result.friends[i] === parseInt(target)){
+                        response = true;  
+                        break;
+                    }
+                }
+                callback(response);
+            }
+        }
+    }); 
+        
+}
 
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;
@@ -650,8 +727,11 @@ exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 
+exports.isUserAFriend = isUserAFriend;
+exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;
 exports.saveFriendshipRequestToQueu = saveFriendshipRequestToQueu;
+exports.getFriendList = getFriendList;
 exports.getPendingNotifications = getPendingNotifications;
 exports.acceptPendingFriendship = acceptPendingFriendship;
 exports.declinePendingFriendship =declinePendingFriendship;

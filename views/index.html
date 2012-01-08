@@ -28,6 +28,7 @@
 <script src='/moduleGmap.js'></script>
 <script src='/restUrl.js'></script>
 <script src='/moduleView.js'></script>
+<script src='/moduleSocial.js'></script>
 <script src='/moduleHeaderMenu.js'></script>
 
 <style type="text/css">
@@ -65,6 +66,8 @@
             #scrollbar1 .thumb { height: 20px; width: 5px; cursor: pointer; overflow: hidden; position: absolute; top: 0; }
             #scrollbar1 .thumb .end { overflow: hidden; height: 5px; width: 5px; }
             #scrollbar1 .disable{ display: none; }
+            
+            #singlenotification:hover { background-color: #e2f1d5;}
 </style>
 
 </head>
@@ -122,11 +125,11 @@
 <!-- Full Calendar load -->
 <div id='fullcalendar'  style="width:800px; float:left;"></div>
 
-<div id="toolBoxNav" style="float:right; margin-right: 20px;"> 
+<div id="toolBoxNav" style="float:right; margin-right: 1px;"> 
 		<div id="radio4" style="margin-bottom: 2em;"> 
-			<input type="radio" id="radio41" name="radio" checked="checked" /><label for="radio41">View</label> 
+			<input type="radio" id="radio41" name="radio" /><label for="radio41">Social</label> 
 			<input type="radio" id="radio42" name="radio" /><label for="radio42">Map</label> 
-			<input type="radio" id="radio43" name="radio" /><label for="radio43">Create</label> 
+			<input type="radio" id="radio43" name="radio" checked="checked" /><label for="radio43">Create</label> 
 		</div>
 </div>
 
@@ -136,6 +139,28 @@
 
 
 <!-- Load the training viewer -->
+<div id="Social" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
+
+    <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
+        Notifications
+        <div id="notificationList" style="height: 250px;" >  
+            No notifications
+        </div>
+        
+        Your Cells
+        <div id="cellList" style="height: 200px;"> 
+            No Cells
+        </div>
+        
+    </div>
+
+    <div id="socialList" style="float: right; width:160px; font-size: 15px;">  
+        Your friends<div id="friendList" style=""> </div>
+
+    </div>
+
+</div>
+
 <div id="View" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 
 <div id="viewLayout" style="width: 500px; float: top;">

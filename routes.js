@@ -94,20 +94,27 @@ module.exports = function(app) {
     //Adds a notification to the users queu
     app.get("/notification/:userId/:type/:target", function(req, res){
         
-        if(req.params.type === "joinMasterCell"){
-            mongooseLogic.saveFriendshipRequestToQueu(req.params.userId, 
-                req.params.target, function(mongooseRes){
-                    if(mongooseRes === "Success"){
-                        res.json({ success: true, message:'Request sent to join cell.'});
-                    }
-                    else{   
-                        res.json({ success: false, message:mongooseRes});
-                    }
+        if(isAllowed(req, req.params.userId)){ //make sure user submitting request is the user
+             mongooseLogic.isUserAFriend(req.params.userId, req.params.target, function(bool){ //If user is a friend request ignored
+                //console.log(bool);
+                if(req.params.type === "joinMasterCell" && !bool){
+                    mongooseLogic.saveFriendshipRequestToQueu(req.params.userId, 
+                        req.params.target, getLogedName(req), function(mongooseRes){
+                        if(mongooseRes === "Success"){
+                            res.json({ success: true, message:'Request sent to join Friends list.'});
+                        }
+                        else{   
+                            res.json({ success: false, message:mongooseRes});
+                        }
+                    });    
+                }
+                else{
+                    res.json({ success: false, message:'Invalid parameter sent'});
+                }
             });
-                
         }
         else{
-            res.json({ success: false, message:'Invalid parameter sent'});
+           res.json({ success: false, message:'Invalid authorization'}); 
         }
    
     });
@@ -134,6 +141,7 @@ module.exports = function(app) {
    
     });
     
+    //Send a response to either cappeting or denying someone in your cell
     app.get("/notification/joinMasterCell/:userId/:requester/:action", function(req,res){
         
         if(isAllowed(req, req.params.userId) && (req.params.action === "accept" 
@@ -151,7 +159,7 @@ module.exports = function(app) {
                 });
             }
             else if(req.params.action === "decline"){
-                mongooseLogic.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
+                mongooseLogic.declinePendingFriendship(req.params.userId, req.params.requester, function(mes){
                     if(mes === "Success"){
                         res.json({ success: true, message: "Declined users frienship"});
                     }
@@ -173,6 +181,50 @@ module.exports = function(app) {
         
     });
     
+    //Returns the users friend list, an array with their Facebook Ids
+    app.get("/cell/friends/:userId", function(req,res){
+        
+        
+        mongooseLogic.getFriendList(req.params.userId, function(mes){
+            if(mes === "Error"){
+                res.json({ success: false, message:'Failed to find List.'});  
+            }
+            else if(mes === "Empty"){
+                res.json({ success: true, message:'You have no friend in your cell'});
+            }
+            else{
+                res.json({ success: true, message: mes}); 
+            }
+        });
+         
+     });
+     
+    app.get("/user/snippet/:userId", function(req,res){
+        mongooseLogic.getProfileSnippet(req.params.userId, function(mes){
+            if(mes === "Error"){
+                //res.json({ success: false, message:'Failed to find profile.'}); 
+                res.send("You can not see this information");
+            }
+            else{
+                //res.json({ success: true, message: mes}); 
+                res.send(mes); 
+            }   
+        });
+  
+    });
+    
+    app.get("/user/isFriend/:userId/:target", function(req,res){
+         //console.log("got request");
+         mongooseLogic.isUserAFriend(req.params.userId, req.params.target, function(bool){
+            if(bool){
+                res.json({ success: true, message:'You are friends'});   
+            }
+            else{
+                res.json({ success: false, message:'You are  not friends'});
+            }  
+         });
+ 
+    });
     
     //----DELETION OF DATA -----------
     
@@ -366,6 +418,11 @@ module.exports = function(app) {
     });
 }
 
+var getLogedName = function(req){
+    
+    return req.session.auth.facebook.user.name;
+
+}
 
 //Security measures implemented here
 
@@ -379,6 +436,7 @@ var isAllowed = function(request, urlId){
     }
         
 }
+
 
 function is_int(value){ 
   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){

@@ -88,12 +88,30 @@ var renderSearchHtml = function(arrayResult, callback){
        for(i = 0; i < arrayResult.length; i++){
           var pictureTag = '<fb:profile-pic uid="' + arrayResult[i].fbid + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
           var name  = "<div style='font-size: 12px; float:left;'><div style='font-weight:bold'>" + arrayResult[i].firstName + " " + arrayResult[i].lastName + "</div><div>" + arrayResult[i].location + "</div>";
-          var add = "<div id='addToCell' style='float: right; cursor:pointer'> Add to your cell</div>";
+          var add = "<div id='addToCell" + arrayResult[i].fbid + "' style='float: right; cursor:pointer'> Add to your cell</div>";
           overallHtml = overallHtml + '<tr><td>' + pictureTag + '</td><td valign="middle">' + '</td><td valign="middle">' + name + '</td><td valign="middle"  width="99%">' + add + '</td></tr>';
        }
        document.getElementById('searchDialog').innerHTML = overallHtml + '</table><br><br><span style="font-size: 15px;">Other users near you:</span>  <br> No one in your location';
        FB.XFBML.parse(document.getElementById('searchDialog'));
-       callback();
+       
+       //add click handlers to each add user
+       for(i = 0; i < arrayResult.length; i++){
+        
+            $('#addToCell' + arrayResult[i].fbid).live('click', function(){
+                var theUrl = "/notification/" + authId + "/joinMasterCell/" +  arrayResult[i].fbid;
+                $.getJSON(theUrl, function(data) {
+                    if(data.success){
+                        $('#searchDialog').dialog('close');
+                        Notifier.success(data.message);
+                    }
+                    else{
+                        //something wrong
+                        $('#searchDialog').dialog('close');
+                        Notifier.success(data.message);
+                    }   
+                }); 
+            });
+       }
     }  
 }
     

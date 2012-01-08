@@ -510,10 +510,10 @@ $(document).ready(function(){
 		//rather complex, watch out for any modifications
 		$("#radio4").click(function(event) { 
 			var target = $(event.target);
-			if (target.text() == 'View'){
+			if (target.text() == 'Social'){
 				//this if statement blocks reloading of widget if already selected
-				if(panelState !== 'View'){
-
+				if(panelState !== 'Social'){
+                    intiSocialView(true, true, true);
 					// Change calendar size
 					$("#fullcalendar").animate({ 
 						height: "500px", 
@@ -526,8 +526,10 @@ $(document).ready(function(){
 					//Transit between user panel functionality 
 					$("#" + panelState).hide("slide", {}, 1000, function(){
 
-						$("#View").show("slide", {}, 1000);
-						panelState = 'View';
+						$("#Social").show("slide", {}, 1000);
+						panelState = 'Social';
+                        //Load users social view
+
 					});	
 				}
 			}

@@ -1,35 +1,35 @@
 {
-"workout":
-    {"sport":"Run",
-    "type":"intervall",
-    "intervalls":[{"distance":"null","time":"78","intensity":"52"},{"distance":"78","time":"null","intensity":"52"},{"distance":"null","time":"78","intensity":"52"}],
-    "description":"none",
-    "cell":[],
-    "parcour":"4390093547",
-    "results":"not entered"},
-"event":
-    {"title":"Run",
-    "allDay":false,
-    "start":"2011-10-04T12:00:00.000Z",
-    "end":"2011-10-04T13:00:00.000Z",
-    "url":"ServerSideCreated",
-    "color":"#CC9966"}
+fbid     :    588395069,  
+firstName:	"Kevin",
+lastName :	"Gélinas",
+location :	"Valcartier, Québec"
+}
+
+
+{
+fbid     :	711270239,  
+firstName:	"Guillaume",
+lastName :	"Hébert",
+location :	"Valcartier, Québec"
+}
+
+
+{
+fbid     :	674970719,  
+firstName:	"Mathieu",
+lastName :	"Corneau",
 }
 
 {
-"workout":
-    {"sport":"Swim",
-    "type":"distance",
-    "distance":{"targetType":" km","value":"78","intensity":"0"},
-    "description":"none",
-    "cell":[],
-    "parcour":"4390093547",
-    "results":"not entered"},
-"event":{
-    "title":"Swim",
-    "allDay":false,
-    "start":"2011-10-12T13:00:00.000Z",
-    "end":"2011-10-12T12:00:00.000Z",
-    "url":"ServerSideCreated",
-    "color":"#99CCFF"}
+fbid     :	799105141,  
+firstName:	"Nicolas",
+lastName :	"Ouellet",
+location :	"Kingston, Ontario"
+}
+
+{
+fbid     :	792800156,  
+firstName:	"Michel",
+lastName :	"Ouellet",
+location :	"Ottawa, Ontario"
 }
