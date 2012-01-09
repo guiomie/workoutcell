@@ -159,10 +159,38 @@ var createFriendRequestElement = function(object){
 
 var createCellListElement = function(object){
     
-    var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; cursor: pointer; padding:5px 10px; margin-right: 5px; background-color:#e2f1d5; font-size: 15px;' id='cell" +
-    object.cellDetails + "'>" + object.name + "</div>";
+    var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; cursor: pointer; padding:5px 10px; margin-right: 5px; background-color:#C7E5AE; font-size: 15px;' id='cell" +
+    object.cellDetails + "' owner='" + object.owner  + "'>" + object.name + "</div>";
     
     return html;
+    
+}
+
+
+/////!!!!-------CELL VIEIWING CODE ---------- !!!!!!! 
+
+
+var initCellView = function(cellId, owner){
+    
+    $.getJSON('/cell/details/' + cellId, function(data) {
+        if(data.success){
+            fillCellView(data.message, owner);   
+        }
+        else{
+            //something wrong
+            Notifier.success(data.message);
+        }   
+    }); 
+    
+}
+
+var fillCellView = function(object, owner){
+   
+    document.getElementById('cellTitle').innerHTML = object.name;
+    document.getElementById('cellLocation').innerHTML = object.location;
+    document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner + "'>" + owner + "</span>";
+    document.getElementById('cellInfo').innerHTML = object.description;
+    
     
 }
 

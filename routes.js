@@ -215,6 +215,7 @@ module.exports = function(app) {
         });       
     });
      
+    //Sends response as a string/html
     app.get("/user/snippet/:userId", function(req,res){
         mongooseLogic.getProfileSnippet(req.params.userId, function(mes){
             if(mes === "Error"){
@@ -240,6 +241,21 @@ module.exports = function(app) {
             }  
          });
  
+    });
+    
+    //Stakes a objectid and returns workout for it
+    app.get("/cell/details/:cellId", function(req, res){
+     
+        mongooseLogic.getCellDetails(req.params.cellId, function(mes){
+            if(mes === "Error"){
+                res.json({ success: false, message: "An error happened in the request."});
+            }
+            else{
+                res.json({ success: true, message: mes});
+            }
+            
+        });
+   
     });
     
     //----DELETION OF DATA -----------
@@ -481,4 +497,16 @@ function is_int(value){
   } else { 
       return false;
   } 
+}
+
+//Taken from http://joncom.be/code/realtypeof/
+function RealTypeOf(v) {
+  if (typeof(v) == "object") {
+    if (v === null) return "null";
+    if (v.constructor == (new Array).constructor) return "array";
+    if (v.constructor == (new Date).constructor) return "date";
+    if (v.constructor == (new RegExp).constructor) return "regex";
+    return "object";
+  }
+  return typeof(v);
 }

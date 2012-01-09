@@ -660,6 +660,17 @@ $(document).ready(function(){
 				panelState = 'Create';
 			});   
         }
+        
+        
+        function UILoadNewState(newState){
+
+			//Transit between user panel functionality
+			$("#" + panelState).hide("slide", {}, 1000, function(){
+
+				$("#" + newState).show("slide", {}, 1000);
+				panelState = newState;
+			});   
+        }
 
 
 		//Simple function to an object that you can put in the calendar
@@ -959,6 +970,14 @@ $(document).ready(function(){
         
         $('#createCell').click(function(){
             $('#createCellDialog').dialog('open');  
+            
+        });
+        
+        $('.cellCard').live('click',function(){
+           var id = $(this).attr('refId');
+           var owner = $(this).attr('owner');
+           initCellView(id, owner);
+           UILoadNewState('cellView');
             
         });
 

@@ -747,12 +747,29 @@ var getUsersCells = function(userId, callback){
             else{
                 callback(result.cells);    
             }
-        }
-            
+        }      
     });
-    
-    
 }
+
+var getCellDetails = function(cellId, callback){
+    
+    if(cellId.toString().length !== 24 ){
+       console.log("not 24 char");
+       callback("Error");
+    }
+    else{
+        CellDetails.findOne({ _id: cellId }, function(err, result){
+            if(err || result === null){
+                console.log(err);
+                callback("Error");
+            }
+            else{
+                callback(result);
+            }
+        });
+    }
+}
+
 /// Random functions
 
 //Validates numbers
@@ -830,6 +847,7 @@ exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 
+exports.getCellDetails = getCellDetails;
 exports.createCell = createCell;
 exports.getUsersCells = getUsersCells;
 exports.isUserAFriend = isUserAFriend;
