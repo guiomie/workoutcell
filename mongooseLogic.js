@@ -468,7 +468,7 @@ var saveFriendshipRequestToQueu = function(requester, requestee, requesterName, 
    
     var pendingNotification = {
         type      : "joinMasterCell", //joinMasterCell, workoutCell 
-        message   : requesterName + " would like to be in your cell", //Name of person
+        message   : requesterName + " wants to be friend.", //Name of person
         refId     : requester,
         date      : new Date()
     }
@@ -570,8 +570,23 @@ var acceptPendingFriendship = function(userId, requesterId, callback){
                                             callback("Error in saving request(2). Stack Trace: " + err); 
                                         }
                                         else{
-                                            callback("Success");
-                                            
+                                            GeneralReference.findOne({ id: requesterId}, function(err, result){
+                                                if(err || result === null){
+                                                    callback("Error in saving request(3). Stack Trace: " + err);  
+                                                }
+                                                else{
+                                                    result.friends.push(parseInt(userId));    
+                                                    result.save(function (err){
+                                                        if (err) { 
+                                                            callback("Error in saving request(2). Stack Trace: " + err); 
+                                                        }
+                                                        else{
+                                                            callback("Success");    
+                                                        
+                                                        }
+                                                    });
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -592,20 +607,26 @@ var declinePendingFriendship = function(userId, requesterId, callback){
         }
         else{
             var deletedRefId = 'unchanged';
+            var cbResponse = "Couldnt find user pending notifications";
+            var inIf = false;
             for(i = 0; i < result.pending.length; i++){
                if( result.pending[i].refId === requesterId){
+                    inIf = true;
                     deletedRefId = result.pending.splice(i, 1);
                     result.save(function (err) {
                         if (err) { 
-                            callback("Error in saving request(1). Stack Trace: " + err); 
+                            callback("Error in saving request(1). Stack Trace: " + err);
                         }
                         else{
                             callback("Success");
                         }
                     });
+                    break;
                }
             }
-            callback("Couldnt find user pending notifications");
+            if(!inIf){
+                callback(cbResponse);
+            }
         }
     });  
 }
@@ -667,7 +688,71 @@ var searchByFullName = function(first, last, callback){
     
 }
 
+var createCell = function(creatorId, cellObject, userName, callback){
+ 
 
+    var newCellDetails = new CellDetails({
+        name         : cellObject.name,
+	    location     : cellObject.location,
+	    owner        : parseInt(creatorId), 
+	    members      : [parseInt(creatorId)],
+	    description  : cellObject.description, 
+    });
+    
+    newCellDetails.save(function(err, result){
+        if(err){
+            callback("Error in saving cell: Stack: " + err);        
+        }
+        else{
+        
+            var newCellRef = new CellReference({
+                name        : cellObject.name,
+                location    : cellObject.location,
+                owner       : userName, //creators id
+	            cellDetails : result._id
+            });
+            
+            GeneralReference.findOne({ id: creatorId}, function(err, result){
+                if(err || result === null){
+                    callback("Error in finding Users Ref. Stack: " + err);
+                }
+                else{  
+                    result.cells.push(newCellRef);
+                    result.save(function(err, result){
+                        if(err){
+                            callback("Error in saving cellRef: Stack: " + err);        
+                        }
+                        else{
+                            callback("Success");       
+                        }
+                
+                    });
+                }
+            
+            });
+        }    
+    });
+}
+//Returns an array with all athletes Cell References
+var getUsersCells = function(userId, callback){
+    
+    GeneralReference.findOne({ id: userId}, function(err, result){
+        if(err || result === null){
+            callback("Error");
+        }
+        else{
+            if(result.cells.length === 0){
+                callback("Empty");    
+            }
+            else{
+                callback(result.cells);    
+            }
+        }
+            
+    });
+    
+    
+}
 /// Random functions
 
 //Validates numbers
@@ -676,14 +761,15 @@ function isNumber(n) {
 }
 
 var checkIfpending = function(requester, array, callback){
-     
+    var callbackResult =  "isNotPending";
     for(i = 0; i < array.length;i++){
         if(array[i].type === "joinMasterCell" && array[i].refId === requester){
-            callback("isPending");  
+            callbackResult = "isPending";
+            break;
         }
                 
     }
-    callback("isNotPending");
+    callback(callbackResult);
 }
 
 
@@ -713,6 +799,23 @@ var isUserAFriend = function(userId, target, callback){
     }); 
         
 }
+/*
+var getCellStats = function(objectId){
+    
+    CellDetails.findOne({ _id: objectId }, function(err, result){
+        if(err || result === null){
+            callback("Error");
+        }
+        else{
+            var stat = {
+                memberSize   : result.members.length,
+                calendarSize : result.activities.length
+            }
+            callback(stat);
+        }
+    });
+    
+}*/
 
 //*****************Exports*****************************************
 exports.saveParcour = saveParcour;
@@ -727,6 +830,8 @@ exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 
+exports.createCell = createCell;
+exports.getUsersCells = getUsersCells;
 exports.isUserAFriend = isUserAFriend;
 exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;

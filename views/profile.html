@@ -65,7 +65,8 @@ Content
  ----------------------------- POST Testing Area ---------------------------<br>
 Post a map with coordinates: /parcour/100000268779394/map1/5 <br>
 Post workout:    /workout/:userId  |  ex: /workout/100000268779394  <br>
-Post result:  "/result/:userId/:workoutId  | ex: /result/100000268779394/4edbdc71b579ae691500005d <br>
+Post result:  /result/:userId/:workoutId  | ex: /result/100000268779394/4edbdc71b579ae691500005d <br>
+Post a cell:  /cell/create/:userId  | ex: /cell/create/100000268779394   <br>
 <form action="/" id="requestForm">
 
 httpPost url: <input type="text" name="url" placeholder="" /> <br>
@@ -135,6 +136,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
 /cell/friends/:userId/  | ex:  /cell/friends/100000268779394     <br>
 /user/snippet/:userId   | ex:  /user/snippet/100003279348506     <br>
 /user/isFriend/:userId/:target  | ex: /user/isFriend/100000268779394/588395069 <br>
+/cell/all/:userId    |  ex: /cell/all/100000268779394  <br>
 
 httpGet url: <input type="text" id="getUrl" placeholder="" /> <br>
 

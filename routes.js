@@ -114,7 +114,7 @@ module.exports = function(app) {
             });
         }
         else{
-           res.json({ success: false, message:'Invalid authorization'}); 
+           res.json({ success: false, message:'Already friends, or invalid authorization'}); 
         }
    
     });
@@ -198,6 +198,22 @@ module.exports = function(app) {
         });
          
      });
+     
+    //returns all of a users cells
+    app.get("/cell/all/:userId", function(req,res){
+       
+       mongooseLogic.getUsersCells(req.params.userId, function(mes){
+            if(mes === "Error"){
+                res.json({ success: false, message:'Failed to find Users Cells.'});  
+            }
+            else if(mes === "Empty"){
+                res.json({ success: true, message:'You are not part of any cells.'});
+            }
+            else{
+                res.json({ success: true, message: mes}); 
+            }
+        });       
+    });
      
     app.get("/user/snippet/:userId", function(req,res){
         mongooseLogic.getProfileSnippet(req.params.userId, function(mes){
@@ -328,6 +344,27 @@ module.exports = function(app) {
             res.json({ success: false,  message: 'Failed, Invalid object sent to server'});   
         }
            
+    });
+    
+    //Creates a cell with his reference
+    app.post("/cell/create/:userId", function(req, res){
+        
+        var receivedJSON = req.body
+        
+        if(isAllowed(req, req.params.userId) && typeof(receivedJSON.type) !== undefined){
+            mongooseLogic.createCell(req.params.userId, receivedJSON, getLogedName(req), function(mes){
+                if(mes === "Success"){
+                    res.json({ success: true,  message: 'Result saved.'});    
+                }
+                else{
+                    res.json({ success: false,  message: 'Error in saving Cell. Trace: ' + mes});
+                }
+            });
+        }
+        else{
+            res.json({ success: false,  message: 'Failed, Invalid object sent to server'});     
+        }
+        
     });
     
     

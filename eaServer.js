@@ -25,11 +25,14 @@ Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
 CalendarMonth = mongooseDb.CalendarMonth;
 CalendarEvent = mongooseDb.CalendarEvent;
-//DistanceUnit = mongooseDb.DistanceUnit;
+
 CardioWorkout = mongooseDb.CardioWorkout;
 BasicCell = mongooseDb.BasicCell;
 IntervallUnit = mongooseDb.IntervallUnit;
 SingleIntervallResult = mongooseDb.SingleIntervallResult;
+
+CellReference = mongooseDb.CellReference; 
+CellDetails = mongooseDb.CellDetails; 
 
 everyauth.helpExpress(app);
 

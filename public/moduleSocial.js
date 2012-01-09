@@ -22,6 +22,17 @@ var intiSocialView = function(friendList, notificationList, cellTree){
             }   
         });  
     }
+    if(cellTree){
+        $.getJSON(getAllCell, function(data) {
+            if(data.success){
+                renderCellList(data.message);   
+            }
+            else{
+                //something wrong
+                Notifier.success(data.message);
+            }   
+        });   
+    }
 
 }
 
@@ -45,8 +56,8 @@ var renderNotifications = function(arrayNotification){
 
 var renderFriendList = function(arrayResult){
      
-    if(arrayResult === []){
-        callback();      
+    if(RealTypeOf(arrayResult) !== "array"){
+        document.getElementById('friendList').innerHTML = arrayResult;     
     }
     else{
        var overallHtml = "";
@@ -77,6 +88,35 @@ var renderFriendList = function(arrayResult){
        FB.XFBML.parse(document.getElementById('friendList'));
 
     }  
+}
+
+var renderCellList = function(arrayResult){
+
+    if(RealTypeOf(arrayResult) !== "array"){
+        document.getElementById('friendList').innerHTML = arrayResult;     
+    }
+    else{
+        var overallHtml = "";
+        for(i = 0; i < arrayResult.length; i++){
+            overallHtml = overallHtml + createCellListElement(arrayResult[i]);
+        }
+        document.getElementById('cellList').innerHTML = overallHtml;
+        
+        for(i = 0; i < arrayResult.length; i++){
+            
+            $("#cell" + arrayResult[i].cellDetails).qtip({
+                content: {
+                    text: "Created by " + arrayResult[i].owner + "<br> Located in " + arrayResult[i].location
+                },
+                style: {
+                    widget: true 
+                }
+            }); 
+            
+            $("#cell" + arrayResult[i].cellDetails).corner("5px");
+        }
+        
+    }    
 }
 
 var createFriendRequestElement = function(object){
@@ -115,6 +155,27 @@ var createFriendRequestElement = function(object){
     });
 
  
+}
+
+var createCellListElement = function(object){
+    
+    var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; cursor: pointer; padding:5px 10px; margin-right: 5px; background-color:#e2f1d5; font-size: 15px;' id='cell" +
+    object.cellDetails + "'>" + object.name + "</div>";
+    
+    return html;
+    
+}
+
+//Taken from http://joncom.be/code/realtypeof/
+function RealTypeOf(v) {
+  if (typeof(v) == "object") {
+    if (v === null) return "null";
+    if (v.constructor == (new Array).constructor) return "array";
+    if (v.constructor == (new Date).constructor) return "date";
+    if (v.constructor == (new RegExp).constructor) return "regex";
+    return "object";
+  }
+  return typeof(v);
 }
 
 

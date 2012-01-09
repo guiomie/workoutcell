@@ -47,6 +47,7 @@ $('#searchIconButton').live('click', function(){
                     //callback('Sending: ' + data);
                     if(data.success){
                         //Notifier.success();
+                        //$('#searchDialog').dialog('open');
                         renderSearchHtml(data.message, function(){
                             
                             $('#searchDialog').dialog('open');
@@ -66,7 +67,7 @@ $('#searchIconButton').live('click', function(){
                      
                 },
             });
-    } //singe name search
+    } //single name search
     else if(arrayOfName.length === 1){
         
         
@@ -96,9 +97,9 @@ var renderSearchHtml = function(arrayResult, callback){
        
        //add click handlers to each add user
        for(i = 0; i < arrayResult.length; i++){
-        
+            var theUrl = "/notification/" + authId + "/joinMasterCell/" +  arrayResult[i].fbid;
             $('#addToCell' + arrayResult[i].fbid).live('click', function(){
-                var theUrl = "/notification/" + authId + "/joinMasterCell/" +  arrayResult[i].fbid;
+                
                 $.getJSON(theUrl, function(data) {
                     if(data.success){
                         $('#searchDialog').dialog('close');
@@ -112,6 +113,7 @@ var renderSearchHtml = function(arrayResult, callback){
                 }); 
             });
        }
+       callback();
     }  
 }
     

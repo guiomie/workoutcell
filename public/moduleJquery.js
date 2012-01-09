@@ -150,6 +150,34 @@ $(document).ready(function(){
 			$('#dialog').dialog('open');
 			return false;
 		});
+        
+        autoOpen: false,
+    
+        
+        $('#createCellDialog').dialog({
+    		autoOpen: false,
+			width  : 400,
+            height : 400,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            position: {
+                my: "center",
+                at: "center",
+                of: window
+            },
+			buttons: {
+				"Ok": function() { 
+					postJson(JSON.stringify(grabNewCellInput()), postCell, function(){
+                        intiSocialView(false, false, true);
+                    });
+                    $(this).dialog("close"); 
+				}, 
+				"Cancel": function() { 
+					$(this).dialog("close"); 
+				} 
+			}
+		});
 
 
 		$( "#sliderIntensity" ).slider({
@@ -900,6 +928,16 @@ $(document).ready(function(){
             }
         });
         
+        var grabNewCellInput = function(){
+            
+            var object = {
+                name         : $("input[type=text][id=cellName]").val(),
+                location     : $("#cellLocationSelect").val(),
+	            description  : $("#cellDescription").val(),      
+            }
+            return object;
+            
+        }
         
         var loadDynamicQtip = function(a, descTable){
             for(i = 0; i <= a; i++){  
@@ -919,6 +957,10 @@ $(document).ready(function(){
             }
         }
         
+        $('#createCell').click(function(){
+            $('#createCellDialog').dialog('open');  
+            
+        });
 
         initHeaderBar();
        

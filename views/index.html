@@ -137,17 +137,29 @@
  No indent or wouldnt be readable-->
 <div id='leftPane' style="width:210px; float:left; margin-left: 16px; position: relative;"> 
 
+<div id="createCellDialog"> 
+    Name <br>
+    <input type="text" id="cellName" size="15" /> <br>
+    Location<br>
+    <select title="Select Cell Location" id="cellLocationSelect" style='width: 120px;'>
+        <option value="Ottawa, Ontario">Ottawa, Ontario</option>	
+        <option value="Gatineau, Québec">Gatineau, Québec</option>
+	</select><br>
+    Description <br>
+    <textarea rows='15' cols='40' id='cellDescription'>Enter a description of the cell</textarea>
+
+</div>
 
 <!-- Load the training viewer -->
 <div id="Social" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 
     <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
-        Notifications
+        Notifications 
         <div id="notificationList" style="height: 250px;" >  
             No notifications
         </div>
         
-        Your Cells
+        Your Cells &nbsp;<span style="font-size: 10px; cursor: pointer;" id="createCell">(create a cell) </span>
         <div id="cellList" style="height: 200px;"> 
             No Cells
         </div>

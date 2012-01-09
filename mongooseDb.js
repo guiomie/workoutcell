@@ -48,7 +48,7 @@ var GeneralReference = new Schema({
     friends      : [Number],    //Array of fbids
     //coaches      : [PersonnaReference],  To be implemented in futur releases
     parcours     : [ParcourReference],
-    //cells        : [CellReference]
+    cells        : [CellReference]
         
 });
 
@@ -189,13 +189,37 @@ var NotificationsReference = new Schema({
 
 });
 
-/*
-var NotificationReference = new Schema({
-    
-   id         :String,  //Facebook id
-   members    :[ObjectId]
-    
-});*/
+//!!!!!!!!!!!!!!--------CELL SCHEMAS-----------!!!!!!!
+
+var CellReference = new Schema({
+
+    name        : String,
+	location    : String,
+	owner       : String, //creators name
+	cellDetails : ObjectId
+
+});
+
+var CellCalendarMonth = new Schema({
+ 
+    id          : Number, //String consisting of Year and Month ex:1211 = 2011 Dec
+    allEvents   : [String]//[CellCalendarEvent]
+   
+});
+
+var CellDetails = new Schema({
+    name         : String,
+	location     : String,
+	owner        : Number, 
+	members      : [Number],
+	description  : String, 
+	//notification : [Notification],
+	activities   : [CellCalendarMonth]
+
+});
+
+
+
 
 //Create models out of schema
 mongoose.model('User', User);
@@ -219,8 +243,11 @@ mongoose.model('CardioWorkout', CardioWorkout);
 mongoose.model('BasicCell', BasicCell);
 mongoose.model('IntervallUnit',IntervallUnit);
 mongoose.model('SingleIntervallResult', SingleIntervallResult);
-//Export models
 
+mongoose.model('CellReference', CellReference);
+mongoose.model('CellDetails', CellDetails);
+
+//Export models
 var User = exports.User = mongoose.model('User');
 var GeneralReference = exports.GeneralReference = mongoose.model('GeneralReference');
 var Permission = exports.Permission = mongoose.model('Permission');
@@ -242,3 +269,6 @@ var CardioWorkout = exports.CardioWorkout = mongoose.model('CardioWorkout');
 var BasicCell = exports.BasicCell = mongoose.model('BasicCell');
 var IntervallUnit = exports.IntervallUnit = mongoose.model('IntervallUnit');
 var SingleIntervallResult = exports.SingleIntervallResult = mongoose.model('SingleIntervallResult');
+
+var CellReference = exports.CellReference = mongoose.model('CellReference');
+var CellDetails = exports.CellDetails = mongoose.model('CellDetails');

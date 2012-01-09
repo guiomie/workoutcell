@@ -2,3 +2,4 @@
 -Implement Authentication to REST commands.
 -Little bug in result only dispaying completion status, not actual time#distance
 -No more friedns, only cells!
+-Check for duplicates in posts request

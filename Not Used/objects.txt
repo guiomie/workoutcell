@@ -33,3 +33,20 @@ firstName:	"Michel",
 lastName :	"Ouellet",
 location :	"Ottawa, Ontario"
 }
+
+
+
+pending    
+[
+0	
+{
+type:	"joinMasterCell"
+message:	"Margaret Amcbgfbbghhc Alisonman would like to be in your cell"
+refId:	"100003276227883"
+date	2012-01-08 17:37:52 UTC
+_id	
+{
+$oid	"4f09d4702876976058000047"
+}
+}
+]

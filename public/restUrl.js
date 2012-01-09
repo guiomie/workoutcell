@@ -14,6 +14,8 @@ var deleteWorkout = "/workout/delete/" + authId;  //followed by /:year/:month/:w
 var searchFullName = "/search/fullname";  //:first/:last
 var getFriendCell = '/cell/friends/' + authId;
 var getNotfication = '/notification/queu/' + authId + '/0/10';
+var postCell = '/cell/create/' + authId;
+var getAllCell = '/cell/all/' + authId;
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -27,4 +29,6 @@ var initGlobalVar = function(){
     searchFullName = "/search/fullname";
     getFriendCell = '/cell/friends/' + authId;
     getNotfication = '/notification/queu/' + authId + '/0/10';
+    postCell = '/cell/create/' + authId;
+    getAllCell = '/cell/all/' + authId;
 }
