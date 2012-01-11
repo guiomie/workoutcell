@@ -173,23 +173,59 @@
 
 </div>
 
+<!-- viewing someones profile -->
+<div id="profileView" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
+
+    <div id="usersProfile" style="float: left; width:350px; height: 450px; font-size: 15px;"> 
+        
+        <div style="height: 150px;">
+        <div id="usersFbPic" style="float: left;"></div>
+        
+        <div id="profileCard" style="float: left;" >
+            <div id="usersInfo">
+                <div id="profileUserName">  </div>
+                <div id="profileUserLocation">  </div>
+                <div id="joindate">  </div>
+            </div>
+        </div>
+        </div>
+        
+        <div>Cells</div>
+        <div id="cellProfileList" style="height: 200px; padding-top: 10px;"> 
+            No Cells
+        </div>
+        
+    </div>
+
+    <div id="socialList" style="float: right; width:160px; font-size: 15px;">  
+        Friends<div id="friendProfileList" style=""> </div>
+
+    </div>
+
+</div>
+
+
+
 <div id="cellView" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 
     <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
         
-        <span id="cellTitle">   </span><br>
-        <span id="cellLocation"> </span><br>
-        Created by: <span id="cellCreator"> </span><br>
-        <span id="cellInfo"> </span><br>
+        <div id="toggleCell" style="float: right; cursor: pointer;"> <span id="cellToggleName" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px 5px; margin-right: 10px;"> Join Cell</span> </div>
+        
+        <span id="cellTitle" style="font-family: impact; font-size: 20px;">   </span><br>
+         Created by: <span id="cellCreator"> </span><br>
+        <span id="cellLocation" style="font-size: 12px;"> </span><br>
+        <span id="cellInfo" style="font-size: 12px; "> </span><br><br>
         
         Recent Activities 
-        <div id="notificationCellList" style="height: 350px;" >  
+        <div id="notificationCellList" style="height: 300px; font-size: 12px;" >  
             No notifications
         </div>
         
-        Comments<br>
-        <div id="cellComments" style="height: 200px; padding-top: 10px;"> 
-            No Comments
+        Enter comment:<br>
+        <div id="cellComments" style="height: 100px; padding-top: 10px;"> 
+            <textarea rows='4' cols='40' id='cellCommentInput' style="resize: none;">Post a comment</textarea>
+            <input type="submit" id="submitCellComment" />
         </div>
         
     </div>

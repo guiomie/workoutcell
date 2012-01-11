@@ -62,12 +62,12 @@ var renderFriendList = function(arrayResult){
     else{
        var overallHtml = "";
        for(i = 0; i < arrayResult.length; i++){
-          var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          var pictureTag = '<span id="friendPic' + arrayResult[i] + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
           overallHtml = overallHtml + pictureTag + '</span>';
        }
        document.getElementById('friendList').innerHTML = overallHtml;
        for(i = 0; i < arrayResult.length; i++){
-           $("#friendPic" + i).qtip({
+           $("#friendPic" + arrayResult[i]).qtip({
                 content: {
                     text: 'Loading data...',
                     ajax: {
@@ -159,7 +159,7 @@ var createFriendRequestElement = function(object){
 
 var createCellListElement = function(object){
     
-    var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; cursor: pointer; padding:5px 10px; margin-right: 5px; background-color:#C7E5AE; font-size: 15px;' id='cell" +
+    var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; margin-bottom: 3px; cursor: pointer; padding:3px 6px; margin-right: 5px; background-color:#C7E5AE; font-size: 12px;' id='cell" +
     object.cellDetails + "' owner='" + object.owner  + "'>" + object.name + "</div>";
     
     return html;
@@ -191,7 +191,172 @@ var fillCellView = function(object, owner){
     document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner + "'>" + owner + "</span>";
     document.getElementById('cellInfo').innerHTML = object.description;
     
+    renderCellMemberList(object.members);
     
+}
+
+//Renders the list of users for a cell, and the button to quit or join the cell
+var renderCellMemberList = function(arrayResult){
+     
+    if(RealTypeOf(arrayResult) !== "array"){
+        document.getElementById('cellMemberList').innerHTML = arrayResult;     
+    }
+    else{
+       var overallHtml = "";
+       for(i = 0; i < arrayResult.length; i++){
+          if(arrayResult[i].toString() == authId){
+              document.getElementById('cellToggleName').innerHTML = 'Quit cell';
+          }
+          var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          overallHtml = overallHtml + pictureTag + '</span>';
+       }
+       document.getElementById('cellMemberList').innerHTML = overallHtml;
+       for(i = 0; i < arrayResult.length; i++){
+           $("#friendPic" + i).qtip({
+                content: {
+                    text: 'Loading data...',
+                    ajax: {
+                        url: "/user/snippet/" + arrayResult[i]
+                    }
+                },
+                show: {
+                    event: 'click', 
+                    ready: false 
+                },
+                hide: 'click',
+                style: {
+                    widget: true 
+                }
+            });   
+       }
+       
+       FB.XFBML.parse(document.getElementById('cellMemberList'));
+
+    }  
+}
+
+
+var initUsersProfile = function(targetId){
+    
+    $.getJSON("/user/profile/" + targetId, function(data) {
+        if(data.success){
+            renderProfileView(data.message);   
+        }
+        else{
+            //something wrong
+            Notifier.success(data.message);
+        }   
+    });
+
+}
+
+var renderProfileView = function(object, userId){
+
+    
+    if(RealTypeOf(object.friends) !== "array" ){
+        document.getElementById('cellView').innerHTML = "You are not friends on workoutcell. <br> <div id='addToCellFromView" +
+            userId + "' style='cursor:pointer'> Add to your Workoutcell</div>";
+
+        $('#addToCellFromView' + userId).live('click', function(){
+            var theUrl = "/notification/" + authId + "/joinMasterCell/" +  userId;    
+            $.getJSON(theUrl, function(data) {
+                if(data.success){
+                    Notifier.success(data.message);
+                }
+                else{
+                    Notifier.success(data.message);
+                } 
+                intiSocialView(true, true, true);
+                UILoadNewState('Social');
+            }); 
+        });
+        
+    }
+    else{
+        document.getElementById('profileUserName').innerHTML = object.profile.firstName + " " + object.profile.lastName;
+        if(typeof object.profile.location != "undefined"){
+            document.getElementById('profileUserLocation').innerHTML =  object.profile.location;
+        }
+        var d = new Date(object.profile.joinDate);
+        
+        document.getElementById('joindate').innerHTML =  'Joined: ' + d.toLocaleDateString();
+    
+        var pictureTag = '<fb:profile-pic uid="' + userId + '" facebook-logo="false" linked="true" width="100" height="100" size="thumb" ></fb:profile-pic>'; 
+    
+        document.getElementById('usersFbPic').innerHTML =  pictureTag ;
+        FB.XFBML.parse(document.getElementById('usersFbPic'));
+        FB.XFBML.parse(document.getElementById('profileUserName'));
+        renderProfileCellList(object.cell);
+        renderProfileFriendList(object.friends);
+    }
+    
+}
+
+
+
+var renderProfileCellList = function(arrayResult){
+
+    if(RealTypeOf(arrayResult) !== "array"){
+        document.getElementById('cellProfileList').innerHTML = arrayResult;     
+    }
+    else{
+        var overallHtml = "";
+        for(i = 0; i < arrayResult.length; i++){
+            overallHtml = overallHtml + createCellListElement(arrayResult[i]);
+        }
+        document.getElementById('cellProfileList').innerHTML = overallHtml;
+        
+        for(i = 0; i < arrayResult.length; i++){
+            
+            $("#cell" + arrayResult[i].cellDetails).qtip({
+                content: {
+                    text: "Created by " + arrayResult[i].owner + "<br> Located in " + arrayResult[i].location
+                },
+                style: {
+                    widget: true 
+                }
+            }); 
+            
+            $("#cell" + arrayResult[i].cellDetails).corner("5px");
+        }
+        
+    }    
+}
+
+var renderProfileFriendList = function(arrayResult){
+     
+    if(RealTypeOf(arrayResult) !== "array"){
+        document.getElementById('friendProfileList').innerHTML = arrayResult;     
+    }
+    else{
+       var overallHtml = "";
+       for(i = 0; i < arrayResult.length; i++){
+          var pictureTag = '<span id="friendPic' + arrayResult[i] + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          overallHtml = overallHtml + pictureTag + '</span>';
+       }
+       document.getElementById('friendProfileList').innerHTML = overallHtml;
+       for(i = 0; i < arrayResult.length; i++){
+           $("#friendPic" + arrayResult[i]).qtip({
+                content: {
+                    text: 'Loading data...',
+                    ajax: {
+                        url: "/user/snippet/" + arrayResult[i]
+                    }
+                },
+                show: {
+                    event: 'click', 
+                    ready: false 
+                },
+                hide: 'click',
+                style: {
+                    widget: true 
+                }
+            });   
+       }
+       
+       FB.XFBML.parse(document.getElementById('friendProfileList'));
+
+    }  
 }
 
 //Taken from http://joncom.be/code/realtypeof/

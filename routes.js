@@ -214,6 +214,21 @@ module.exports = function(app) {
             }
         });       
     });
+    
+    //Stakes a objectid and returns workout for it
+    app.get("/cell/details/:cellId", function(req, res){
+     
+        mongooseLogic.getCellDetails(req.params.cellId, function(mes){
+            if(mes === "Error"){
+                res.json({ success: false, message: "An error happened in the request."});
+            }
+            else{
+                res.json({ success: true, message: mes});
+            }
+            
+        });
+   
+    });
      
     //Sends response as a string/html
     app.get("/user/snippet/:userId", function(req,res){
@@ -243,20 +258,40 @@ module.exports = function(app) {
  
     });
     
-    //Stakes a objectid and returns workout for it
-    app.get("/cell/details/:cellId", function(req, res){
-     
-        mongooseLogic.getCellDetails(req.params.cellId, function(mes){
-            if(mes === "Error"){
-                res.json({ success: false, message: "An error happened in the request."});
+    //Checks if user is a friends, if it is, sends request true with user profile
+    app.get("/user/profile/:target", function(req,res){
+         //console.log("got request");
+         mongooseLogic.isUserAFriend(getLogedId(req), req.params.target, function(bool){
+            if(bool){
+                 mongooseLogic.getFriendList(req.params.target, function(array){
+                    if(array === "Error"){
+                        res.json({ success: false, message:'Failed to find friends List.'});  
+                    }
+                    else{
+                        mongooseLogic.getUsersCells(req.params.target, function(cells){
+                            if(cells === "Error"){
+                                res.json({ success: false, message:'Failed to find Users Cells.'});  
+                            }
+                            else{
+                                mongooseLogic.getUserBasicInfo(req.params.target, function(profil){
+                                    if(profil === "Error"){
+                                        res.json({ success: false, message:'Failed to find Users Cells.'});  
+                                    }
+                                    else{
+                                        res.json({ success: true, message: {cell: cells, friends: array, profile: profil}}); 
+                                    }
+                                });
+                            }
+                        });       
+                    }   
+                });  
             }
             else{
-                res.json({ success: true, message: mes});
+                 res.json({ success: false, message:'You are  not friends.'}); 
             }
-            
-        });
-   
+         });
     });
+
     
     //----DELETION OF DATA -----------
     
@@ -475,6 +510,12 @@ var getLogedName = function(req){
     
     return req.session.auth.facebook.user.name;
 
+}
+
+var getLogedId = function(req){
+    
+    return req.session.auth.facebook.user.id;
+    
 }
 
 //Security measures implemented here

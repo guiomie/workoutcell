@@ -980,6 +980,15 @@ $(document).ready(function(){
            UILoadNewState('cellView');
             
         });
+        
+        //Button found on profile snippet, click on profile mini pic
+        $('.btn_viewProfile').live('click',function(){
+           var id = $(this).attr('userid');
+           initUsersProfile(id);
+           UILoadNewState('profileView');
+           $('#friendPic' + id).qtip("api").destroy();
+            
+        });
 
         initHeaderBar();
        

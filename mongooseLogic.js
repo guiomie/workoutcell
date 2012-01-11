@@ -649,6 +649,19 @@ var getFriendList = function(userId, callback){
     });        
 }
 
+var getUserBasicInfo = function(userId, callback){
+ 
+    User.findOne({ fbid: userId }, function(err, result){
+        if(err || result === null){
+            //console.log("For : " + userId + "  " + err + " : " + result);
+            callback("Error");
+        }
+        else{
+            callback(result);
+        }
+    }); 
+}
+
 var getProfileSnippet = function(userId, callback){
  
     User.findOne({ fbid: userId }, function(err, result){
@@ -754,7 +767,7 @@ var getUsersCells = function(userId, callback){
 var getCellDetails = function(cellId, callback){
     
     if(cellId.toString().length !== 24 ){
-       console.log("not 24 char");
+       //console.log("not 24 char");
        callback("Error");
     }
     else{
@@ -768,6 +781,55 @@ var getCellDetails = function(cellId, callback){
             }
         });
     }
+}
+
+
+var joinCell = function(cellId, userId, callback){
+    
+   if(cellId.toString().length !== 24 && isNumber(parseInt(userId)) ){
+       //console.log("not 24 char");
+       callback("Error, improper Id");
+    }
+    else{
+        CellDetails.findOne({ _id: cellId }, function(err, resultCellDetails){
+            if(err || resultCellDetails === null){
+                console.log(err);
+                callback("Error in finding Cell. Stack: " + err);
+            }
+            else{
+                resultCellDetails.members.push(userId);
+                resultCellDetails.save(function(err){
+                    if(err){
+                        callback("Error in saving cellRef: Stack: " + err);        
+                    }
+                    else{
+                        GeneralReference.findOne({ id: userId }, function(err, result){
+                            if(err || result === null){
+                                callback("Error in finding User. Stack: " + err);
+                            }
+                            else{
+                                var newCellRef = new CellReference({
+                                    name        : resultCellDetails.name,
+                                    location    : resultCellDetails.location,
+                                    owner       : resultCellDetails.owner, 
+                                    cellDetails : resultCellDetails._id
+                                });
+                                result.cells.push(newCellRef);
+                                result.save(function(err){
+                                    if(err){
+                                        callback("Error in saving cellRef: Stack: " + err);        
+                                    }
+                                    else{
+                                        callback("Success");
+                                    }
+                                }); 
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    } 
 }
 
 /// Random functions
@@ -847,6 +909,7 @@ exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 
+exports.getUserBasicInfo = getUserBasicInfo;
 exports.getCellDetails = getCellDetails;
 exports.createCell = createCell;
 exports.getUsersCells = getUsersCells;
