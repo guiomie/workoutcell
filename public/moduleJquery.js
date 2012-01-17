@@ -1,5 +1,5 @@
 $(document).ready(function(){
-        panelState = 'Create';
+        panelState = 'largeCalendar';
 		p = 0;
 		var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
         //Data for ajax intervall content
@@ -193,7 +193,7 @@ $(document).ready(function(){
 		});
 
 		$( "#sliderIntensity2" ).slider({
-			orientation: "vertical",
+			orientation: "horizontal",
 			range: "min",
             step: 5,
 			min: 0,
@@ -566,8 +566,8 @@ $(document).ready(function(){
 				if(panelState !== 'Create'){					
 					// Change calendar size
 					$("#fullcalendar").animate({ 
-						height: "600px", 
-						width: "800px", 
+						height: "500px", 
+						width: "500px", 
 					}, 1000, function(){
 						//resize calendar, seems to be a glitch
 						$('#fullcalendar').fullCalendar('render');
@@ -613,65 +613,36 @@ $(document).ready(function(){
 			*/
 		}); 
 
-
-
-		/* Definitions of custom made functions, location is here to ease rest of general code */
-
-		function UIreposition(event){
+        ///// MAPPING NAVIGATION BUTTONS 
+        $('#goToSocial').click(function(){
+            moveUI('Social'); 
             
-			if(panelState !== 'View'){	
-				// Change calendar size
-				$("#fullcalendar").animate({ 
-				height: "500px", 
-				width: "500px", 
-				}, 1000, function(){
-					//resize calendar, seems to be a glitch
-					$('#fullcalendar').fullCalendar('render');
-					}
-				);
-				//Transit between user panel functionality 
-				$("#" + panelState).hide("slide", {}, 1000, function(){
-					$("#View").show("slide", {}, 1000);
-					panelState = 'View';
-
-				});	
-			}
-
-            $.getJSON(event.url, function(workout) {
-                     //document.getElementById('View').innerHTML = JSON.stringify(data);                
-                     //In moduleView.js
-                     initView(workout, event);       
-            });
-
-		} //end of function UIreposition
+        });
         
-        function UIrepositionCreate(){
-            $("#fullcalendar").animate({ 
-					height: "600px", 
-					width: "800px", 
-			}, 1000, function(){
-				//resize calendar, seems to be a glitch
-				$('#fullcalendar').fullCalendar('render');
-			});
-			//Transit between user panel functionality
-			$("#" + panelState).hide("slide", {}, 1000, function(){
-
-				$("#Create").show("slide", {}, 1000);
-				panelState = 'Create';
-			});   
+        $('#goToMap').click(function(){
+            moveUI('Map'); 
+            
+        });
+        
+        $('#goToPlanner').click(function(){
+            moveUI('Create'); 
+            
+        });
+        
+        //This is to add a button to the calendar
+        function addCalButton(where, text, id) {
+            var my_button = '<span class="fc-header-space"></span>' +
+                    '<span id="' + id + '" class="cal-button"><span class="ui-icon ui-icon-arrow-4-diag"></span></span>';
+            $("td.fc-header-" + where).append(my_button);
+            $("#" + id).button();
         }
         
+        addCalButton("right", "Hello", "enlargeCalendar");
         
-        function UILoadNewState(newState){
-
-			//Transit between user panel functionality
-			$("#" + panelState).hide("slide", {}, 1000, function(){
-
-				$("#" + newState).show("slide", {}, 1000);
-				panelState = newState;
-			});   
-        }
-
+        $('#enlargeCalendar').live('click', function(){
+            moveUI('largeCalendar'); 
+            
+        });
 
 		//Simple function to an object that you can put in the calendar
 		function createEvent(debut, fin, fullDay, titre, adresse, sport){

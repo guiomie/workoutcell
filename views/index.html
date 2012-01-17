@@ -30,6 +30,7 @@
 <script src='/moduleView.js'></script>
 <script src='/moduleSocial.js'></script>
 <script src='/moduleHeaderMenu.js'></script>
+<script src='/moduleUI.js'></script>
 
 <style type="text/css">
 			/*demo page css*/
@@ -98,7 +99,8 @@
 	            <ul id="icons" class="ui-widget ui-helper-clearfix">			
 			        <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Find athletes or coaches" id="goToSearch" style="float: right;"><span class="ui-icon ui-icon-search"></span></li>
-                    <li class="ui-state-default ui-corner-all" title="Manage your training schedule" id="goToPlanner" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Manage your maps" id="goToMap" style="float: right;"><span class="ui-icon ui-icon-script"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Manage your social training" id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
 			        <li class="ui-state-default ui-corner-all" title="Manage your training schedule" id="goToPlanner" style="float: right;"><span class="ui-icon ui-icon-calendar"></span></li>			        
                 </ul>
 		    </div>
@@ -123,15 +125,15 @@
 <div id='mainContent' style="align: center; width: 1030px; background-color:#FFFFFF; layer-background-color:#FFFFFF; padding-top: 20px; padding-left: 20px; padding-right: 20px; padding-bottom: 20px; height:600px;" > <!-- whole content except for header -->
 
 <!-- Full Calendar load -->
-<div id='fullcalendar'  style="width:800px; float:left;"></div>
-
+<div id='fullcalendar'  style="width:1000px; float:left;"></div>
+<!--
 <div id="toolBoxNav" style="float:right; margin-right: 1px;"> 
 		<div id="radio4" style="margin-bottom: 2em;"> 
 			<input type="radio" id="radio41" name="radio" /><label for="radio41">Social</label> 
 			<input type="radio" id="radio42" name="radio" /><label for="radio42">Map</label> 
 			<input type="radio" id="radio43" name="radio" checked="checked" /><label for="radio43">Create</label> 
 		</div>
-</div>
+</div>-->
 
 <!-- toolpane, contains 3 item that show up 1 at the time 
  No indent or wouldnt be readable-->
@@ -328,110 +330,132 @@
 </div>
 
 <!-- Load the training planner -->
-<div id="Create" style="margin-top:5px; text-align: center;">
-
-	<div id='calendar'></div>
-
-	<p>Date: <input type="text" id="datepicker"></p>
-	<p>Time: <input type="text" id="timepickerStart" size="1"> from <input type="text" id="timepickerStop" size="1"> </p> 
-	<p><a href="#" id="dialog_link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Manage Cell</a></p>
-
-	<div id="dialog" title="Social Interaction">
-		Partner search option
-	</div>
-
-	<select title="Select Course" id="parcourSelection" style='width: 120px;'>
-	    <option value="none"> Click to load... </option>	
-	</select>
-	
-    <div id="descriptionButton" style="width: 73px; padding-top: 5px; margin: 0 auto; cursor: default;"><span>Description</span><span class="ui-icon ui-icon-plus" style="float: right;"></span></div>
+<div id="Create" style="display: none; width: 510px; height: 500px; margin-top:5px;">
     
-	<p> 
-	<div id="radio1">
-		<input type="radio" id="radio11" name="radio1" /><label for="radio11">Bike</label>
-		<input type="radio" id="radio12" name="radio1" checked="checked" /><label for="radio12">Swim</label>
-		<input type="radio" id="radio13" name="radio1" /><label for="radio13">Run</label>
-	</div> 
-	</p>
+     <span style="font-size: 20px; font-family: impact;">Create a workout </span><br><br>
+    
+    <div style="height: 170px;">
+        <div style="float: left; width: 200px; height: 160px;">  
+            <span style="font-size: 15px; font-family: impact;">How</span><br>
+            <select title="Select Course" id="sportSelection" style='width: 120px;'>
+                <option value="Bike"> Bike </option>
+                <option value="Swim"> Swim </option>
+                <option value="Run"> Run </option>
+	        </select> <br>
+            <textarea rows='3' cols='20' id='descriptionInput' style="resize: none;">(description)</textarea>
+            
+            <span style="font-size: 15px; font-family: impact;">Who</span><br>
+            <select id="cellSelection" style='width: 120px;'>
+                <option value="Yourself"> Yourself </option>
+                <option value="cell_id"> Champagne Bath </option>
+            </select> <br>
+        
+            
+        </div>
+    
+        <div style="float: right; width: 200px; height: 160px;">  
+            <div id='calendar'></div>
+             <span style="font-size: 15px; font-family: impact;">When</span>
+            <p>Date: <input type="text" id="datepicker"></p>
+            <p>Time: <input type="text" id="timepickerStart" size="1"> from <input type="text" id="timepickerStop" size="1"> </p> 
+             <span style="font-size: 15px; font-family: impact;">Where<br></span>
+            <select title="Select Course" id="parcourSelection" style='width: 120px;'>
+                <option value="none"> Click to load... </option>	
+	        </select>
+        </div>
+    
+    </div>
+	
 
-	<div id="accordion" style="width: 225px">
+
+	<div id="accordion" style="width: 500px">
 	
 	<h3><a href="#">Distance</a></h3>
 	<div id="distance" >
 	
-		<div style="float: right;">
+		<div style="float: left; margin-left: 80px;">
 			Target 
-			<div id="radio3" style="margin-top: 5px; margin-bottom: 5px;">
+			<div id="radio3" style="margin-top: 5px; margin-bottom: 5px; ">
 				<input type="radio" id="radioKiloMeters" name="radio3"  /><label for="radioKiloMeters">Kilometers</label>
 				<input type="radio" id="radioTime" name="radio3" checked="checked" /><label for="radioTime">Time</label> 
 			</div>
 			Value<br>
 			<input type="text" id="bigInput" size="3"> <span id="bigLabel">hour</span> <input type="text" id="smallInput" size="3"> <span id="smallLabel">min</span><br>
 			
-			<div style="display: table-row;  ">
-				<div style="display: table-cell; vertical-align: middle;">&nbsp; &nbsp;&nbsp; &nbsp;Intensity<br>&nbsp; &nbsp;&nbsp; &nbsp;<span id="intensityHtml2" style="margin-top: 5px;">0</span>% </div>
-			<!--	<div style="display: table-cell; vertical-align: middle;"><ul id="icons" class="ui-widget ui-helper-clearfix"><li class="ui-state-default ui-corner-all" title=".ui-icon-refresh"><span class="ui-icon ui-icon-refresh"></span></li></ul></div>
-			--></div>
 			
 		</div>
 		
-		<div id="sliderIntensity2" style="height:100px; float:left; margin-right: 5px; margin-top: 10px;"></div>
+        <div style="float: left; margin-left: 60px;">
+            
+            Metric <br><br>
+            
+    	    <span id="intensityHtml2" style="margin-top: 5px;">0</span> % <br>
+        
+            <div id="sliderIntensity2" style="width: 100px; float:left; margin-right: 5px; margin-top: 10px;"></div>
+        
+        </div>
+		
 
 	</div>
 	
 	<h3><a href="#">Intervall</a></h3>
 	<div id="intervall" >
 		
-			<div style="height: 30px; width: 180px;  margin: 0 auto;">
+        <div style="height: 200px; width: 120px;  float:left;">
                 
-                <div style="float: left;">
-                    Target
-				    <div id="radio2">
-					    <input type="radio" id="radioMeters" name="radio2"  /><label for="radioMeters">m</label>
-					    <input type="radio" id="radioSeconds" name="radio2" checked="checked" /><label for="radioSeconds">s</label>
-				    </div>
-                </div>               
+                <div style="width: 120px; height: 55px;">
+			        <div id="radio2"  style="float:left;">
+                        Target<br>
+				        <input type="radio" id="radioMeters" name="radio2"  /><label for="radioMeters">m</label>
+				        <input type="radio" id="radioSeconds" name="radio2" checked="checked" /><label for="radioSeconds">s</label>
+			        </div>
                 
-                 <div style="float: right; padding-left: 6px; padding-top: 5px;">
-        	       <li><span class="ui-icon ui-icon-plus" id="addIntervalli"></span></li>
-			       <li><span class="ui-icon ui-icon-minus" id="removeIntervalli"></span></li>
-		        </div>
-                
-                <div style="float: left;">
-                    Value <br>
-				    <input type="text" id="unitInput" size="3" ></input>
-			    </div>
-                
-                <div style="float: left; right; padding-left: 10px; padding-top: 10px;">
-    			    <ul id="icons" class="ui-widget ui-helper-clearfix"><li class="ui-state-default ui-corner-all" title="Add a description" id="intervallDesc">
-                        <span class="ui-icon ui-icon-note"></span></li></ul>
-			    </div>
-         
-            </div>
-            
-            <div style="height: 20px; width: 175px;  margin: 0 auto; padding-top: 20px;">        
-                <span id="sliderIntensity" style="width:100px; float: left; margin-top: 8px;"></span>
-                <div style="float: right;">
-                    <div id="swapIntensity" style="cursor: default;"><span id="lbl_intensity">Intensity</span><span class="ui-icon ui-icon-arrowrefresh-1-s" style="float: right;"></span></div>
-                    <span id="intensityHtml" >0</span><span id="targetType">%</span>
+                    <div style="float:left;">
+                        Value <br>
+    		            <input type="text" id="unitInput" size="3" ></input>
+		            </div>
                 </div>
-            </div>
-        
-			
                 
+                <div style="width: 120px; margin-bottom: 15px;">
+                    <span style="float:left;">Metric:&nbsp;</span> 
+                    <span id="swapIntensity" style="cursor: pointer;">
+                        <span id="lbl_intensity" style="float:left;">
+                            Intensity&nbsp;
+                        </span>
+                        <span class="ui-icon ui-icon-arrowrefresh-1-s" style="float:left;">
+                        </span>
+                    </span>
+                </div>
 
-            <div id="scrollbar1" style="height: 80px; width: 175px; padding-right: 10px; ">
-                <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-	            <div class="viewport">
-		        <div class="overview" id="overview">
-		        </div>
-	            </div>
-            </div>
+                <div style="width: 120px">
+                    <span id="intensityHtml" >0</span>&nbsp;<span id="targetType">%</span>
+                </div>
+                
+                <div id="sliderIntensity" style="width:100px; margin-top: 8px;"></div><br>
+                
+            <textarea rows='3' cols='16' id='intervallDescriptionInput' style="resize: none;">(description)</textarea>
+            
+            <div>
+                <ul id="icons" class="ui-widget ui-helper-clearfix">
+                   <li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-plus" id="addIntervalli"></span></li>
+			       <li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-minus" id="removeIntervalli"></span></li>
+                </ul>
+		   </div>
+           
+        </div>                       
+
+        <div id="scrollbar1" style="height: 100px; width: 200px; float: right;">
+            <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+	        <div class="viewport">
+		    <div class="overview" id="overview">
+		    </div>
+	        </div>
+        </div>
                 
 		
-	</div>
+	</div><!-- end of create -->
 	
-	</div> <!--end of accordion -->
+    </div> <!--end of accordion -->
 
 	<div id="push2" style="padding-top: 10px;"> 
 		<input type="button" id="push" value="Add Workout" />
