@@ -193,12 +193,13 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
 }
 
 //Saves workout, sends callback has the objectid, to then save in reference collection
-var saveWorkout = function(workoutObject, callback){
+var saveWorkout = function(workoutObject, logedId, logedName, callback){
     
     var theWorkout = "not instantiated";
     var callbackValue = "not instantiated";
     var receivedParcour = {};
-    
+    var cell = {};
+
     if(workoutObject.parcour.id === "none"){
         receivedParcour = {};
     }
@@ -207,6 +208,27 @@ var saveWorkout = function(workoutObject, callback){
             id: ObjectId(workoutObject.parcour.id), 
             name: workoutObject.parcour.name        
         };
+    }
+    
+    if(logedId !== "none" && logedName !== "none"){
+          
+        var tinyuser = {
+            fbid      : parseInt(logedId),
+            fullNamee : logedName
+        }
+    
+        var array = [];
+        array.push(tinyuser);
+            
+        cell = {
+           creator       : logedName,
+           participants  : array
+           
+        }; 
+    
+    }
+    else{                  
+          cell = {};  
     }
     
     if(workoutObject.type === "intervall"){
@@ -219,7 +241,7 @@ var saveWorkout = function(workoutObject, callback){
             type               :workoutObject.type,
             intervalls         :workoutObject.intervalls,
             description        :workoutObject.description,
-            cell               :workoutObject.cell,
+            cell               :cell,
             parcour            :receivedParcour,
             //intervallResult    :[]
        }); 
@@ -248,7 +270,7 @@ var saveWorkout = function(workoutObject, callback){
             type                 :workoutObject.type,
             distance             :distanceValues,
             description          :workoutObject.description,
-            cell                 :workoutObject.cell,
+            cell                 :cell,
             parcour              :receivedParcour,
             distanceResult       :{}
        }); 
@@ -271,6 +293,62 @@ var saveWorkout = function(workoutObject, callback){
     }
         
 };
+
+
+var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
+    
+    var callbackVar = "not instantiated";
+    var theEvent = new CalendarEvent();
+  
+    theEvent.title = eventObject.title;
+    theEvent.allDay = eventObject.allDay;
+    theEvent.start = eventObject.start;
+    theEvent.end = eventObject.end;
+    theEvent.url = "/workout/" + workoutRef;
+    theEvent.color = "#C24747";  //Special color for cells
+    theEvent.refWorkout = workoutRef;
+    
+   
+    var month = new CalendarMonth();
+    var eventDate = new Date(eventObject.start);
+    //The workout array starts on 1 Jan 2011, all other positions in array are 
+    //relative to this start day. To find the year/month of an array loc use modulo
+    arrayLocation = 1 + (((parseInt(eventDate.getFullYear())) - 2011)*12) + parseInt(eventDate.getMonth());
+    CellDetails.findOne({ _id: cellId }, function(err, resultReference){
+   
+        if(err){
+            console.log('Error in finding calendar reference collection: ' + err); 
+            callbackVar = "not instantiated";  
+            callback(callbackVar);
+        }
+        else{
+            var initialRefLength = resultReference.activities.length;
+            if(resultReference.activities.length <= arrayLocation){
+                console.log("In if");
+                for(i = initialRefLength; i <= (arrayLocation); i++){
+                    console.log("In loop: " +i);
+                    resultReference.activities.push({id: (i + initialRefLength), allEvents: []});  
+                } 
+                resultReference.activities[arrayLocation].allEvents.push(theEvent);
+            }
+            else{        
+                resultReference.activities[arrayLocation].allEvents.push(theEvent); 
+            }
+            resultReference.save(function(err){
+     
+                if(err){
+                    console.log('Error in finding calendar reference: ' + err);
+                    callbackVar = "not instantiated";  
+                    callback(callbackVar);
+                }
+                else{
+                    console.log('Succesfully saved Event'); 
+                    callback("Successfully saved Workout and Reference");
+                }      
+            });
+        }
+    });  
+}
 
 
 var saveResults = function(workoutId, receivedResult, callback){
@@ -908,6 +986,7 @@ exports.getMonthEvent = getMonthEvent;
 exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
+exports.saveCellEvent = saveCellEvent;
 
 exports.getUserBasicInfo = getUserBasicInfo;
 exports.getCellDetails = getCellDetails;

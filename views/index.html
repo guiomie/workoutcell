@@ -58,7 +58,7 @@
             
             /* For the horizontal scroll */
             #scrollbar1 { width: 175px; clear: both; margin: 20px 0 10px; }
-            #scrollbar1 .viewport { width: 160px; height: 100px; overflow: hidden; position: relative; }
+            #scrollbar1 .viewport { width: 300px; height: 170px; overflow: hidden; position: relative; }
             #scrollbar1 .overview { list-style: none; position: absolute; left: 0; top: 0; }
             #scrollbar1 .thumb .end,
             #scrollbar1 .thumb { background-color: #8FBF89; }
@@ -346,8 +346,7 @@
             
             <span style="font-size: 15px; font-family: impact;">Who</span><br>
             <select id="cellSelection" style='width: 120px;'>
-                <option value="Yourself"> Yourself </option>
-                <option value="cell_id"> Champagne Bath </option>
+                <option value="yourself"> Yourself </option>
             </select> <br>
         
             
@@ -433,7 +432,7 @@
                 
                 <div id="sliderIntensity" style="width:100px; margin-top: 8px;"></div><br>
                 
-            <textarea rows='3' cols='16' id='intervallDescriptionInput' style="resize: none;">(description)</textarea>
+            <textarea rows='3' cols='16' id='intervallDescInput' style="resize: none;"></textarea>
             
             <div>
                 <ul id="icons" class="ui-widget ui-helper-clearfix">
@@ -441,25 +440,31 @@
 			       <li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-minus" id="removeIntervalli"></span></li>
                 </ul>
 		   </div>
-           
-        </div>                       
+         </div>  
+         
+        <div style=" float: right;">
+        <div id="scrollbar1" style="height: 150px; width: 320px;">
+                <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+                <div class="viewport">
+		        <div class="overview" id="overview">
+		        </div>
+                </div>
+	   </div>
+       </div>
+   
+</div>                       
 
-        <div id="scrollbar1" style="height: 100px; width: 200px; float: right;">
-            <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-	        <div class="viewport">
-		    <div class="overview" id="overview">
-		    </div>
-	        </div>
-        </div>
-                
+           
 		
 	</div><!-- end of create -->
-	
+
+    <div id="push2" style="padding-top: 10px;"> 
+    	<input type="button" id="push" value="Add Workout" />
+	</div>     
+
     </div> <!--end of accordion -->
 
-	<div id="push2" style="padding-top: 10px;"> 
-		<input type="button" id="push" value="Add Workout" />
-	</div>
+
 	
 </div> <!-- end of tool box -->
 

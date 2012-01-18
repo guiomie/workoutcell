@@ -290,9 +290,9 @@ $(document).ready(function(){
             var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
             var intensityTime = [];    
                 if (option === 'radioMeters'){
-					var str = "<div><div style='float: left'>" +target+"m @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
+					var str = "<div style='height: 20px;'><div style='float: left;'>" +target+"m @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right;'></div></div>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = "<div><div style='float: left'>" + target + "m" + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length + "' style='float: right'></div></div>";
+                        str = "<div style='height: 20px;'><div style='float: left;'>" + target + "m" + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length + "' style='float: right;'></div></div>";
                         intensityMetric = 0;
                         intensityWorth = 0;
                     }
@@ -325,9 +325,9 @@ $(document).ready(function(){
 
 				}
 				else if(option === 'radioSeconds'){
-			        var str = "<div><div style='float: left'>" + target+"s @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
+			        var str = "<div style='height: 20px;'><div style='float: left;'>" + target+"s @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right;'></div></div>";
                     if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = "<div><div style='float: left'>" + target+"s"+ "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right'></div></div>";
+                        str = "<div style='height: 20px;'><div style='float: left;'>" + target+"s"+ "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right;'></div></div>";
                         intensityMetric = 0;
                         intensityWorth = 0;
                     }
@@ -615,16 +615,20 @@ $(document).ready(function(){
 
         ///// MAPPING NAVIGATION BUTTONS 
         $('#goToSocial').click(function(){
+
             moveUI('Social'); 
             
         });
         
         $('#goToMap').click(function(){
+            refreshDropdown();
             moveUI('Map'); 
             
         });
         
         $('#goToPlanner').click(function(){
+            populateCellDropList();
+            refreshDropdown();
             moveUI('Create'); 
             
         });
@@ -825,6 +829,7 @@ $(document).ready(function(){
             });  
         }
         
+        /*
         //unelegant way of loading dropdown with latest parcours
         $("#dropdownMap").mouseover(function() {
            
@@ -832,12 +837,13 @@ $(document).ready(function(){
            
         });
         
+        
         $("#parcourSelection").mouseover(function() {
            
            refreshDropdown();
            
-        });
-        
+        });*/
+    
 
         $("#dropdownMap").change(function() { 
             
@@ -880,8 +886,7 @@ $(document).ready(function(){
                 callback(finalHtml);
             }
         }
-        
-        
+
         $('#descriptionButton').qtip({
             content: {
                text: "<textarea rows='5' cols='20' id='descriptionInput'>Enter Description</textarea>" 
@@ -896,6 +901,7 @@ $(document).ready(function(){
             }    
         });
         
+        /* Deletable
         $("#intervallDesc").qtip({
             content: {
                 text: "<textarea rows='5' cols='20' id='intervallDescInput'>Enter the description of this single intervall (not required) </textarea>" 
@@ -908,7 +914,7 @@ $(document).ready(function(){
             style: {
                 widget: true 
             }
-        });
+        });*/
         
         var grabNewCellInput = function(){
             
@@ -960,6 +966,21 @@ $(document).ready(function(){
            $('#friendPic' + id).qtip("api").destroy();
             
         });
+        
+        var populateCellDropList = function(){
+            $.getJSON(getAllCell, function(data) {
+                if(data.success){
+                    for(i = 0; i < data.message.length;i++){
+                        droplistHtml = "<option value='" +  data.message[i]._id + "'>"+ data.message[i].name+"</option>";
+                        $(droplistHtml).appendTo("#cellSelection");
+                    } 
+                }
+                else{
+                //something wrong
+ 
+                }   
+            });  
+        }
 
         initHeaderBar();
        

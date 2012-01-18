@@ -433,13 +433,12 @@ module.exports = function(app) {
      
       //step1   
       if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
-        mongooseLogic.saveWorkout(workoutObject, function(savedWorkoutObjectId){
+        mongooseLogic.saveWorkout(workoutObject, "none", "none", function(savedWorkoutObjectId){
             //console.log(savedWorkoutObjectId);
             if(savedWorkoutObjectId !== "not instantiated"){
                 console.log("Saved Workout ...");
                 mongooseLogic.saveEvent(eventObject, req.params.userId, 
                 savedWorkoutObjectId, function(message){
-                
                     //res.contentType('application/json');
                     if(message === "not instantiated"){
                         //console.log("Event not Saved ...");
@@ -453,21 +452,62 @@ module.exports = function(app) {
             }
             else{
                 //res.header('application/json');
-                res.json({ success: false,  message: 'Failed, could not save event.'}); 
-            
+                res.json({ success: false,  message: 'Failed, could not save event.'});          
             }       
         });
       }
-      else{
-         
+      else{        
          //res.header('application/json');
-         res.json({ success: false,  message: 'Failed, Invalid object sent to server'});
-       
-      }
-        
-        
+         res.json({ success: false,  message: 'Failed, Invalid object sent to server'});  
+      }  
     });
     
+    
+    //Posting of a workout to a cell
+    //1- Save workout
+    //2- with workout id save cell workout month reference 
+    //3- with workout id save user workout month reference 
+    app.post("/workout/cell/:cellId/:userId", function(req, res){
+        var receivedJSON = req.body;//JSON.parse(req.body);
+        var eventObject = receivedJSON.event;
+        var workoutObject = receivedJSON.workout;
+     
+        //step1   
+        if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
+            mongooseLogic.saveWorkout(workoutObject, getLogedId(), getLogedName(), function(savedWorkoutObjectId){
+                if(savedWorkoutObjectId !== "not instantiated"){
+                    mongooseLogic.saveEvent(eventObject, req.params.cellId, 
+                        savedWorkoutObjectId, function(message){             
+                        if(message === "not instantiated"){
+                            res.json({ success: false, message: 'Failed to saved Cell Event.'});
+                        }
+                        else{
+                            mongooseLogic.saveCellEvent(eventObject, req.params.userId, 
+                            savedWorkoutObjectId, function(message){
+                                if(message === "not instantiated"){
+                                    //console.log("Event not Saved ...");
+                                    res.json({ success: false, message: 'Failed to saved workout.'});
+                                }
+                                else{
+                                    //console.log("Saved Event ...");
+                                    res.json({ success: true,  message: 'Workout saved successfully.'});    
+                                }
+                            }); 
+                        }
+                    });
+                }
+                else{
+
+                    res.json({ success: false,  message: 'Failed, could not save event.'});          
+                }       
+            });
+        }
+        else{        
+            //res.header('application/json');
+             res.json({ success: false,  message: 'Failed, Invalid object sent to server'});  
+        }    
+    });
+        
     //*************************************************************************
     //Facebook auth command samples
     //Sample of auth if statement

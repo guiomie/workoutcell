@@ -89,14 +89,15 @@ var Parcour = new Schema({
 */
 var CalendarEvent = new Schema({
    //id         : Number,
-   title      : String,
-   allDay     : Boolean,
-   start      : Date,
-   end        : Date,
-   url        : String,
-   color      : String,
-   refWorkout : String
-    
+   title          : String,
+   allDay         : Boolean,
+   start          : Date,
+   end            : Date,
+   url            : String,
+   color          : String,
+   refWorkout     : String,
+   refCellWorkout : String 
+   
 });
 
 var CalendarMonth = new Schema({
@@ -140,6 +141,13 @@ var SingleIntervallResult = new Schema({
    completed   :Boolean 
 });
 
+//Scoial components for workouts
+var TinyUser = new Schema({
+  
+  fbid      : Number,
+  fullName  : String
+
+});
 
 var CardioWorkout = new Schema({
 
@@ -148,10 +156,10 @@ var CardioWorkout = new Schema({
     intervalls            :[singleIntervall],
     distance              :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
     description           :String,
-    cell                  :[Number], //Temporarly not a basicCell,
+    cell                  :{creator: String, participants: [TinyUser]}, //Temporarly not a basicCell,
     parcour               :{id: ObjectId, name: String},
     distanceResult        :{unit: String , value:Number, completed:Boolean},
-    intervallResult       :[SingleIntervallResult] 
+    intervallResult       :[SingleIntervallResult]
 });
 
 /*
@@ -191,6 +199,7 @@ var NotificationsReference = new Schema({
 
 //!!!!!!!!!!!!!!--------CELL SCHEMAS-----------!!!!!!!
 
+
 var CellReference = new Schema({
 
     name        : String,
@@ -200,12 +209,6 @@ var CellReference = new Schema({
 
 });
 
-var CellCalendarMonth = new Schema({
- 
-    id          : Number, //String consisting of Year and Month ex:1211 = 2011 Dec
-    allEvents   : [String]//[CellCalendarEvent]
-   
-});
 
 var CellDetails = new Schema({
     name         : String,
@@ -214,7 +217,7 @@ var CellDetails = new Schema({
 	members      : [Number],
 	description  : String, 
 	//notification : [Notification],
-	activities   : [CellCalendarMonth]
+	activities   : [CalendarMonth]
 
 });
 

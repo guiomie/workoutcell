@@ -67,6 +67,7 @@ Post a map with coordinates: /parcour/100000268779394/map1/5 <br>
 Post workout:    /workout/:userId  |  ex: /workout/100000268779394  <br>
 Post result:  /result/:userId/:workoutId  | ex: /result/100000268779394/4edbdc71b579ae691500005d <br>
 Post a cell:  /cell/create/:userId  | ex: /cell/create/100000268779394   <br>
+Post a workout to a cell: /workout/cell/:cellId/:userId |    <br>
 <form action="/" id="requestForm">
 
 httpPost url: <input type="text" name="url" placeholder="" /> <br>
@@ -76,8 +77,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
 
 -->
     <textarea rows="6" cols="30" id="json">
-    {"type" : "intervall",
-    "distanceResult": {"type":"m","value":52356,"completed":true}}
+   
 </textarea><br>
 
 <input type="submit" value="Submit request" /><br>
