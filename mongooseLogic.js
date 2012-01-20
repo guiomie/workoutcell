@@ -316,12 +316,13 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
     arrayLocation = 1 + (((parseInt(eventDate.getFullYear())) - 2011)*12) + parseInt(eventDate.getMonth());
     CellDetails.findOne({ _id: cellId }, function(err, resultReference){
    
-        if(err){
-            console.log('Error in finding calendar reference collection: ' + err); 
+        if(err || resultReference === null){
+            console.log('Error in finding calendar reference collection: ' + err + ' at id: ' + cellId); 
             callbackVar = "not instantiated";  
             callback(callbackVar);
         }
         else{
+            console.log(resultReference);
             var initialRefLength = resultReference.activities.length;
             if(resultReference.activities.length <= arrayLocation){
                 console.log("In if");
@@ -460,6 +461,33 @@ var getMonthEvent = function(userId, year, month, callback){
            }
            else{
             //console.log("Invalid month or year");
+            callB = "not instantiated";
+            callback(callB);
+           
+           }
+        } 
+ 
+    });
+}
+
+//Similar has previous but for a cell
+var getCellMonthEvent = function(cellId, year, month, callback){
+    
+    var callB = "not instantiated";
+    
+    CellDetails.findOne({ _id: cellId}, function(err, result){
+    
+        if(err || result === null){
+            callB = "not instantiated";
+            callback(callB);
+        }
+        else{
+           var arrayLocation = ((parseInt(year) - 2011)*12) + parseInt(month);
+           if(result.activities.length > arrayLocation && parseInt(year) > 2010){
+                callB = result.activities[arrayLocation].allEvents; 
+                callback(callB); 
+           }
+           else{
             callB = "not instantiated";
             callback(callB);
            
@@ -987,6 +1015,7 @@ exports.saveResults = saveResults;
 exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 exports.saveCellEvent = saveCellEvent;
+exports.getCellMonthEvent = getCellMonthEvent;
 
 exports.getUserBasicInfo = getUserBasicInfo;
 exports.getCellDetails = getCellDetails;

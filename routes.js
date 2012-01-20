@@ -229,6 +229,25 @@ module.exports = function(app) {
         });
    
     });
+    
+    
+    app.get("/cell/event/:year/:month/:cellId", function(req, res){
+
+        mongooseLogic.getCellMonthEvent(req.params.cellId, req.params.year, 
+            req.params.month, function(object){
+        
+            if(object === "not instantiated"){
+                
+                res.json({ success: false, message: 'No calendar events for this month'});    
+            }
+            else{
+                
+               res.json({ success: true, message: object}); 
+            }
+        
+        });
+        
+    });
      
     //Sends response as a string/html
     app.get("/user/snippet/:userId", function(req,res){
@@ -471,18 +490,19 @@ module.exports = function(app) {
         var receivedJSON = req.body;//JSON.parse(req.body);
         var eventObject = receivedJSON.event;
         var workoutObject = receivedJSON.workout;
-     
+        
         //step1   
         if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
-            mongooseLogic.saveWorkout(workoutObject, getLogedId(), getLogedName(), function(savedWorkoutObjectId){
+            mongooseLogic.saveWorkout(workoutObject, getLogedId(req), getLogedName(req), function(savedWorkoutObjectId){
                 if(savedWorkoutObjectId !== "not instantiated"){
-                    mongooseLogic.saveEvent(eventObject, req.params.cellId, 
+                    mongooseLogic.saveCellEvent(eventObject, req.params.cellId, 
                         savedWorkoutObjectId, function(message){             
                         if(message === "not instantiated"){
                             res.json({ success: false, message: 'Failed to saved Cell Event.'});
                         }
                         else{
-                            mongooseLogic.saveCellEvent(eventObject, req.params.userId, 
+                            eventObject.color = "#C24747";  // BAD' BUT IM LAZY AND LACKING TIME
+                            mongooseLogic.saveEvent(eventObject, req.params.userId, 
                             savedWorkoutObjectId, function(message){
                                 if(message === "not instantiated"){
                                     //console.log("Event not Saved ...");

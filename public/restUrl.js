@@ -16,6 +16,7 @@ var getFriendCell = '/cell/friends/' + authId;
 var getNotfication = '/notification/queu/' + authId + '/0/10';
 var postCell = '/cell/create/' + authId;
 var getAllCell = '/cell/all/' + authId;
+var postcellworkout = '/workout/cell/';  
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -31,4 +32,5 @@ var initGlobalVar = function(){
     getNotfication = '/notification/queu/' + authId + '/0/10';
     postCell = '/cell/create/' + authId;
     getAllCell = '/cell/all/' + authId;
+    postcellworkout = '/workout/cell/'; 
 }

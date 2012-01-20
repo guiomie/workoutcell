@@ -1,19 +1,24 @@
+panelState = 'largeCalendar';
+p = 0;
+var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
+//Data for ajax intervall content
+var intervall = new Array();
+var tempCell = new Array();
+var tempIntDesc = [];
+var selectedMap = "no map"; 
+//Data for intervall list
+var tempIntervall = [];
+var minSlider = 0;
+var maxSlider = 0;
+var applicationVariables = {
+    calendarFirstLoad   : true,
+    calendarMode        : "user", //or cell
+    currentCell         : "none"
+}
+
+
 $(document).ready(function(){
-        panelState = 'largeCalendar';
-		p = 0;
-		var appStatus = {needsFetch: true, lastFetchedMonth: "none"};
-        //Data for ajax intervall content
-        var intervall = new Array();
-		var tempCell = new Array();
-        var tempIntDesc = [];
-		var selectedMap = "no map"; 
-        //Data for intervall list
-        var tempIntervall = [];
-        var minSlider = 0;
-        var maxSlider = 0;
-        var applicationVariables = {
-            calendarFirstLoad   : true
-        }
+        
         $('#scrollbar1').tinyscrollbar();
 
 		$('#fullcalendar').fullCalendar({
@@ -417,121 +422,14 @@ $(document).ready(function(){
 
 		//Data validation and compilation before submitting to server
 		$("#push").click(function(event) {
-		var selectedSport = $('input[type=radio][name=radio1]:checked + label').text();
-    	//var parcourId = $("#parcourSelection").val();
-		var parcourId = {
-
-			id     :  $("#parcourSelection").val(),
-			name   :  $('#parcourSelection :selected').text()
-
-		};
-		var postUrl = "/workout/" + authId + "/" + selectedSport;
-		var workout;
-		var eventObject;
-		var toPostPackage = {
-
-			workout  : "null",
-			event    : "null" 
-
-		};
-		//Getting dates
-		var basicStartDate = $("#datepicker").datepicker( "getDate" );
-		basicStartDate.setMinutes($('#timepickerStart').datetimepicker('getDate').getMinutes());
-		basicStartDate.setHours($('#timepickerStart').datetimepicker('getDate').getHours());
-
-		var basicEndDate = $("#datepicker").datepicker( "getDate" );
-		basicEndDate.setMinutes($('#timepickerStop').datetimepicker('getDate').getMinutes());
-		basicEndDate.setHours($('#timepickerStop').datetimepicker('getDate').getHours());		
-		//Select info from opened accordion and create JS object / JSON 
-		//returns index of accordion
-		var activeAccordion = $( "#accordion" ).accordion( "option", "active" );
-		//interval training
-        var varDescription = "none";
-        if($('#descriptionInput').val() !== 'Enter Description'){
-            varDescription = $('#descriptionInput').val();
-		}
-        else{
-            
-        }
-
-		//Intervall Training
-		if(activeAccordion === 1){
-			//updateCalendarData(eventObject);
-			//alert(JSON.stringify(intervall));
-
-			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
-
-			workout = {
-			sport       : selectedSport,
-			type        : "intervall",
-			intervalls  : intervall, 
-			description : varDescription,
-			cell        : tempCell,
-			parcour     : parcourId,
-			results     : "not entered"
-			}
-
-			toPostPackage.workout = workout;
-			toPostPackage.event = eventObject;
-
-            //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
-            //alert(JSON.stringify(workout));
-            postJson(JSON.stringify(toPostPackage), postworkout, function(message){
-            
-                //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
-                updateCalendar();
-            });
-		}
-		//distance training
-		else if(activeAccordion === 0){
-			//alert(document.getElementById('intervallList').selectedIndex);
-			//alert(JSON.stringify(intervall));
-			var distanceType = $('input[type=radio][name=radio3]:checked + label').text();
-			var minInputValue = $("input[type=text][id=smallInput]").val();
-			var maxInputValue = $("input[type=text][id=bigInput]").val();
-			var intensityValue = document.getElementById('intensityHtml2').innerHTML;
-
-			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
-
-			createSingleDistance(distanceType, minInputValue, maxInputValue, intensityValue, function(distanceObject){
-
-				workout = {
-					sport       : selectedSport,
-					type        : "distance",
-					distance    : distanceObject,
-					description : varDescription,
-					cell        : tempCell,
-					parcour     : parcourId,
-					results     : "not entered"
-				}
-
-			});
-
-			toPostPackage.workout = workout;
-			toPostPackage.event = eventObject;
-
-			//FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + JSON.stringify(toPostPackage) ;
-            
-            //Sends hhtt post to the postworkout url defined in restUrl.js
-            postJson(JSON.stringify(toPostPackage), postworkout, function(message){
-                
-                //FOR DEBUG***** document.getElementById("console").innerHTML = document.getElementById('console').innerHTML + '<br>' + message;
-                updateCalendar();
-            });
-            
-		}
-		//nothing happens
-		else{
-
-
-		}
+		
+            if($('#cellSelection').val() === 'yourself'){
+                postWorkout(event);
+            }
+            else{
+                postCellWorkout(event);
+            }
         
-		//empty intervall array so it doesnt accumulate
-		intervall = new Array();
-		tempIntervall = [];
-        cell = new Array();
-		document.getElementById('intervallList').length = 0;
-		document.getElementById('overview').innerHTML = " ";
 		});
 
 		//Modification of UI based on user selection
@@ -615,18 +513,20 @@ $(document).ready(function(){
 
         ///// MAPPING NAVIGATION BUTTONS 
         $('#goToSocial').click(function(){
-
+            applicationVariables.calendarMode = "user";
             moveUI('Social'); 
             
         });
         
         $('#goToMap').click(function(){
+            applicationVariables.calendarMode = "user";
             refreshDropdown();
             moveUI('Map'); 
             
         });
         
         $('#goToPlanner').click(function(){
+            applicationVariables.calendarMode = "user";
             populateCellDropList();
             refreshDropdown();
             moveUI('Create'); 
@@ -649,77 +549,7 @@ $(document).ready(function(){
         });
 
 		//Simple function to an object that you can put in the calendar
-		function createEvent(debut, fin, fullDay, titre, adresse, sport){
-			var coleur = "#CCFFCC";
-			if(sport === 'Bike'){
-				coleur = "#CCCCCC";
-			}
-			else if(sport === 'Swim'){
-				coleur = "#99CCFF";
-			}
-			else{   //Run
-				coleur = "#CC9966";
-			}
-
-			var singleEvent = {
-			//id      : Number,  Not needed for now
-			title   : titre,
-			allDay  : fullDay,
-			start   : debut,
-			end     : fin,
-			url     : adresse,
-			color   : coleur
-			}
-
-			return singleEvent;
-		}
-
-		function createTitleCalendar(debut){
-
-			var type = $('input[type=radio][name=radio1]:checked + label').text();;
-			return type;
-
-		}
-
-		function createIntervallArray(inputName, callback){
-			$("select[name='" + inputName + "']").length;
-
-		}
-
-		function createSingleIntervall(laDistance, laTime, leIntensity, callback){
-    		
-			var object = {
-
-				distance: laDistance,
-				time: laTime,
-				intensity: leIntensity
-
-			}
-
-			callback(object);
-		}
-
-		function createSingleDistance(leTargetType, theMinValue, theMaxValue, theIntensity, callback){
-
-
-			var object = {
-
-				targetType  : leTargetType,
-				minValue    : theMinValue,
-				maxValue    : theMaxValue,
-				intensity   : theIntensity
-
-			}
-
-			callback(object);
-
-		}
-
-		function getSelectedParcour(selectId, callback){
-
-		    document.getElementById().innerHTML = $("#" + selectId).val();
-
-		}
+		
         
         //Will take a JSON for string argumen (array of maps) and will populate drop list
         var populateDroplist = function(dropdownName, string){
@@ -797,16 +627,24 @@ $(document).ready(function(){
         //takes the current displayed month and go gets the data
         function updateCalendar(){
             
+            var url;
             var d = $('#fullcalendar').fullCalendar('getDate');
                 //alert(d);
                 
             var month = d.getMonth() + 1;
             var year = d.getFullYear();
-            var theGetUrl = "/event/" + year + "/" + month + "/" + authId
+            var theGetUrl = 
 
             $('#fullcalendar').fullCalendar( 'removeEvents' );
             
-            $.getJSON(theGetUrl, function(data) {
+            if(applicationVariables.calendarMode === "cell"){
+                url = "/cell/event/" + year + "/" + month + "/" + applicationVariables.currentCell;
+            }
+            else{  //Users calendar data
+                url = "/event/" + year + "/" + month + "/" + authId;    
+            }
+            
+            $.getJSON(url, function(data) {
                 if(data.success){
                     $('#fullcalendar').fullCalendar( 'addEventSource', data.message );  
                 }
@@ -901,21 +739,6 @@ $(document).ready(function(){
             }    
         });
         
-        /* Deletable
-        $("#intervallDesc").qtip({
-            content: {
-                text: "<textarea rows='5' cols='20' id='intervallDescInput'>Enter the description of this single intervall (not required) </textarea>" 
-            },
-            show: {
-                event: 'click', 
-                ready: false 
-            },
-            hide: 'click',
-            style: {
-                widget: true 
-            }
-        });*/
-        
         var grabNewCellInput = function(){
             
             var object = {
@@ -953,14 +776,18 @@ $(document).ready(function(){
         $('.cellCard').live('click',function(){
            var id = $(this).attr('refId');
            var owner = $(this).attr('owner');
+           applicationVariables.calendarMode = "cell";
+           applicationVariables.currentCell = $(this).attr('refId');
            initCellView(id, owner);
            UILoadNewState('cellView');
+           updateCalendar();
             
         });
         
         //Button found on profile snippet, click on profile mini pic
         $('.btn_viewProfile').live('click',function(){
            var id = $(this).attr('userid');
+           applicationVariables.calendarMode = "user";
            initUsersProfile(id);
            UILoadNewState('profileView');
            $('#friendPic' + id).qtip("api").destroy();
@@ -971,7 +798,7 @@ $(document).ready(function(){
             $.getJSON(getAllCell, function(data) {
                 if(data.success){
                     for(i = 0; i < data.message.length;i++){
-                        droplistHtml = "<option value='" +  data.message[i]._id + "'>"+ data.message[i].name+"</option>";
+                        droplistHtml = "<option value='" +  data.message[i].cellDetails + "'>"+ data.message[i].name+"</option>";
                         $(droplistHtml).appendTo("#cellSelection");
                     } 
                 }
