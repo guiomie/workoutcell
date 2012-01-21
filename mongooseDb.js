@@ -173,7 +173,7 @@ var CardioResult = new Schema({
     
     id             : Number,
     intervallResult  : [CardioRef], 
-    distanceResult   : [{workoutId: ObjectId, unit: String, value: Number, completed: Boolean}]
+    distanceResult   : [new mongoose.Schema({workoutId: ObjectId, unit: String, value: Number, completed: Boolean})]
 });
 
 

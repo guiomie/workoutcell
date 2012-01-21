@@ -449,7 +449,7 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
                     CardioResult.update({ "id" : userId, "intervallResult.workoutId": workoutRefId },
                         { $set:{"intervallResult.$.intervalls":receivedResult}},{upsert: true}, function(err){
                             if(err){
-                                callback("No Document found: " + err);
+                                callback("Cant update doc: " + err);
                             }
                             else{
                                  callback("Success");
@@ -488,7 +488,7 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
                             "distanceResult.$.completed"   : receivedResult.completed}
                         },{upsert: true}, function(err){
                             if(err){
-                                callback("No Document found: " + err);
+                                callback("Cant update doc: " + err);
                             }
                             else{
                                  callback("Success");
