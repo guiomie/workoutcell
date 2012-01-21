@@ -399,7 +399,7 @@ module.exports = function(app) {
         //Making sure the receive request is valid
         if(typeof(receivedJSON.type) !== undefined){
         
-            mongooseLogic.saveResults(req.params.workoutId, receivedJSON, function(message){
+            mongooseLogic.saveResults(req.params.workoutId, receivedJSON, req.params.userId, function(message){
                 if(message === "Success"){
                     res.json({ success: true,  message: 'Result saved.'});    
                 }

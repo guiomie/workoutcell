@@ -351,7 +351,7 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
     });  
 }
 
-
+/*
 var saveResults = function(workoutId, receivedResult, callback){
     
     console.log(JSON.stringify(receivedResult + " : " + workoutId));
@@ -409,6 +409,95 @@ var saveResults = function(workoutId, receivedResult, callback){
             }  
         });
     }     
+}*/
+
+var saveResults = function(workoutRefId, receivedResult, userId, callback){
+    
+    console.log(JSON.stringify(receivedResult + " : " + workoutRefId));
+    
+    if(workoutRefId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ getWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        //Means this is a intervall trainning
+        if(RealTypeOf(receivedResult) === "array"){
+            console.log("Looking for: " + userId + " at workout id: " +  workoutRefId);
+            CardioResult.findOne({ "id" : userId, "intervallResult.workoutId": workoutRefId }, function(err, result){
+                if(err){
+                    callback("No Document found: " + err);
+                }
+                else if( result === null){ //this means the document doesnt exist so lets push it to the array
+                    console.log('document not found');
+                    var tempResult = {
+                        workoutId    :workoutRefId,
+                        intervalls   :receivedResult
+                    }
+                    
+                    CardioResult.update({ "id" : userId}, { $push: {"intervallResult": tempResult}}, {upsert: true}, function(err){
+                        if(err){
+                            callback("Error in saving result (intervall): " + err);
+                        }
+                        else{
+                            callback("Success");
+                        }
+                    });
+                }
+                else{
+                    console.log('in document update');
+                    CardioResult.update({ "id" : userId, "intervallResult.workoutId": workoutRefId },
+                        { $set:{"intervallResult.$.intervalls":receivedResult}},{upsert: true}, function(err){
+                            if(err){
+                                callback("No Document found: " + err);
+                            }
+                            else{
+                                 callback("Success");
+                            }
+                    });
+                }
+            });   
+        }
+        else{ //should be a distance training
+            CardioResult.findOne({ "id" : userId, "distanceResult.workoutId": workoutRefId }, function(err, result){
+                if(err){
+                    callback("No Document found: " + err);
+                }
+                else if( result === null){
+                    var tempResult =  {
+                        workoutId    : workoutRefId, 
+                        unit         : receivedResult.unit, 
+                        value        : receivedResult.value, 
+                        completed    : receivedResult.completed
+                    }
+                    CardioResult.update({ "id" : userId}, { $push: {"distanceResult": tempResult}}, {upsert: true}, function(err){
+                        if(err){
+                            callback("Error in saving result (Distance): " + err);
+                        }
+                        else{
+                            callback("Success");
+                        }
+                    });
+                }
+                else{
+                    console.log("Looking for: " + userId + " at workout id: " +  workoutRefId);              
+                    CardioResult.update({ "id" : userId, "distanceResult.workoutId": workoutRefId },
+                        { $set:{
+                            "distanceResult.$.unit"        : receivedResult.unit,
+                            "distanceResult.$.value"       : receivedResult.value,
+                            "distanceResult.$.completed"   : receivedResult.completed}
+                        },{upsert: true}, function(err){
+                            if(err){
+                                callback("No Document found: " + err);
+                            }
+                            else{
+                                 callback("Success");
+                            }
+                    }); 
+                }
+            }); 
+        }
+    }
 }
 
 
@@ -983,6 +1072,18 @@ var isUserAFriend = function(userId, target, callback){
         }
     }); 
         
+}
+
+//Taken from http://joncom.be/code/realtypeof/
+function RealTypeOf(v) {
+  if (typeof(v) == "object") {
+    if (v === null) return "null";
+    if (v.constructor == (new Array).constructor) return "array";
+    if (v.constructor == (new Date).constructor) return "date";
+    if (v.constructor == (new RegExp).constructor) return "regex";
+    return "object";
+  }
+  return typeof(v);
 }
 /*
 var getCellStats = function(objectId){

@@ -27,6 +27,7 @@ CalendarMonth = mongooseDb.CalendarMonth;
 CalendarEvent = mongooseDb.CalendarEvent;
 
 CardioWorkout = mongooseDb.CardioWorkout;
+CardioResult = mongooseDb.CardioResult;
 BasicCell = mongooseDb.BasicCell;
 IntervallUnit = mongooseDb.IntervallUnit;
 SingleIntervallResult = mongooseDb.SingleIntervallResult;
@@ -67,6 +68,10 @@ everyauth.facebook
             }); 
             
             NotificationsReference.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err);   
+            });
+            
+            CardioResult.create({ id: id}, function(err, ref){
                if (err) return promise.fail(err);   
             }); 
             

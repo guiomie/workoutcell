@@ -22,6 +22,7 @@ Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
 CalendarMonth = mongooseDb.CalendarMonth;
 CalendarEvent = mongooseDb.CalendarEvent;
+CardioResults = mongooseDb.CardioResults;
 //DistanceUnit = mongooseDb.DistanceUnit;
 CardioWorkout = mongooseDb.CardioWorkout;
 BasicCell = mongooseDb.BasicCell;

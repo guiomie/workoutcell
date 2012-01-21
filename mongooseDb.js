@@ -162,6 +162,23 @@ var CardioWorkout = new Schema({
     intervallResult       :[SingleIntervallResult]
 });
 
+var CardioRef = new Schema({
+
+    workoutId: ObjectId,
+    intervalls  : [{unit: String, value: Number, completed: Boolean}]
+
+});
+
+var CardioResult = new Schema({
+    
+    id             : Number,
+    intervallResult  : [CardioRef], 
+    distanceResult   : [{workoutId: ObjectId, unit: String, value: Number, completed: Boolean}]
+});
+
+
+
+
 /*
 var DistanceUnit = new Schema({
     
@@ -242,6 +259,7 @@ mongoose.model('CalendarEvent', CalendarEvent);
 
 
 mongoose.model('CardioWorkout', CardioWorkout);
+mongoose.model('CardioResult', CardioResult);
 //mongoose.model('DistanceUnit', DistanceUnit);
 mongoose.model('BasicCell', BasicCell);
 mongoose.model('IntervallUnit',IntervallUnit);
@@ -269,6 +287,7 @@ var CalendarEvent = exports.CalendarEvent = mongoose.model('CalendarEvent');
 
 //var DistanceUnit = exports.DistanceUnit = mongoose.model('DistanceUnit');
 var CardioWorkout = exports.CardioWorkout = mongoose.model('CardioWorkout');
+var CardioResult = exports.CardioResult = mongoose.model('CardioResult');
 var BasicCell = exports.BasicCell = mongoose.model('BasicCell');
 var IntervallUnit = exports.IntervallUnit = mongoose.model('IntervallUnit');
 var SingleIntervallResult = exports.SingleIntervallResult = mongoose.model('SingleIntervallResult');

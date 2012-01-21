@@ -16,6 +16,8 @@ var applicationVariables = {
     currentCell         : "none"
 }
 
+//Global functions, declared in jquery init
+var updateCalendar;
 
 $(document).ready(function(){
         
@@ -625,7 +627,7 @@ $(document).ready(function(){
         
         //will remove everything in the calendar then
         //takes the current displayed month and go gets the data
-        function updateCalendar(){
+        updateCalendar = function (){
             
             var url;
             var d = $('#fullcalendar').fullCalendar('getDate');
