@@ -742,7 +742,7 @@ var deleteCellEvent = function(cellId, month, year, workoutId, callback){
 
 var joinCellWorkout = function(userId, userName, workoutId, callback){
     
-    if(workoutRefId.toString().length !== 24 ){
+    if(workoutId.toString().length !== 24 ){
         
        console.log("Invalid objectId submitted @ getWorkout()");
        callback("Invalid objectId for workoutId");

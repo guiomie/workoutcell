@@ -35,17 +35,20 @@ function initView(workoutObject, event) {
        $('#joinWorkout').hide();
         $('#quitWorkout').hide();
         $('#deleteWorkout').show();
+        $('#toggleEdit').show();
     }
     else{
         $('#joinWorkout').show();
         $('#quitWorkout').hide();
         $('#deleteWorkout').hide();
-
+        $('#toggleEdit').hide();
+        
         for(i = 0; i < workoutObject.cell.participants.length; i++){
             if(workoutObject.cell.participants[i].fbid === parseInt(authId)){
                 $('#joinWorkout').hide();
                 $('#quitWorkout').show();
                 $('#deleteWorkout').hide();
+                $('#toggleEdit').show();
             }
         }
  
@@ -112,6 +115,7 @@ function initView(workoutObject, event) {
     });
     
     //On load attach handler to delete button
+    $("#deleteWorkout").die();
     $("#deleteWorkout").live("click",function(){
         
         concatenateStrings([deleteWorkout, "/", start.getFullYear(), "/", start.getMonth(),
@@ -128,7 +132,7 @@ function initView(workoutObject, event) {
         });
     });
     
-    
+    $("#quitWorkout").die();
     $("#quitWorkout").live('click', function(){
         var url = quitWorkout + start.getFullYear() + "/" + start.getMonth() + "/" + workoutObject._id + "/" + eventId;
         
@@ -142,6 +146,20 @@ function initView(workoutObject, event) {
                 Notifier.success(data.message);
             }   
         }, "json");           
+    });
+    
+    $("#joinWorkout").die();
+    $("#joinWorkout").live('click', function(){
+        var url = joinWorkoutCell;
+        var toPostPackage = { event: ""};
+        toPostPackage.event = event;
+
+        postJson(JSON.stringify(toPostPackage), url, function(message){
+            $.getJSON(event.url, function(workout) {
+                initView(workout, event);       
+            });
+            updateCalendar();
+        });          
     });
 }
 

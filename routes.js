@@ -30,12 +30,12 @@ module.exports = function(app) {
     //all users maps
     app.get("/parcour/list/:userId", function(req, res){
      
-    mongooseLogic.getParcourList(req.params.userId, function(data){
+        mongooseLogic.getParcourList(req.params.userId, function(data){
          
-         console.log(data);
-         res.json(JSON.stringify(data));
+            console.log(data);
+            res.json(JSON.stringify(data));
          
-         });
+        });
   
 
     });
@@ -350,7 +350,7 @@ module.exports = function(app) {
                  //Removes the user from the workout participants list
                  mongooseLogic.leaveWorkout(req.params.workoutid, getLogedId(req), function(message2){
                     if(message2 === "Success"){
-                        res.json({ success: false, message:'Failed to leave workout.'});
+                        res.json({ success: true, message:'Left workout.'});
                     }
                     else if (message2 === "Failed"){
                         res.json({ success: false, message:'Failed to leave Workout.'});
@@ -573,16 +573,16 @@ module.exports = function(app) {
         
     
     //Join a cell workout
-    app.post("/workout/cell/join/:workoutid/", function(req, res){
-        
-        var eventObject = receivedJSON.event;
+    app.post("/workout/cell/join/", function(req, res){
+
+        var eventObject = req.body.event;
         
         mongooseLogic.joinCellWorkout(getLogedId(req), getLogedName(req), eventObject.refWorkout, function(mes){
             if(mes !== "Success"){
                 res.json({ success: false, message:'Failed to join Workout.'});    
             }
             else{
-                mongooseLogic.saveEvent(eventObject, req.params.userId, 
+                mongooseLogic.saveEvent(eventObject, getLogedId(req), 
                 eventObject.refWorkout, function(message){
                     //res.contentType('application/json');
                     if(message === "not instantiated"){
