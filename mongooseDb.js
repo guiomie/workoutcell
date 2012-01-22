@@ -156,7 +156,7 @@ var CardioWorkout = new Schema({
     intervalls            :[singleIntervall],
     distance              :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
     description           :String,
-    cell                  :{creator: String, participants: [TinyUser]}, //Temporarly not a basicCell,
+    cell                  :{creator: String, participants: [TinyUser], cellId: ObjectId}, //Temporarly not a basicCell,
     parcour               :{id: ObjectId, name: String},
     distanceResult        :{unit: String , value:Number, completed:Boolean},
     intervallResult       :[SingleIntervallResult]
@@ -175,18 +175,6 @@ var CardioResult = new Schema({
     intervallResult  : [CardioRef], 
     distanceResult   : [new mongoose.Schema({workoutId: ObjectId, unit: String, value: Number, completed: Boolean})]
 });
-
-
-
-
-/*
-var DistanceUnit = new Schema({
-    
-    targetType    :String,
-    value         :Number,
-    intensity     :Number
-    
-});*/
 
 
 var BasicCell = new Schema({

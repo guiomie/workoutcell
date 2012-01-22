@@ -29,6 +29,29 @@ function initView(workoutObject, event) {
 	if(typeof(workoutObject.description) !== "undefined"){
 		document.getElementById('description').innerHTML = "Description <br>" + workoutObject.description;
 	}
+
+    //Treat display for cell based workout id needed
+    if(workoutObject.cell.participants.length === 0 || typeof(workoutObject.cell.participants) === "undefined"){
+       $('#joinWorkout').hide();
+        $('#quitWorkout').hide();
+        $('#deleteWorkout').show();
+    }
+    else{
+        $('#joinWorkout').show();
+        $('#quitWorkout').hide();
+        $('#deleteWorkout').hide();
+
+        for(i = 0; i < workoutObject.cell.participants.length; i++){
+            if(workoutObject.cell.participants[i].fbid === parseInt(authId)){
+                $('#joinWorkout').hide();
+                $('#quitWorkout').show();
+                $('#deleteWorkout').hide();
+            }
+        }
+ 
+    }
+    
+    
 	//Input are type of workout and intervall of distance parameters, if the other one is ""
 	renderDetails(workoutObject, function(output){
 		document.getElementById('typeDetail').innerHTML = output;
@@ -103,6 +126,22 @@ function initView(workoutObject, event) {
                 }
             }, "json");
         });
+    });
+    
+    
+    $("#quitWorkout").live('click', function(){
+        var url = quitWorkout + start.getFullYear() + "/" + start.getMonth() + "/" + workoutObject._id + "/" + eventId;
+        
+        $.get(url, function(data){
+            if(data.success){
+                applicationVariables.calendarMode = "user";
+                moveUI('Social'); 
+            }
+            else{
+            //something wrong
+                Notifier.success(data.message);
+            }   
+        }, "json");           
     });
 }
 

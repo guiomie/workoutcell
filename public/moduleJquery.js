@@ -30,8 +30,14 @@ $(document).ready(function(){
 			eventClick: function(event) {	
 				if (event.url) {
 				//the launched function readjusts UI and send httprequest for view
-				UIreposition(event); //event.url, event.start, event.end, event._id);
-				return false;
+				//UIreposition(event); //event.url, event.start, event.end, event._id);
+				moveUI('View');
+                
+                $.getJSON(event.url, function(workout) {
+                    initView(workout, event);       
+                });
+                
+                return false;
 			    }
             },     
             viewDisplay: function(view) {
@@ -774,6 +780,8 @@ $(document).ready(function(){
             $('#createCellDialog').dialog('open');  
             
         });
+        
+        
         
         $('.cellCard').live('click',function(){
            var id = $(this).attr('refId');

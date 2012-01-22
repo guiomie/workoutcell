@@ -98,6 +98,29 @@ var moveUI = function(newUI) {
         }
         
     }
+    else if(newUI == 'View'){
+    	//Block re-rendering of widget if already choosen
+		if(panelState !== 'View'){					
+			// Change calendar size
+			$("#fullcalendar").animate({ 
+				height: "500px", 
+				width: "500px", 
+			}, 1000, function(){
+			    //resize calendar, seems to be a glitch
+			    $('#fullcalendar').fullCalendar('render');
+                if(panelState !== "largeCalendar"){
+                    $("#" + panelState).hide("slide", {}, 1000, function(){
+    		            $("#View").show("slide", {}, 1000);
+			            panelState = 'View';
+		            });
+		        }
+                else{
+                    $("#View").show("slide", {}, 1000);
+    		        panelState = 'View';    
+                }
+		  });
+	    }
+	}
 	else{
 
 	}
@@ -107,7 +130,7 @@ var moveUI = function(newUI) {
 
 
 
-		/* Definitions of custom made functions, location is here to ease rest of general code */
+/* Definitions of custom made functions, location is here to ease rest of general code */
 
 function UIreposition(event){
             
@@ -123,10 +146,10 @@ function UIreposition(event){
 		//Transit between user panel functionality 
 		$("#" + panelState).hide("slide", {}, 1000, function(){
 			$("#View").show("slide", {}, 1000);
-				panelState = 'View';
+			panelState = 'View';
 
-			});	
-		}
+		});	
+	}
     
     $.getJSON(event.url, function(workout) {
          //document.getElementById('View').innerHTML = JSON.stringify(data);                

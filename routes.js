@@ -59,7 +59,7 @@ module.exports = function(app) {
     app.get("/workout/:workoutid", function(req, res){
         
         
-         mongooseLogic.getWorkout(req.params.workoutid, function(message){
+         mongooseLogic.getWorkout(req.params.workoutid, getLogedId(req), function(message){
 
             if(message === "not instantiated"){
                 res.json("{ success: false, message:'Failed to find workout'}");
@@ -71,6 +71,8 @@ module.exports = function(app) {
          });
        
     });
+    
+    //Retreive specific workout
     
     app.get("/event/:year/:month/:userId", function(req, res){
     
@@ -320,12 +322,12 @@ module.exports = function(app) {
          
          mongooseLogic.deleteEvent(req.params.eventid, req.params.userid, req.params.month, req.params.year,  function(message){
             if(message !== "Success"){
-                res.json({ success: false, message:'Failed to delete workout.'});
+                res.json({ success: false, message:'Failed to delete Event.'});
             }
             else{
                 mongooseLogic.deleteWorkout(req.params.workoutid, function(message){
                     if(message !== "Success"){
-                        res.json({ success: false, message:'Failed to delete calendar event.'});    
+                        res.json({ success: false, message:'Failed to delete calendar Workout.'});    
                     }
                     else{
                         res.json({ success: true, message:'Deleted workout with success.'});
@@ -336,8 +338,48 @@ module.exports = function(app) {
          });
        
     });
-
     
+    //Quit a cell workout, and delete workoutcell if your the last member
+    app.get("/workout/cell/quit/:year/:month/:workoutid/:eventid", function(req, res){
+        //Delevent workout even in users profile
+        mongooseLogic.deleteEvent(req.params.eventid, getLogedId(req), req.params.month, req.params.year,  function(message1){
+            if(message1 !== "Success"){
+                res.json({ success: false, message:'Failed to delete Event.'});
+            }
+            else{
+                 //Removes the user from the workout participants list
+                 mongooseLogic.leaveWorkout(req.params.workoutid, getLogedId(req), function(message2){
+                    if(message2 === "Success"){
+                        res.json({ success: false, message:'Failed to leave workout.'});
+                    }
+                    else if (message2 === "Failed"){
+                        res.json({ success: false, message:'Failed to leave Workout.'});
+                    }
+                    //If the list is empty when user leaves, the function returns the cells ID so we can delete it
+                    else{ //This means the workoutcell has no users anymore, so delete the whole thing
+                        console.log(message2);
+                        mongooseLogic.deleteCellEvent(message2, req.params.month, req.params.year, req.params.workoutid, function(message3){
+                            if(message3 === "Success"){ //Event gone, can now delete workout savely
+                                mongooseLogic.deleteWorkout(req.params.workoutid, function(message4){
+                                    if(message4 !== "Success"){
+                                        res.json({ success: false, message:'Failed to delete Workout.'});    
+                                    }
+                                    else{
+                                        res.json({ success: true, message:'Left and Deleted workout with success.'});
+                                    }
+                                });
+                            }
+                            else{
+                                res.json({ success: false, message:'Left workout, but Failed to delete Workout.'}); 
+                            }   
+                        });
+                    } 
+                });  
+            }
+        });
+    
+    });
+
     //!!!----Search -----!!!
     
     app.get("/search/fullname/:first/:last", function(req, res){
@@ -452,7 +494,7 @@ module.exports = function(app) {
      
       //step1   
       if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
-        mongooseLogic.saveWorkout(workoutObject, "none", "none", function(savedWorkoutObjectId){
+        mongooseLogic.saveWorkout(workoutObject, "none", "none", "none", function(savedWorkoutObjectId){
             //console.log(savedWorkoutObjectId);
             if(savedWorkoutObjectId !== "not instantiated"){
                 console.log("Saved Workout ...");
@@ -490,10 +532,10 @@ module.exports = function(app) {
         var receivedJSON = req.body;//JSON.parse(req.body);
         var eventObject = receivedJSON.event;
         var workoutObject = receivedJSON.workout;
-        
+        //console.log( "CELLID IS --> " + req.params.cellId);
         //step1   
         if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
-            mongooseLogic.saveWorkout(workoutObject, getLogedId(req), getLogedName(req), function(savedWorkoutObjectId){
+            mongooseLogic.saveWorkout(workoutObject, getLogedId(req), getLogedName(req), req.params.cellId, function(savedWorkoutObjectId){
                 if(savedWorkoutObjectId !== "not instantiated"){
                     mongooseLogic.saveCellEvent(eventObject, req.params.cellId, 
                         savedWorkoutObjectId, function(message){             
@@ -526,6 +568,34 @@ module.exports = function(app) {
             //res.header('application/json');
              res.json({ success: false,  message: 'Failed, Invalid object sent to server'});  
         }    
+    });
+    
+        
+    
+    //Join a cell workout
+    app.post("/workout/cell/join/:workoutid/", function(req, res){
+        
+        var eventObject = receivedJSON.event;
+        
+        mongooseLogic.joinCellWorkout(getLogedId(req), getLogedName(req), eventObject.refWorkout, function(mes){
+            if(mes !== "Success"){
+                res.json({ success: false, message:'Failed to join Workout.'});    
+            }
+            else{
+                mongooseLogic.saveEvent(eventObject, req.params.userId, 
+                eventObject.refWorkout, function(message){
+                    //res.contentType('application/json');
+                    if(message === "not instantiated"){
+                        //console.log("Event not Saved ...");
+                        res.json({ success: false, message: 'Failed to saved event.'});
+                    }
+                    else{
+                        //console.log("Saved Event ...");
+                        res.json({ success: true,  message: 'Joined workout successfully.'});    
+                    }
+                });
+            }
+        });
     });
         
     //*************************************************************************

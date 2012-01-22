@@ -193,7 +193,7 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
 }
 
 //Saves workout, sends callback has the objectid, to then save in reference collection
-var saveWorkout = function(workoutObject, logedId, logedName, callback){
+var saveWorkout = function(workoutObject, logedId, logedName, idCell, callback){
     
     var theWorkout = "not instantiated";
     var callbackValue = "not instantiated";
@@ -210,11 +210,11 @@ var saveWorkout = function(workoutObject, logedId, logedName, callback){
         };
     }
     
-    if(logedId !== "none" && logedName !== "none"){
+    if(logedId !== "none" && logedName !== "none" && cell !== "none"){
           
         var tinyuser = {
             fbid      : parseInt(logedId),
-            fullNamee : logedName
+            fullNamee : logedName,
         }
     
         var array = [];
@@ -222,7 +222,8 @@ var saveWorkout = function(workoutObject, logedId, logedName, callback){
             
         cell = {
            creator       : logedName,
-           participants  : array
+           participants  : array,
+           cellId        : ObjectId(idCell)
            
         }; 
     
@@ -351,65 +352,6 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
     });  
 }
 
-/*
-var saveResults = function(workoutId, receivedResult, callback){
-    
-    console.log(JSON.stringify(receivedResult + " : " + workoutId));
-    
-    if(workoutId.toString().length !== 24 ){
-        
-       console.log("Invalid objectId submitted @ getWorkout()");
-       callback("Invalid objectId for workoutId");
-    }
-    else{
-        //var myObjectId = ObjectId.fromString(workoutId); 
-        //console.log("Searching for parcour at: " + workoutId);
-        CardioWorkout.findOne({ _id: workoutId }, function(err, result){
-            if(err || result === null){
-                console.log("error in find: " + err + " @ workoutId = " + workoutId);
-                callback("No Document found: " + err);
-            }else{
-                //console.log(userId + " : " + result);
-                if(result.type === "distance"){ //&& typeof(receivedResult.distanceResult) !== "undefined"){   
-                    var temp = {
-                       unit       :receivedResult.unit, 
-                       value      :receivedResult.value, 
-                       completed  :receivedResult.completed
-                    }
-                    
-                    result.distanceResult = temp;
-                    console.log(JSON.stringify(result.distanceResult));
-                    result.save(function(err){
-                        if(err){
-                            callback("Error in saving result (distance): " + err);
-                        }else{
-                            callback("Success");
-                        }
-                    });
-                }
-                else if(result.type === "intervall" && typeof(receivedResult.length) !== "undefined"){ // && typeof(receivedResult.intervallResult) !== "undefined"){
-                    if(receivedResult.length === result.intervalls.length){
-                        result.intervallResult = receivedResult; 
-                        result.save(function(err){
-                            if(err){
-                                callback("Error in saving result (intervall): " + err);
-                            }else{
-                                callback("Success");
-                            }
-                        });
-                    }
-                    else{
-                        callback("Mismatch in load intervall size and workout intervall size");
-                    }
-                    
-                }
-                else{
-                    callback("Invalid Result type, needs to be an intervall or distance based");    
-                }
-            }  
-        });
-    }     
-}*/
 
 var saveResults = function(workoutRefId, receivedResult, userId, callback){
     
@@ -501,27 +443,53 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
 }
 
 
-var getWorkout = function(workoutId, callback){
+var getWorkout = function(workoutRefId, userId, callback){
     
     //Verify the object is a valid objectid
-    if(workoutId.toString().length !== 24 ){
+    if(workoutRefId.toString().length !== 24 ){
         
        console.log("Invalid objectId submitted @ getWorkout()");
        callback("Invalid objectId for workoutId");
     }
     else{
-        //var myObjectId = ObjectId.fromString(workoutId); 
-        //console.log("Searching for parcour at: " + workoutId);
-        CardioWorkout.findOne({ _id: workoutId }, function(err, result){
-            var callB;
-            if(err || result === null){
-                console.log("error in find: " + err + " @ workoutId = " + workoutId);
-                callB = "No Document found: " + err;
-                callback(callB);
-            }else{
-                //console.log(userId + " : " + result);
-                callB = result; 
-                callback(callB);
+        CardioWorkout.findOne({ _id: workoutRefId }, function(err, workoutResult){
+
+            if(err || workoutResult === null){
+                callback("No such workout: " + err);
+            }
+            else{
+                var queryRestriction;
+                var parameterName;
+                if(workoutResult.type === "distance"){
+                    queryRestriction = { "id" : parseInt(userId), "distanceResult.workoutId" : ObjectId.fromString(workoutRefId)};
+                    parameterName = "distanceResult";
+                }
+                else{
+                    queryRestriction = { "id" : parseInt(userId), "intervallResult.workoutId" : ObjectId.fromString(workoutRefId)};
+                    parameterName = "intervallResult";
+                }
+                
+                CardioResult.findOne(queryRestriction, function(err, result){
+                    if(err){ 
+                        callback("Error in finding: " + err);
+                    }
+                    else if(result === null){
+                        //console.log("cant find: " + queryRestriction + " at " + workoutRefId + " for user " + userId);
+                        callback(workoutResult);
+                    }
+                    else{    
+                        console.log(JSON.stringify(result));
+                        result[parameterName].forEach(function (element) {
+                            if(element.workoutId.toString() === workoutRefId){
+                                console.log("Found match " + element );
+                                workoutResult[parameterName] = element;
+                                callback(workoutResult);
+                            }
+                        });
+                    
+                    }
+                    
+                });
             }  
         });
     }
@@ -598,13 +566,13 @@ var deleteWorkout = function(workoutId, callback){
     else{
         //var myObjectId = ObjectId.fromString(workoutId); 
         //console.log("Searching for parcour at: " + workoutId);
-        CardioWorkout.remove({ _id: workoutId }, function (err) {
+        CardioWorkout.remove({ _id: workoutId }, function (err, result) {
             if (err) { 
                 console.log("In deleteWorkout Failed");
                 callback("Error in deletion. Stack Trace: " + err); 
             }
             else{
-                console.log("In deleteWorkout success");
+                console.log("In deleteWorkout success" + JSON.stringify(result));
                 callback("Success");      
             }      
         });
@@ -614,8 +582,7 @@ var deleteWorkout = function(workoutId, callback){
 var deleteEvent = function(eventId, userId, month, year, callback){
     
     //Verify the object is a valid objectid
-    if(eventId.toString().length !== 24 || !isNumber(month) || !isNumber(year) || month < 1 || year < 2011){
-        
+    if(eventId.toString().length !== 24 || !isNumber(month) || !isNumber(year) || month < 0 || year < 2011){
        //console.log("Invalid objectId or input submitted @ deleteEvent()");
        callback("Invalid objectId or input for eventId");
     }
@@ -629,7 +596,7 @@ var deleteEvent = function(eventId, userId, month, year, callback){
                 callback("Error in deletion. Stack Trace: " + err); 
             }
             else{
-                console.log(result.ref.length + " vs " + arrayLocation);
+                //console.log(result.ref.length + " vs " + arrayLocation);
                 if(typeof(result.ref.length) !== "undefined" && result.ref.length > arrayLocation 
                     && result.ref[arrayLocation].allEvents.id(eventId) !== null){
                     //Mongoose special command to .id to search an _id
@@ -655,7 +622,159 @@ var deleteEvent = function(eventId, userId, month, year, callback){
     }
 }
 
+var leaveWorkout = function(workoutRefId, userId, callback){
+    
+    var callbackSuccess = "Success";
+    
+    if(workoutRefId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ getWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        CardioWorkout.findOne({ _id: workoutRefId }, function(err, workoutResult){
 
+            if(err || workoutResult === null){
+                callback("Failed");
+            }
+            else{
+                var queryRestriction;
+                var parameterName;
+                if(workoutResult.type === "distance"){
+                    queryRestriction = { "id" : parseInt(userId), "distanceResult.workoutId" : ObjectId.fromString(workoutRefId)};
+                    parameterName = "distanceResult";
+                }
+                else{
+                    queryRestriction = { "id" : parseInt(userId), "intervallResult.workoutId" : ObjectId.fromString(workoutRefId)};
+                    parameterName = "intervallResult";
+                }
+
+                for(i = 0; i < workoutResult.cell.participants.length;i++){
+                    //console.log("In 1 loop " + typeof(workoutResult.cell.participants[i].fbid).toString() + " vs user " + typeof(userId));
+                    if(workoutResult.cell.participants[i].fbid.toString() === userId){
+                        //console.log("In 1 loop condition");
+                        workoutResult.cell.participants[i].remove();
+                        
+                        if(workoutResult.cell.participants.length === 0){
+                            callbackSuccess = workoutResult.cell.cellId;
+                        }
+                        
+                        workoutResult.save(function (err) {
+                           if (err) { 
+                                callback("Failed"); 
+                            }       
+                            else{
+                                //console.log("In deleteEvent Success");
+                                CardioResult.findOne(queryRestriction, function(err, result){
+                                    if(err){ 
+                                        callback("Failed");
+                                    }
+                                    else if(result === null){
+                                        //This means user hasnt filled in any result for this workout yet
+                                        callback(callbackSuccess);
+                                    }
+                                    else{    
+                                        //console.log(JSON.stringify(result));
+                                            for(i=0; i < result[parameterName].length; i++){
+                                                //console.log("In  loop 2");
+                                                if(result[parameterName][i].workoutId.toString() === workoutRefId){
+                                                    //console.log("In loop 2 condition");
+                                                    result[parameterName][i].remove();
+                                                    result.save(function (err) {
+                                                        if (err) { 
+                                                            //console.log("In deleteEvent error(2)");
+                                                            callback("Failed"); 
+                                                        }       
+                                                        else{
+                                                            //console.log("In deleteEvent Success");
+                                                            callback(callbackSuccess);      
+                                                        }      
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }      
+                        });
+                    }
+                }  
+            }  
+        });
+    }
+}
+
+var deleteCellEvent = function(cellId, month, year, workoutId, callback){
+   
+    CellDetails.findOne({ _id: cellId }, function (err, result) {
+        if (err || result === null) { 
+            console.log("In deleteCellEvent error(1) at: " + err);
+            callback("Error in deletion. Stack Trace: " + err); 
+        }
+        else{
+            var arrayLocation = 1 + ((parseInt(year) - 2011)*12) + parseInt(month);
+            
+            if(typeof(result.activities.length) !== "undefined" && result.activities.length > arrayLocation){
+                
+                for(i = 0; i < result.activities[arrayLocation].allEvents.length; i++){
+                    if(result.activities[arrayLocation].allEvents[i].refWorkout === workoutId){
+                        result.activities[arrayLocation].allEvents[i].remove();
+                        result.save(function (err) {
+                            if (err) { 
+                                console.log("In deleteCellEvent error(2)" + err);
+                                callback("Error in deletion. Stack Trace: " + err); 
+                            }
+                            else{
+                                console.log("In deleteCellEvent Success" + err);
+                                callback("Success");      
+                            }      
+                        });
+                    }   
+                }
+            }
+            else{
+                console.log("In deleteCellEvent error(3)");
+                callback("Error, couldnt find calendar event");
+            }                   
+        }
+    });  
+}
+
+
+var joinCellWorkout = function(userId, userName, workoutId, callback){
+    
+    if(workoutRefId.toString().length !== 24 ){
+        
+       console.log("Invalid objectId submitted @ getWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        CardioWorkout.findOne({ _id: workoutId }, function(err, workoutResult){
+
+            if(err || workoutResult === null){
+                callback("No such workout: " + err);
+            }
+            else{
+                
+                var tinyUser = {
+                    fbid      : userId,
+                    fullName  : userName
+                }
+                workoutResult.cell.participants.push(tinyUser);
+                workoutResult.save(function (err) {
+                    if (err) { 
+                        console.log("In JoinCellWorkout error(2)" + err);
+                        callback("Error JoinCellWorkout. Stack Trace: " + err); 
+                    }
+                    else{
+                        console.log("In JoinCellWorkout Success" + err);
+                        callback("Success");      
+                    }      
+                });
+            }
+        });
+    }
+    
+}
 /////*********************** Social and SEARCH *****************************////
 
 //This will add a user friendship request in the users notification queu
@@ -1085,6 +1204,8 @@ function RealTypeOf(v) {
   }
   return typeof(v);
 }
+
+
 /*
 var getCellStats = function(objectId){
     
@@ -1117,6 +1238,9 @@ exports.deleteWorkout = deleteWorkout;
 exports.deleteEvent = deleteEvent;
 exports.saveCellEvent = saveCellEvent;
 exports.getCellMonthEvent = getCellMonthEvent;
+exports.leaveWorkout = leaveWorkout;
+exports.deleteCellEvent = deleteCellEvent;
+exports.joinCellWorkout = joinCellWorkout;
 
 exports.getUserBasicInfo = getUserBasicInfo;
 exports.getCellDetails = getCellDetails;
