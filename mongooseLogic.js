@@ -482,7 +482,7 @@ var getWorkout = function(workoutRefId, userId, callback){
                         result[parameterName].forEach(function (element) {
                             if(element.workoutId.toString() === workoutRefId){
                                 console.log("Found match " + element );
-                                workoutResult[parameterName] = element;
+                                workoutResult[parameterName] = element.distanceResult;
                                 callback(workoutResult);
                             }
                         });
@@ -1144,6 +1144,27 @@ var joinCell = function(cellId, userId, callback){
             }
         });
     } 
+} 
+
+
+var quitCell = function(userId, cellId, callback){
+    console.log(cellId + " is " + typeof(cellId)  +" at " + userId );
+   GeneralReference.update({ "id" : userId}, { $pull: { cells: { cellDetails :  ObjectId.fromString(cellId)}}}, function(err){
+        if(err){
+            callback("User isnt part of this cell. Stack: " + err );
+        }
+        else{ //Memeber not in cell yet, so he can join
+           CellDetails.update({ "_id" : cellId}, { $pull: {"members": userId}}, {upsert: true}, function(err){    
+                if(err){
+                    callback("Cant remove user");
+                }
+                else{
+                    callback("Success"); 
+                }
+            });
+        }
+    });
+
 }
 
 /// Random functions
@@ -1246,6 +1267,9 @@ exports.getUserBasicInfo = getUserBasicInfo;
 exports.getCellDetails = getCellDetails;
 exports.createCell = createCell;
 exports.getUsersCells = getUsersCells;
+exports.joinCell = joinCell;
+exports.quitCell = quitCell;
+
 exports.isUserAFriend = isUserAFriend;
 exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;

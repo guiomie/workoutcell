@@ -193,6 +193,33 @@ var fillCellView = function(object, owner){
     
     renderCellMemberList(object.members);
     
+    $('#cellToggleName').die();
+    $('#cellToggleName').live('click', function(){
+        
+        var url = "";
+        if(document.getElementById('cellToggleName').innerHTML === 'Quit cell'){
+            url = quitCell + object._id;
+            
+        }
+        else{
+            url = joinCell + object._id;      
+        }
+        
+        $.getJSON(url, function(data) {
+            if(data.success){
+                 intiSocialView(true, true, true);
+                 UILoadNewState('Social');
+            }
+            else{
+                //something wrong
+                Notifier.success(data.message);
+            }   
+        });
+        
+        
+        
+    });
+    
 }
 
 //Renders the list of users for a cell, and the button to quit or join the cell

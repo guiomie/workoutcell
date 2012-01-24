@@ -19,6 +19,9 @@ var getAllCell = '/cell/all/' + authId;
 var postcellworkout = '/workout/cell/';  
 var quitWorkout = '/workout/cell/quit/'; //:year/:month/:workoutid/:eventid
 var joinWorkoutCell = "/workout/cell/join/";
+var joinCell = "/cell/join/";
+var quitCell = "/cell/quit/";
+
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -37,4 +40,6 @@ var initGlobalVar = function(){
     postcellworkout = '/workout/cell/'; 
     quitWorkout = '/workout/cell/quit/';
     joinWorkoutCell = "/workout/cell/join/";
+    joinCell = "/cell/join/";
+    quitCell = "/cell/quit/";
 }

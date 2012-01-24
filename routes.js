@@ -201,6 +201,29 @@ module.exports = function(app) {
          
      });
      
+     app.get("/cell/join/:cellId", function(req,res){
+        
+        mongooseLogic.joinCell(req.params.cellId, getLogedId(req), function(mes){
+            if(mes !== "Success"){
+                res.json({ success: false, message:'Failed to find join Cell.'});  
+            }
+            else{
+                res.json({ success: true, message: mes}); 
+            }  
+        });
+     });
+     
+     app.get("/cell/quit/:cellId", function(req, res){
+        mongooseLogic.quitCell(getLogedId(req), req.params.cellId, function(mes){
+            if(mes === "Success"){
+                res.json({ success: true, message: 'Joined Cell'});
+            }
+            else{
+                res.json({ success: false, message:'Failed to quit Cell.' + mes});     
+            }  
+        });
+     });
+     
     //returns all of a users cells
     app.get("/cell/all/:userId", function(req,res){
        
@@ -572,7 +595,7 @@ module.exports = function(app) {
     
         
     
-    //Join a cell workout
+    //Join a cell workout, not a cell, but a workout in a cell, kinda confusing
     app.post("/workout/cell/join/", function(req, res){
 
         var eventObject = req.body.event;

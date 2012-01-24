@@ -4,3 +4,4 @@
 -No more friedns, only cells!
 -Check for duplicates in posts request
 -Fix shitty getWorkout() and messaging with route
+-Being able to join multiple cells

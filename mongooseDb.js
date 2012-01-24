@@ -48,7 +48,7 @@ var GeneralReference = new Schema({
     friends      : [Number],    //Array of fbids
     //coaches      : [PersonnaReference],  To be implemented in futur releases
     parcours     : [ParcourReference],
-    cells        : [CellReference]
+    cells        : [ new mongoose.Schema({name: String,location: String,owner: String,cellDetails : ObjectId})]
         
 });
 
