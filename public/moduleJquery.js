@@ -244,7 +244,7 @@ $(document).ready(function(){
 			//poly is a global variable declared in moduleGmap
 			//Essential to brake circular reference, else stringify will fail
 			poly.setMap(null);
-			var polypathObject = poly.getPath().getArray();
+			var polypathObject = google.maps.geometry.encoding.encodePath(poly.getPath());//.getArray();
 			var markersObject;             
     		var nameOfCourse = $("input[type=text][id=courseName]").val();
 			var totalDistance = document.getElementById('distance').innerHTML;
@@ -262,8 +262,21 @@ $(document).ready(function(){
 			    Notifier.error("Please fill in all required inputs");
 			}
             else{
-                var object = { markers: markersObject, polylines: polypathObject};
-				var content = JSON.stringify(object);
+                
+                //var encodedPath = google.maps.geometry.encoding.encodePath(polypathObject);
+                //alert(JSON.stringify(encodedPath));
+                //alert(JSON.stringify(markersObject));
+                //alert(google.maps.geometry.encoding.decodePath( encodedPath ));
+                
+                var object =  {
+                 
+                    markers : markersObject,
+                    path : polypathObject
+                    
+                }
+                
+                //var object = { markers: markersObject, polylines: polypathObject};
+				//var content = JSON.stringify(object);
 
 				var httpRequestUrl = restPost_newParcour + nameOfCourse + "/" + totalDistance; 
 
@@ -271,7 +284,7 @@ $(document).ready(function(){
 				clearMap();
 
 				//Send to server via httppost			
-                postJson(content, httpRequestUrl, function(){
+                postJson(JSON.stringify(object), httpRequestUrl, function(){
                    //reinitialise maps and lcear ui
                    distance = 0;
                    markerArray = [];
@@ -288,7 +301,23 @@ $(document).ready(function(){
         
         //To send a delete trace to server
         $('#unSaveTrace').click(function(){
+           var parcourId = $("#dropdownMap").val();
            
+           $.getJSON(deleteParcour + parcourId, function(data) {
+                if(data.success){
+                    Notifier.success(data.message);
+                    refreshDropdown();
+                    distance = 0;
+                    markerArray = [];
+                    lastAddedDistance = [];
+                    $("#courseName").val('');
+                    document.getElementById('distance').innerHTML = "0";
+                }
+                else{
+                //something wrong
+                    Notifier.error(data.message);
+                }   
+            });
            
            
             
@@ -696,13 +725,11 @@ $(document).ready(function(){
             var url = getParcour + $(this).val();
             $.get(url, function(data){
                 clearMap();
-                var receivedObject = jQuery.parseJSON(data);
-                var contentObject = jQuery.parseJSON(receivedObject.content);
-                
-                loadPolylines(contentObject.polylines);
-                
-                loadMarkers(contentObject.markers.latlng, contentObject.markers.titles);
-                document.getElementById('distance').innerHTML = receivedObject.distance;
+                //var contentObject = jQuery.parseJSON(receivedObject.content);
+                //loadPolylines(contentObject.polylines);
+                decodeToMap(data.path)
+                loadMarkers(data.markers.latlng, data.markers.titles);
+                document.getElementById('distance').innerHTML = data.distance;
                 //document.getElementById('console').innerHTML = JSON.stringify(contentObject.polylines);
                 
                 

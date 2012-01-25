@@ -152,11 +152,24 @@ function loadPolylines(arrayPath){
  
 }
 
+function decodeToMap(string){
+    
+    var polyOptions = {
+        strokeColor: '#000000',
+		strokeOpacity: 1.0,
+		strokeWeight: 3
+	}
+    
+    poly = new google.maps.Polyline(polyOptions);
+    poly.setPath(google.maps.geometry.encoding.decodePath(string));
+    poly.setMap(map);
+}
+
 function loadMarkers(arrayLatLng, arrayTitle){
 
     //alert(arrayLatLng + " : " + arrayTitle);
     for(i = 0; i < arrayLatLng.length; i++){
-        var pos = new google.maps.LatLng(arrayLatLng[i].Pa, arrayLatLng[i].Qa);
+        var pos = new google.maps.LatLng(arrayLatLng[i].Oa, arrayLatLng[i].Pa);
         
         var marker = new google.maps.Marker({
             position: pos,

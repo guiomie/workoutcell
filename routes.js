@@ -30,7 +30,7 @@ module.exports = function(app) {
     //all users maps
     app.get("/parcour/list/:userId", function(req, res){
      
-        mongooseLogic.getParcourList(req.params.userId, function(data){
+        mongooseLogic.getParcourList(req.params.userId,  function(data){
          
             console.log(data);
             res.json(JSON.stringify(data));
@@ -46,12 +46,27 @@ module.exports = function(app) {
      
     mongooseLogic.getParcour(req.params.parcourId, function(data){
          
-         console.log("routes.js level: " + data);
-         res.json(JSON.stringify(data));
+         //console.log("routes.js level: " + data);
+         res.json(data);
          
          });
   
 
+    });
+    
+    app.get("/parcour/delete/:parcourId", function(req, res){
+     
+        mongooseLogic.deleteParcour(req.params.parcourId, getLogedId(req), function(message){
+         
+            //console.log("routes.js level: " + data);
+            if(message === "Success"){
+                res.json({ success: true, message:'Deleted workout'});
+            }
+            else{
+                res.json({ success: false, message:'Failed to delete workout. ' + message});
+            }
+            
+        });
     });
     
     

@@ -2,11 +2,14 @@ var ObjectId = require('./node_modules/mongoose').Types.ObjectId;
 
 //**************************PARCOUR LOGIC **************************************
 //Save a parcour un referencial collection and in data collection
-var saveParcour = function(jsonString, distance, name, userId, callback){
+var saveParcour = function(object, distance, name, userId, callback){
     
 var newParcour = new Parcour();
-newParcour.content = JSON.stringify(jsonString);
+//newParcour.content = JSON.stringify(object);
 newParcour.distance = distance;
+newParcour.markers.latlng = object.markers.latlng;
+newParcour.markers.titles = object.markers.titles;
+newParcour.path = object.path;
 newParcour.name = name;
 
 var newParcourReference = new ParcourReference();
@@ -80,6 +83,23 @@ var getParcour = function(parcourId, callback){
   
 }
 
+var deleteParcour = function(parcourId, userId, callback){
+    GeneralReference.update({ "id" : userId}, { $pull: { parcours: { realId :  ObjectId.fromString(parcourId)}}}, function(err){
+        if(err){
+            callback("User doesnt have this parcour: " + err );
+        }
+        else{ //Memeber not in cell yet, so he can join
+          Parcour.remove({ "_id" : parcourId}, function(err){    
+                if(err){
+                    callback("Cant remove parcour. Stack: " + err);
+                }
+                else{
+                    callback("Success"); 
+                }
+            });
+        }
+    });
+}
 //NOT IMPLEMENTED YET 
 /*var deleteParcourReference = function(referenceId, userId, callback){
     
@@ -481,9 +501,15 @@ var getWorkout = function(workoutRefId, userId, callback){
                         console.log(JSON.stringify(result));
                         result[parameterName].forEach(function (element) {
                             if(element.workoutId.toString() === workoutRefId){
-                                console.log("Found match " + element );
-                                workoutResult[parameterName] = element.distanceResult;
-                                callback(workoutResult);
+                                if(workoutResult.type === "distance"){
+                                    //console.log("Found match " + JSON.stringify(element));
+                                    workoutResult[parameterName] = element;
+                                    callback(workoutResult);  
+                                }
+                                else{
+                                    workoutResult[parameterName] = element.intervalls;
+                                    callback(workoutResult);
+                                } 
                             }
                         });
                     
@@ -1249,6 +1275,7 @@ var getCellStats = function(objectId){
 exports.saveParcour = saveParcour;
 exports.getParcourList = getParcourList; 
 exports.getParcour = getParcour;
+exports.deleteParcour = deleteParcour;
 
 exports.saveWorkout = saveWorkout;
 exports.saveEvent = saveEvent;

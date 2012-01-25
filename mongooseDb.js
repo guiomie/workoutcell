@@ -47,7 +47,8 @@ var GeneralReference = new Schema({
     id           : Number,
     friends      : [Number],    //Array of fbids
     //coaches      : [PersonnaReference],  To be implemented in futur releases
-    parcours     : [ParcourReference],
+    //parcours     : [ParcourReference],
+    parcours     : [ new mongoose.Schema({realId: ObjectId, name: String, distance: Number})],
     cells        : [ new mongoose.Schema({name: String,location: String,owner: String,cellDetails : ObjectId})]
         
 });
@@ -60,7 +61,7 @@ var PersonnaReference = new Schema({
 });
 
 //*****************MAPPING APP SCHEMAS *************************
-
+//Currently implemented directly in collection because of mongoose bug
 var ParcourReference = new Schema({
    //ref to Parcour which has the content
    realId      : ObjectId,
@@ -73,9 +74,10 @@ var ParcourReference = new Schema({
 //Currently no point in transforming the json in an actual object
 var Parcour = new Schema({
    
-   content    : String,
+   path    : String,
    distance   : Number,
-   name       : String
+   name       : String,
+   markers    : {latlng: [{Oa: Number, Pa: Number}], titles: [String]}
     
 });
 

@@ -21,6 +21,8 @@ var quitWorkout = '/workout/cell/quit/'; //:year/:month/:workoutid/:eventid
 var joinWorkoutCell = "/workout/cell/join/";
 var joinCell = "/cell/join/";
 var quitCell = "/cell/quit/";
+var deleteParcour  = "/parcour/delete/";
+
 
 //Instantiated variables with this function
 
@@ -42,4 +44,5 @@ var initGlobalVar = function(){
     joinWorkoutCell = "/workout/cell/join/";
     joinCell = "/cell/join/";
     quitCell = "/cell/quit/";
+    deleteParcour  = "/parcour/delete/";
 }
