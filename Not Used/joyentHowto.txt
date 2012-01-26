@@ -1,8 +1,14 @@
-1-make sure database params for mongodb are good ones and adjust javascript sdk and
-everyauth parameters are set to prod version appId
+1-make sure database params for mongodb are good ones (mongoLabs vs mongoHq) and adjust javascript sdk and
+everyauth parameters are set to prod version appId, add non-user created schemas
 hardcode appid in facebookModule.js, put minified jquery version
 2-git pull locally and remove node_modules folder
 3-Install dependencies globally, ssh in no.de and npm -g install
 4-adjust the package.json versions of the dependencies to match global npm 
 packages versions on smartmachine
 5-git push -f workoutcell.no.de:repo master 
+
+
+
+Helpful:
+-Reset Repo on joyent smartmachine from ssh session: rm -rf repo; mkdir repo; cd repo; git --bare init; cp /opt/nodejs/post-receive* hooks/; cd ~
+-Dont forget to add . ,  commit -m and then push

@@ -834,10 +834,12 @@ $(document).ready(function(){
         var populateCellDropList = function(){
             $.getJSON(getAllCell, function(data) {
                 if(data.success){
-                    for(i = 0; i < data.message.length;i++){
-                        droplistHtml = "<option value='" +  data.message[i].cellDetails + "'>"+ data.message[i].name+"</option>";
-                        $(droplistHtml).appendTo("#cellSelection");
-                    } 
+                    if(data.message !== "You are not part of any cells."){
+                        for(i = 0; i < data.message.length;i++){
+                            droplistHtml = "<option value='" +  data.message[i].cellDetails + "'>"+ data.message[i].name+"</option>";
+                            $(droplistHtml).appendTo("#cellSelection");
+                        } 
+                    }
                 }
                 else{
                 //something wrong
