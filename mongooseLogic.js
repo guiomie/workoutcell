@@ -1006,6 +1006,33 @@ var sendNotificationToCell = function(cellId, newNotification, callback){
     
 }
 
+var getUnreadNotificationsCount = function(userId, callback){
+    
+    NotificationsReference.findOne({ id: userId }, function(err, results){
+        if(err || null){
+            //console.log(result + " - " + err);
+            callback("Failed");
+        }
+        else{
+            callback(results.unRead);
+            
+        } 
+    }); 
+}
+
+var resetUnreadNotificationsCount = function(userId, callback){
+    
+    NotificationsReference.update({ id: userId }, { $set: { unRead: 0}}, function(err){
+        if(err){
+            //console.log(result + " - " + err);
+            callback("Can't get unread notifications. Stack:" + err);
+        }
+        else{
+            callback("Success"); 
+        } 
+    }); 
+}
+
 var getFriendList = function(userId, callback){
  
     GeneralReference.findOne({ id: userId}, function(err, result){
@@ -1082,7 +1109,7 @@ var createCell = function(creatorId, cellObject, userName, callback){
     var newCellDetails = new CellDetails({
         name         : cellObject.name,
 	    location     : cellObject.location,
-	    owner        : parseInt(creatorId), 
+	    owner        : {id: creatorId, name: userName}, 
 	    members      : [parseInt(creatorId)],
 	    description  : cellObject.description, 
     });
@@ -1096,7 +1123,7 @@ var createCell = function(creatorId, cellObject, userName, callback){
             var newCellRef = new CellReference({
                 name        : cellObject.name,
                 location    : cellObject.location,
-                owner       : userName, //creators id
+                owner       : {id: creatorId, name: userName}, //creators id
 	            cellDetails : result._id
             });
             
@@ -1360,5 +1387,8 @@ exports.acceptPendingFriendship = acceptPendingFriendship;
 exports.declinePendingFriendship = declinePendingFriendship;
 exports.sendNotificationToCellUsers = sendNotificationToCellUsers;
 exports.sendNotificationToCell = sendNotificationToCell;
+exports.getUnreadNotificationsCount = getUnreadNotificationsCount;
+exports.resetUnreadNotificationsCount = resetUnreadNotificationsCount;
+
 
 exports.pushToNotificationLog =  pushToNotificationLog;

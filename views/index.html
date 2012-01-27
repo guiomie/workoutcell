@@ -98,10 +98,10 @@
             
             <div id="navLink" style="position:absolute;bottom:10; padding-bottom: 15px;"> 
 	            <ul id="icons" class="ui-widget ui-helper-clearfix">			
-			        <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
+			        <li class="ui-state-default ui-corner-all" title="Manage your social training" id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Find athletes or coaches" id="goToSearch" style="float: right;"><span class="ui-icon ui-icon-search"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Manage your maps" id="goToMap" style="float: right;"><span class="ui-icon ui-icon-script"></span></li>
-                    <li class="ui-state-default ui-corner-all" title="Manage your social training" id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
 			        <li class="ui-state-default ui-corner-all" title="Manage your training schedule" id="goToPlanner" style="float: right;"><span class="ui-icon ui-icon-calendar"></span></li>			        
                 </ul>
 		    </div>
@@ -157,8 +157,11 @@
 <div id="Social" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 
     <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
-        Notifications 
-        <div id="notificationList" style="height: 350px;" >  
+        <div style="height:30px;":>
+        <div style="float: left;">Notifications</div>
+        <div style="float: right; cursor:pointer;"><span id="markRead" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px 5px; margin-right: 10px;"> Mark as seen</span></div>
+        </div>
+        <div id="notificationList" style="height: 350px; font-size: 12px;" >  
             No notifications
         </div>
         

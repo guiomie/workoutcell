@@ -48,7 +48,13 @@ var renderNotifications = function(arrayNotification){
     
         if(arrayNotification[i].type === "joinMasterCell"){
             createFriendRequestElement(arrayNotification[i]);  
-        }        
+        }
+        else if(arrayNotification[i].type === "newCellWorkout"){
+            createCellWorkoutElement(arrayNotification[i]);
+        }
+        else{
+            
+        }
     }
        
 }
@@ -106,7 +112,7 @@ var renderCellList = function(arrayResult){
             
             $("#cell" + arrayResult[i].cellDetails).qtip({
                 content: {
-                    text: "Created by " + arrayResult[i].owner + "<br> Located in " + arrayResult[i].location
+                    text: "Created by " + arrayResult[i].owner.name + "<br> Located in " + arrayResult[i].location
                 },
                 style: {
                     widget: true 
@@ -124,7 +130,7 @@ var createFriendRequestElement = function(object){
     var html = '<div id="singlenotification" >' + object.message + '<span id="declineFriend' + object.refId + '" class="ui-icon ui-icon-close" style="float: right"></span>' +
     '<span id="acceptFriend' + object.refId + '" class="ui-icon ui-icon-check" style="float: right"></span></div>';
  
-    document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + html;
+    document.getElementById('notificationList').innerHTML = html + document.getElementById('notificationList').innerHTML;
     
     $('#acceptFriend' + object.refId).live('click', function(){
         var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/accept";
@@ -157,6 +163,13 @@ var createFriendRequestElement = function(object){
  
 }
 
+var createCellWorkoutElement = function(object){
+    
+    var viewprofile = '<div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer;">' + object.message + '</div>';
+    document.getElementById('notificationList').innerHTML = viewprofile + document.getElementById('notificationList').innerHTML;
+    
+}
+
 var createCellListElement = function(object){
     
     var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; margin-bottom: 3px; cursor: pointer; padding:3px 6px; margin-right: 5px; background-color:#C7E5AE; font-size: 12px;' id='cell" +
@@ -170,11 +183,11 @@ var createCellListElement = function(object){
 /////!!!!-------CELL VIEIWING CODE ---------- !!!!!!! 
 
 
-var initCellView = function(cellId, owner){
+var initCellView = function(cellId){
     
     $.getJSON('/cell/details/' + cellId, function(data) {
         if(data.success){
-            fillCellView(data.message, owner);   
+            fillCellView(data.message);   
         }
         else{
             //something wrong
@@ -184,11 +197,11 @@ var initCellView = function(cellId, owner){
     
 }
 
-var fillCellView = function(object, owner){
+var fillCellView = function(object){
    
     document.getElementById('cellTitle').innerHTML = object.name;
     document.getElementById('cellLocation').innerHTML = object.location;
-    document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner + "'>" + owner + "</span>";
+    document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>" + object.owner.name + "</span>";
     document.getElementById('cellInfo').innerHTML = object.description;
     
     renderCellMemberList(object.members);

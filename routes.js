@@ -136,6 +136,29 @@ module.exports = function(app) {
    
     });
     
+    app.get("/notification/unread", function(req, res){
+        mongooseLogic.getUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
+            if(mes !== "Failed"){
+                res.json({ success: true, message:mes});
+            }
+            else{
+                 res.json({ success: false, message:0});
+            } 
+        });
+        
+    });
+    
+    app.get("/notification/unread/reset", function(req, res){
+        mongooseLogic.resetUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
+            if(mes === "Success"){
+                res.json({ success: true, message:0});
+            }
+            else{
+                res.json({ success: false, message:"Cant mark as read." + mes});
+            }   
+        });
+    });
+    
     //Receive all what is in pending  notification queu of use
     app.get("/notification/queu/:userId/:min/:max", function(req, res){
         
@@ -593,7 +616,7 @@ module.exports = function(app) {
                                     res.json({ success: true,  message: 'Workout saved successfully.'});
                                    
                                     //This section adds all proper new notifications
-                                    var mes = getLogedName(req) + 'added a new workout in ' + cellEventMessage + ' cell';
+                                    var mes = getLogedName(req) + ' added a new workout in ' + cellEventMessage + ' cell';
                                     
                                     var newNotification = {
                                         type      : 'newCellWorkout', //joinMasterCell, workoutCell, broadcast

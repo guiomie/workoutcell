@@ -22,7 +22,8 @@ var joinWorkoutCell = "/workout/cell/join/";
 var joinCell = "/cell/join/";
 var quitCell = "/cell/quit/";
 var deleteParcour  = "/parcour/delete/";
-
+var getUnreadNotification = "/notification/unread";
+var resetNotificationCount = "/notification/unread/reset";
 
 //Instantiated variables with this function
 
@@ -45,4 +46,6 @@ var initGlobalVar = function(){
     joinCell = "/cell/join/";
     quitCell = "/cell/quit/";
     deleteParcour  = "/parcour/delete/";
+    getUnreadNotification = "/notification/unread";
+    resetNotificationCount = "/notification/unread/reset";
 }

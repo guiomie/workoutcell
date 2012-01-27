@@ -110,13 +110,23 @@ var postWorkout = function(event) {
 
 		}
         
+        //Reinitializing the fields
 		//empty intervall array so it doesnt accumulate
 		intervall = new Array();
 		tempIntervall = [];
         cell = new Array();
-		document.getElementById('intervallList').length = 0;
-		document.getElementById('overview').innerHTML = " ";   
-        
+		//document.getElementById('intervallList').length = 0;
+		document.getElementById('overview').innerHTML = " "; 
+
+        $('#descriptionInput').attr('value', '');
+        $('#datepicker').attr('value', '');
+        $('#timepickerStop').attr('value', '');
+        $('#timepickerStart').attr('value', '');
+        $('#bigInput').attr('value', '');
+        $('#smallInput').attr('value', '');
+        $('#unitInput').attr('value', '');
+        $('#intervallDescInput').attr('value', '');
+
 }
 
 var postCellWorkout = function(event) {

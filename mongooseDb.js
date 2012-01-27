@@ -40,7 +40,7 @@ var GeneralReference = new Schema({
     //coaches      : [PersonnaReference],  To be implemented in futur releases
     //parcours     : [ParcourReference],
     parcours     : [ new mongoose.Schema({realId: ObjectId, name: String, distance: Number})],
-    cells        : [ new mongoose.Schema({name: String,location: String,owner: String,cellDetails : ObjectId})]
+    cells        : [ new mongoose.Schema({name: String,location: String,owner: {id: Number, name: String},cellDetails : ObjectId})]
         
 });
 
@@ -204,7 +204,7 @@ var CellReference = new Schema({
 
     name        : String,
 	location    : String,
-	owner       : String, //creators name
+	owner       : {id: Number, name: String}, //creators name
 	cellDetails : ObjectId
 
 });
@@ -213,7 +213,7 @@ var CellReference = new Schema({
 var CellDetails = new Schema({
     name         : String,
 	location     : String,
-	owner        : Number, 
+	owner        : {id: Number, name: String},
 	members      : [Number],
 	description  : String, 
 	notification : [Notification],

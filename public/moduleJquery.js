@@ -45,6 +45,7 @@ $(document).ready(function(){
                 if(applicationVariables.calendarFirstLoad){
                     setTimeout(function() {
                         updateCalendar();
+                        updateUnreadNotifications();
                     }, 1000);
                     applicationVariables.calendarFirstLoad = false;
                 }
@@ -54,6 +55,10 @@ $(document).ready(function(){
                 
             }
 		});
+        
+        
+        //Unread notifications
+        
         
 		$('#mainContent').corner();
 		$('#xfbmlPic').corner();
@@ -815,7 +820,17 @@ $(document).ready(function(){
            var owner = $(this).attr('owner');
            applicationVariables.calendarMode = "cell";
            applicationVariables.currentCell = $(this).attr('refId');
-           initCellView(id, owner);
+           initCellView(id);
+           UILoadNewState('cellView');
+           updateCalendar();
+            
+        });
+        
+        $('.cellLink').live('click',function(){
+           var id = $(this).attr('refId');
+           applicationVariables.calendarMode = "cell";
+           applicationVariables.currentCell = $(this).attr('refId');
+           initCellView(id);
            UILoadNewState('cellView');
            updateCalendar();
             
@@ -836,6 +851,8 @@ $(document).ready(function(){
             //clear select
             $('#cellSelection option').each(function(index, option) {
                 $(option).remove();
+                droplistHtml = "<option value='yourself'>Yourself</option>";
+                $(droplistHtml).appendTo("#cellSelection");
             });
             
             $.getJSON(getAllCell, function(data) {
@@ -853,6 +870,39 @@ $(document).ready(function(){
                 }   
             });  
         }
+        
+        var updateUnreadNotifications = function(){
+            
+            $.getJSON(getUnreadNotification, function(res) {
+                
+                if(res.message !== 0){
+                    $("#goToSocial").qtip({
+                        content: {
+                            text: res.message + ' new notifications'
+                        },
+                        show: {
+                            event: false, 
+                            ready: true
+                        },
+                        position: {
+                            my: 'left center', // Use the corner...
+                            at: 'right center' // ...and opposite corner
+                        },
+                        hide: false,
+                        style: {
+                            widget: true 
+                        }
+                    }); 
+                }
+            });
+            
+        }
+        
+        $('#markRead').click(function(){
+            $.getJSON(resetNotificationCount, function(res) {
+               $("#goToSocial").qtip({hide: true});
+            }); 
+        });
 
         initHeaderBar();
        
