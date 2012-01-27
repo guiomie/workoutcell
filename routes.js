@@ -576,11 +576,11 @@ module.exports = function(app) {
             mongooseLogic.saveWorkout(workoutObject, getLogedId(req), getLogedName(req), req.params.cellId, function(savedWorkoutObjectId){
                 if(savedWorkoutObjectId !== "not instantiated"){
                     mongooseLogic.saveCellEvent(eventObject, req.params.cellId, 
-                        savedWorkoutObjectId, function(message){             
-                        if(message === "not instantiated"){
+                        savedWorkoutObjectId, function(cellEventMessage){   //If not failed, callback returns cell name, essential for notification           
+                        if(cellEventMessage === "Failed"){
                             res.json({ success: false, message: 'Failed to saved Cell Event.'});
                         }
-                        else{
+                        else{  
                             eventObject.color = "#C24747";  // BAD' BUT IM LAZY AND LACKING TIME
                             mongooseLogic.saveEvent(eventObject, req.params.userId, 
                             savedWorkoutObjectId, function(message){
@@ -590,7 +590,30 @@ module.exports = function(app) {
                                 }
                                 else{
                                     //console.log("Saved Event ...");
-                                    res.json({ success: true,  message: 'Workout saved successfully.'});    
+                                    res.json({ success: true,  message: 'Workout saved successfully.'});
+                                   
+                                    //This section adds all proper new notifications
+                                    var mes = getLogedName(req) + 'added a new workout in ' + cellEventMessage + ' cell';
+                                    
+                                    var newNotification = {
+                                        type      : 'newCellWorkout', //joinMasterCell, workoutCell, broadcast
+                                        message   : mes, //Name of person
+	                                    refId     : getLogedId(req),
+	                                    refOId    : req.params.cellId,  //cellId
+	                                    date      : new Date(), 
+                                    }
+
+                                    mongooseLogic.sendNotificationToCellUsers(req.params.cellId, newNotification, function(res){
+                                        if(res !== "Success"){
+                                              mongooseLogic.pushToNotificationLog(res + " @ POST: /workout/cell/:cellId/:userId");
+                                        }
+                                    });
+                                    
+                                    mongooseLogic.sendNotificationToCell(req.params.cellId, newNotification, function(res){
+                                        if(res !== "Success"){
+                                            mongooseLogic.pushToNotificationLog(res + " @ POST: /workout/cell/:cellId/:userId");
+                                        }
+                                    });
                                 }
                             }); 
                         }

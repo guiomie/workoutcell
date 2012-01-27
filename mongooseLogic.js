@@ -338,17 +338,16 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
     CellDetails.findOne({ _id: cellId }, function(err, resultReference){
    
         if(err || resultReference === null){
-            console.log('Error in finding calendar reference collection: ' + err + ' at id: ' + cellId); 
-            callbackVar = "not instantiated";  
-            callback(callbackVar);
+            //console.log('Error in finding calendar reference collection: ' + err + ' at id: ' + cellId); 
+            callback("Failed");
         }
         else{
             console.log(resultReference);
             var initialRefLength = resultReference.activities.length;
             if(resultReference.activities.length <= arrayLocation){
-                console.log("In if");
+                //console.log("In if");
                 for(i = initialRefLength; i <= (arrayLocation); i++){
-                    console.log("In loop: " +i);
+                    //console.log("In loop: " +i);
                     resultReference.activities.push({id: (i + initialRefLength), allEvents: []});  
                 } 
                 resultReference.activities[arrayLocation].allEvents.push(theEvent);
@@ -359,13 +358,12 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
             resultReference.save(function(err){
      
                 if(err){
-                    console.log('Error in finding calendar reference: ' + err);
-                    callbackVar = "not instantiated";  
-                    callback(callbackVar);
+                    //console.log('Error in finding calendar reference: ' + err);
+                    callback("Failed");
                 }
                 else{
-                    console.log('Succesfully saved Event'); 
-                    callback("Successfully saved Workout and Reference");
+                    //console.log('Succesfully saved Event'); 
+                    callback(resultReference.name);
                 }      
             });
         }
@@ -971,6 +969,43 @@ var declinePendingFriendship = function(userId, requesterId, callback){
     });  
 }
 
+var sendNotificationToCellUsers = function(cellId, notification, callback){
+    console.log('in not for users');
+    CellDetails.findOne({_id: cellId}, function(err, result){
+        if(err || null){
+            console.log(result + " - " + err);
+            callback("Can't send notification. Stack:" + err);
+        }
+        else{
+        
+            for(i =0; i < result.members.length; i++){
+                console.log( i  + " user is " + result.members[i]);
+                NotificationsReference.update({ "id" : result.members[i]}, { $push: { pending: notification}, $inc: { unRead : 1 }}, function(err){
+                    if(err){
+                        callback("Error in pushing not to found user. User:" + result.members[i]);
+                    }
+                    else{ 
+                        callback("Success");
+                    }
+                });
+            }
+        }      
+    });
+}
+
+var sendNotificationToCell = function(cellId, newNotification, callback){
+    
+    CellDetails.update({ _id: cellId }, { $push: { notification: newNotification}}, function(err){
+         if(err){
+            callback("Can't send notification. Stack:" + err);
+        }
+        else{
+            callback("Success");
+        }
+    });
+    
+}
+
 var getFriendList = function(userId, callback){
  
     GeneralReference.findOne({ id: userId}, function(err, result){
@@ -1193,6 +1228,23 @@ var quitCell = function(userId, cellId, callback){
 
 }
 
+
+var pushToNotificationLog = function (error){
+    console.log('in push to not log'); 
+    var newError = new Log();
+    newError.notificationError.push(error);
+    newError.save(function(err){
+        if(err) {
+            console.log('Cant save to notification error log'); 
+        }
+        else{
+           
+        }
+    });
+    
+}
+
+
 /// Random functions
 
 //Validates numbers
@@ -1302,6 +1354,11 @@ exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;
 exports.saveFriendshipRequestToQueu = saveFriendshipRequestToQueu;
 exports.getFriendList = getFriendList;
+
 exports.getPendingNotifications = getPendingNotifications;
 exports.acceptPendingFriendship = acceptPendingFriendship;
-exports.declinePendingFriendship =declinePendingFriendship;
+exports.declinePendingFriendship = declinePendingFriendship;
+exports.sendNotificationToCellUsers = sendNotificationToCellUsers;
+exports.sendNotificationToCell = sendNotificationToCell;
+
+exports.pushToNotificationLog =  pushToNotificationLog;

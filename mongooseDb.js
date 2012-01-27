@@ -31,15 +31,6 @@ var User = new Schema({
     joinDate   : {type: Date, default: Date.now}
 });
 
-var Permission = new Schema({
-    
-   //fbid : Number
-    firstName  : String,   
-    lastName   : String
-    
-});
-
-
 //The general reference is a collection where each document contains 
 //the objectid reference for the users parcours, coaches and friends
 var GeneralReference = new Schema({
@@ -161,7 +152,8 @@ var CardioWorkout = new Schema({
     cell                  :{creator: String, participants: [TinyUser], cellId: ObjectId}, //Temporarly not a basicCell,
     parcour               :{id: ObjectId, name: String},
     distanceResult        :{unit: String , value:Number, completed:Boolean},
-    intervallResult       :[SingleIntervallResult]
+    intervallResult       :[SingleIntervallResult],
+    feed                  :[{type: String, sender: String, senderId: Number, message: String }]   //type is either notification or message
 });
 
 var CardioRef = new Schema({
@@ -189,7 +181,7 @@ var BasicCell = new Schema({
 //!!!!------ Notification System ------ !!!!!
 var Notification = new Schema({
 
-    type      : String, //joinMasterCell, workoutCell 
+    type      : String, //joinMasterCell, workoutCell, broadcast
 	message   : String, //Name of person
 	refId     : String,
 	refOId    : ObjectId,
@@ -199,8 +191,9 @@ var Notification = new Schema({
 
 var NotificationsReference = new Schema({
 
-    id     : Number, //fbid
-	pending: [Notification]
+    id       : Number, //fbid
+    unRead   : Number,
+	pending  : [Notification]
 
 });
 
@@ -223,11 +216,31 @@ var CellDetails = new Schema({
 	owner        : Number, 
 	members      : [Number],
 	description  : String, 
-	//notification : [Notification],
+	notification : [Notification],
 	activities   : [CalendarMonth]
 
 });
 
+
+//Workoutcell Admin related
+
+var Log = new Schema({
+    
+   //fbid : Number
+    notificationError   : [String]   
+    
+});
+
+
+
+
+var Permission = new Schema({
+    
+   //fbid : Number
+    firstName  : String,   
+    lastName   : String
+    
+});
 
 
 
@@ -239,6 +252,7 @@ mongoose.model('PersonnaReference', PersonnaReference);
 
 mongoose.model('NotificationsReference', NotificationsReference);
 mongoose.model('Notification', Notification);
+mongoose.model('Log', Log);
 
 mongoose.model('ParcourReference', ParcourReference);
 mongoose.model('Parcour', Parcour);
@@ -266,7 +280,7 @@ var PersonnaReference = exports.PersonnaReference = mongoose.model('PersonnaRefe
 
 var NotificationsReference = exports.NotificationsReference = mongoose.model('NotificationsReference');
 var Notification = exports.Notification = mongoose.model('Notification');
-
+var Log = exports.Log = mongoose.model('Log');
 
 var ParcourReference = exports.ParcourReference = mongoose.model('ParcourReference');
 var Parcour = exports.Parcour = mongoose.model('Parcour');

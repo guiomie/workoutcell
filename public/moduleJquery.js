@@ -832,6 +832,12 @@ $(document).ready(function(){
         });
         
         var populateCellDropList = function(){
+            
+            //clear select
+            $('#cellSelection option').each(function(index, option) {
+                $(option).remove();
+            });
+            
             $.getJSON(getAllCell, function(data) {
                 if(data.success){
                     if(data.message !== "You are not part of any cells."){

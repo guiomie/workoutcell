@@ -19,6 +19,7 @@ PersonnaReference = mongooseDb.PersonnaReference;
 
 NotificationsReference = mongooseDb.NotificationsReference;
 Notification = mongooseDb.Notification;
+Log = mongooseDb.Log;
 
 ParcourReference = mongooseDb.ParcourReference;
 Parcour = mongooseDb.Parcour;
