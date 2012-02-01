@@ -111,9 +111,9 @@ module.exports = function(app) {
     //Adds a notification to the users queu
     app.get("/notification/:userId/:type/:target", function(req, res){
         
-        if(isAllowed(req, req.params.userId)){ //make sure user submitting request is the user
+        if(isAllowed(req, req.params.userId) && req.params.target !== req.params.userId){ //make sure user submitting request is the user
              mongooseLogic.isUserAFriend(req.params.userId, req.params.target, function(bool){ //If user is a friend request ignored
-                //console.log(bool);
+                console.log(bool);
                 if(req.params.type === "joinMasterCell" && !bool){
                     mongooseLogic.saveFriendshipRequestToQueu(req.params.userId, 
                         req.params.target, getLogedName(req), function(mongooseRes){
@@ -181,21 +181,34 @@ module.exports = function(app) {
    
     });
     
-    //Send a response to either cappeting or denying someone in your cell
+    //Send a response to either accepting or denying someone in your cell
     app.get("/notification/joinMasterCell/:userId/:requester/:action", function(req,res){
         
         if(isAllowed(req, req.params.userId) && (req.params.action === "accept" 
             || req.params.action=== "decline")){
             
             if(req.params.action === "accept"){
-                mongooseLogic.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
-                    if(mes === "Success"){
-                        res.json({ success: true, message: "Successfully added Friend to your cell"});
+                mongooseLogic.isUserAFriend(req.params.userId, req.params.requester, function(bool){
+                    if(bool){
+                        mongooseLogic.declinePendingFriendship(req.params.userId, req.params.requester, function(mes){
+                            if(mes === "Success"){
+                                res.json({ success: true, message: "User is already a friend."});
+                            }
+                            else{
+                                res.json({ success: false, message: mes});
+                            }
+                        });
                     }
                     else{
-                        res.json({ success: false, message: mes});
+                        mongooseLogic.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
+                            if(mes === "Success"){
+                                res.json({ success: true, message: "Successfully added Friend to your cell"});
+                            }
+                            else{
+                                res.json({ success: false, message: mes});
+                            }
+                        });
                     }
-             
                 });
             }
             else if(req.params.action === "decline"){

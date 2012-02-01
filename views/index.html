@@ -118,7 +118,7 @@
 
 <div class="searchQtip" style="display: none;"> 
     <input type="text" id="inputSearchUsers" size="16" value="Guillaume Ouellet" /><span id="searchIconButton" class="ui-icon ui-icon-search" style="float: right; margin-top: 2px;"></span><br>  
-    &nbsp; Coach search: <input type="checkbox" id="coachesOnlyCheckBox"/>
+    <!-- &nbsp; Coach search: <input type="checkbox" id="coachesOnlyCheckBox"/> -->
 </div>
 
 <div id="searchDialog">  No result were found. </div>
@@ -385,8 +385,8 @@
 				<input type="radio" id="radioTime" name="radio3" checked="checked" /><label for="radioTime">Time</label> 
 			</div>
 			Value<br>
-			<input type="text" id="bigInput" size="3"> <span id="bigLabel">hour</span> <input type="text" id="smallInput" size="3"> <span id="smallLabel">min</span><br>
-			
+			<input type="text" id="bigInput" class="qtipUnitHelper" size="3"> <span id="bigLabel">hour</span> <input type="text" id="smallInput" class="qtipUnitHelper" size="3"> <span id="smallLabel">min</span><br>
+			<span id="qtipUnitHelper" style="display: none;"> </span>
 			
 		</div>
 		

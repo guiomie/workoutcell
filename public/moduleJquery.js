@@ -221,7 +221,59 @@ $(document).ready(function(){
 				document.getElementById('intensityHtml2').innerHTML = ui.value;
 			}
 		});
-
+        
+        function qtipUnitHelperContent(){
+            if($('input[type=radio][name=radio3]:checked + label').text() !== 'Kilometers'){
+                timeToSec($('#bigInput').val(), $('#smallInput').val(), function(res){
+                    $('#bigInput').qtip({
+                        content: {
+                            text: JSON.stringify(res) + ' seconds'
+                        },
+                        show: {
+                            ready: true 
+                        },
+                        style: {
+                            widget: true 
+                        },
+                        position: {
+                            my: 'right center',
+                            at: 'left center'
+                        }
+                    });
+                });
+            }
+            else{
+                toMeters($('#bigInput').val(), $('#smallInput').val(), function(res){
+                    $('#bigInput').qtip({
+                        content: {
+                            text: JSON.stringify(res) + ' meters'
+                        },
+                        show: {
+                            ready: true 
+                        },
+                        style: {
+                            widget: true 
+                        },
+                        position: {
+                            my: 'right center',
+                            at: 'left center'
+                        }
+                    });
+                });
+            }  
+        }
+        
+        //Event handlers for displaying a qtip with minute/meter coversion
+        $('.qtipUnitHelper').focus(function(){
+    		  qtipUnitHelperContent();
+            
+		});
+        
+        $('.qtipUnitHelper').keyup(function(){
+        	  qtipUnitHelperContent();
+            
+		});
+        
         
         // Remove last added segment on map trace
     	$('#undoTrace').click(function(){
@@ -895,6 +947,38 @@ $(document).ready(function(){
                     }); 
                 }
             });
+            
+        }
+        
+        function toMeters(km, m, callback){
+            if(parseInt(m.value) === null && parseInt(km.value) === null){
+                callback(0);
+            }
+            else if(km.value === ""){
+                callback(parseInt(m)); 
+            }
+            else if(m.value === ""){
+                callback((parseInt(km) * 1000)); 
+            }
+            else{
+                callback((parseInt(km) * 1000) + parseInt(m)); 
+            } 
+        }
+        
+        function timeToSec(m, s, callback){
+            if(parseInt(s.value) === null && parseInt(m.value) === null){
+                callback(0);
+            }
+            else if(m.value === ""){
+                 callback(parseInt(s));
+            }
+            else if(s.value === ""){
+                 callback(60*parseInt(m)); 
+            }
+            else{
+                 callback((60*parseInt(m)) + parseInt(s));
+            }
+              
             
         }
         

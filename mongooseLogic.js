@@ -948,7 +948,7 @@ var declinePendingFriendship = function(userId, requesterId, callback){
             var cbResponse = "Couldnt find user pending notifications";
             var inIf = false;
             for(i = 0; i < result.pending.length; i++){
-               if( result.pending[i].refId === requesterId){
+               if( result.pending[i].refId === requesterId && result.pending[i].type === "joinMasterCell"){
                     inIf = true;
                     deletedRefId = result.pending.splice(i, 1);
                     result.save(function (err) {
