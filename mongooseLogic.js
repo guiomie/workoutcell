@@ -1185,6 +1185,20 @@ var getCellDetails = function(cellId, callback){
     }
 }
 
+var getCellNotifications = function(cellId, from, to, callback){
+    
+    CellDetails.find({_id: cellId }, {"notification" : {"$slice" : [parseInt(from), parseInt(to)]}}, function(err, result){
+        if(err || result === null){
+            //console.log(err);
+            callback("Error in notifications Cell. Stack: " + err);
+        }
+        else{
+            callback(result);
+        }
+    });
+    
+}
+
 
 var joinCell = function(cellId, userId, callback){
     
@@ -1253,6 +1267,13 @@ var quitCell = function(userId, cellId, callback){
         }
     });
 
+}
+
+var saveMessageNotificationCell = function(cellId, messageObject){
+    
+    
+    
+    
 }
 
 
@@ -1389,6 +1410,7 @@ exports.sendNotificationToCellUsers = sendNotificationToCellUsers;
 exports.sendNotificationToCell = sendNotificationToCell;
 exports.getUnreadNotificationsCount = getUnreadNotificationsCount;
 exports.resetUnreadNotificationsCount = resetUnreadNotificationsCount;
+exports.getCellNotifications = getCellNotifications;
 
 
 exports.pushToNotificationLog =  pushToNotificationLog;

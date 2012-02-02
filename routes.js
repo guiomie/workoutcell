@@ -135,7 +135,7 @@ module.exports = function(app) {
         }
    
     });
-    
+
     app.get("/notification/unread", function(req, res){
         mongooseLogic.getUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
             if(mes !== "Failed"){
@@ -233,6 +233,44 @@ module.exports = function(app) {
         }
         
     });
+    
+    /*
+    app.get("/notifications/cell/:cellId/:from/:to", function(req,res){
+        
+        mongooseLogic.getCellNotifications(req.params.cellId, req.params.from, req.params.to, function(mes){
+        
+            if(RealTypeOf(mes) !==  "array"){
+                res.json({ success: false, message:mes});   
+            }
+            else{
+                res.json({ success: true, message:mes});   
+            }
+        
+        });
+    
+    });*/
+    
+        
+    app.get("/notification/cell/message/:cellId/:message", function(req, res){
+        
+        var newNotification = {
+            type      : 'newCellMessage', //joinMasterCell, workoutCell, broadcast
+            message   : getLogedName(req) + ' says: ' + req.params.message + '.', 
+            refId     : getLogedId(req),
+            refOId    : "",  //cellId
+            date      : new Date(), 
+        }
+        
+        mongooseLogic.sendNotificationToCell(req.params.cellId, newNotification, function(mes){
+            if(mes !== "Success"){
+               res.json({ success: false, message: 'Couldnt post message.'});
+            }
+            else{
+                res.json({ success: true, message:'Posted message to cell.'});     
+            } 
+        });
+    });
+    
     
     //Returns the users friend list, an array with their Facebook Ids
     app.get("/cell/friends/:userId", function(req,res){
@@ -634,7 +672,7 @@ module.exports = function(app) {
                                     var newNotification = {
                                         type      : 'newCellWorkout', //joinMasterCell, workoutCell, broadcast
                                         message   : mes, //Name of person
-	                                    refId     : getLogedId(req),
+	                                    refId     : savedWorkoutObjectId,
 	                                    refOId    : req.params.cellId,  //cellId
 	                                    date      : new Date(), 
                                     }

@@ -185,3 +185,13 @@ function UILoadNewState(newState){
 		panelState = newState;
 	});   
 }
+
+function UILoadNewStateNoAnimation(newState){
+
+    //Transit between user panel functionality
+    $("#" + panelState).hide(function(){
+
+		$("#" + newState).show();
+		panelState = newState;
+	});   
+}

@@ -24,6 +24,7 @@ var quitCell = "/cell/quit/";
 var deleteParcour  = "/parcour/delete/";
 var getUnreadNotification = "/notification/unread";
 var resetNotificationCount = "/notification/unread/reset";
+var postCellComment = "/notification/cell/message";
 
 //Instantiated variables with this function
 
@@ -48,4 +49,5 @@ var initGlobalVar = function(){
     deleteParcour  = "/parcour/delete/";
     getUnreadNotification = "/notification/unread";
     resetNotificationCount = "/notification/unread/reset";
+    postCellComment = "/notification/cell/message";
 }

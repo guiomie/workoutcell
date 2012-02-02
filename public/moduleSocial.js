@@ -205,6 +205,7 @@ var fillCellView = function(object){
     document.getElementById('cellInfo').innerHTML = object.description;
     
     renderCellMemberList(object.members);
+    renderCellNotifications(object.notification);
     
     $('#cellToggleName').die();
     $('#cellToggleName').live('click', function(){
@@ -228,9 +229,7 @@ var fillCellView = function(object){
                 Notifier.success(data.message);
             }   
         });
-        
-        
-        
+
     });
     
 }
@@ -275,6 +274,26 @@ var renderCellMemberList = function(arrayResult){
     }  
 }
 
+var renderCellNotifications = function(array){
+    document.getElementById('notificationCellList').innerHTML = "";
+    
+    for(i = 0; i < array.length; i++){       
+        if(array[i].type === 'newCellWorkout'){
+            document.getElementById('notificationCellList').innerHTML = '<div class="cellNotificationNewWorkout" workoutId ="' + array[i].refId + '">' +
+            array[i].message + '</div>' + document.getElementById('notificationCellList').innerHTML;
+        }
+        else if(array[i].type === 'newCellMessage'){
+            var buttonRemove = "";
+            if(array[i].refId === authId){
+             buttonRemove = '<span class="removeCellComment" ' + 'id="' + array[i]._id + '" class="ui-icon ui-icon-close" style="float: right"></span>';   
+            }
+            document.getElementById('notificationCellList').innerHTML = '<div class="cellNotificationMessage" userId ="' + array[i].refId + '">' +
+            array[i].message + buttonRemove + '</div>' + document.getElementById('notificationCellList').innerHTML;
+        }
+        else{
+        }
+    }
+}
 
 var initUsersProfile = function(targetId){
     

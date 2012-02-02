@@ -62,6 +62,7 @@ $(document).ready(function(){
         
 		$('#mainContent').corner();
 		$('#xfbmlPic').corner();
+        $('#cellMessageInput').corner("5px");
 
         $("#swapIntensity").click(function(){
             
@@ -898,6 +899,44 @@ $(document).ready(function(){
             
         });
         
+        
+        $('.cellNotificationMessage').live('click',function(){
+           var id = $(this).attr('userId');
+           applicationVariables.calendarMode = "user";
+           initUsersProfile(id);
+           UILoadNewState('profileView');
+        });
+        
+        $('#postCellComment').live('click', function(){
+           
+           var comment = $('#cellCommentInput').val();
+           var cell = applicationVariables.currentCell;
+           
+           if(comment.length < 160){
+               $.getJSON(postCellComment + "/" + cell + "/" + comment , function(data) {
+                    if(data.success){
+                        initCellView(cell);
+                        //UILoadNewStateNoAnimation('cellView');
+                    }
+                    else{
+                        
+                    }
+               });
+           }
+           else{
+               Notifier.error('Message too long.');
+           }
+        });
+        
+        /*
+        $('.cellNotificationNewWorkout').live('click', function(){
+           var workoutId = $(this).attr('workoutId');
+           $.getJSON('/workout/' + workoutId, function(data) {
+                initView(data)
+                moveUI('View');
+            });
+        });*/
+        
         var populateCellDropList = function(){
             
             //clear select
@@ -949,6 +988,7 @@ $(document).ready(function(){
             });
             
         }
+        
         
         function toMeters(km, m, callback){
             if(parseInt(m.value) === null && parseInt(km.value) === null){

@@ -223,16 +223,22 @@
         <span id="cellLocation" style="font-size: 12px;"> </span><br>
         <span id="cellInfo" style="font-size: 12px; "> </span><br><br>
         
-        Recent Activities 
-        <div id="notificationCellList" style="height: 300px; font-size: 12px;" >  
-            No notifications
-        </div>
+
+        <div id="cellMessageInput" style="background: #C7E5AE; width:320px; height: 26px; float:left; margin-bottom: 8px;">
+            <div style="float: left;"><input  value="Post a comment ..." onfocus="if(this.value=='Post a comment ...'){this.value='';}" onblur="if(this.value==''){this.value='Post a comment ...';}" id='cellCommentInput' style="margin-top: 4px; margin-left: 10px; resize: none; background: #C7E5AE; font-size: 12px;   border: none; width: 270px;"/></div>
+            <div style="float: right;"><span id="postCellComment" class="ui-icon ui-icon-check" style=" margin-top: 4px; margin-right: 4px; margin-left: 4px; cursor:pointer;"></span></div>
+        </div> <br>
+            <!-- <div style="float: right; "><span id="postCellComment" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px
+            5px; margin-right: 10px;">Post</span></div> -->
+
         
-        Enter comment:<br>
-        <div id="cellComments" style="height: 100px; padding-top: 10px;"> 
-            <textarea rows='4' cols='40' id='cellCommentInput' style="resize: none;">Post a comment</textarea>
-            <input type="submit" id="submitCellComment" />
-        </div>
+        Recent Activities 
+            <div id="notificationCellList" style="height: 300px; font-size: 12px; margin-top:5px;" >  
+                No notifications
+            </div>
+
+        
+        
         
     </div>
 
