@@ -6,6 +6,9 @@ var intervall = new Array();
 var tempCell = new Array();
 var tempIntDesc = [];
 var selectedMap = "no map"; 
+var x = "";
+var y = "";
+var s = "";
 //Data for intervall list
 var tempIntervall = [];
 var minSlider = 0;
@@ -13,7 +16,8 @@ var maxSlider = 0;
 var applicationVariables = {
     calendarFirstLoad   : true,
     calendarMode        : "user", //or cell
-    currentCell         : "none"
+    currentCell         : "none",
+    droppedWorkoutId    : "",
 }
 
 //Global functions, declared in jquery init
@@ -27,6 +31,7 @@ $(document).ready(function(){
 			// put your options and callbacks here
 			height: 600,
 			theme: true,
+            editable: true,
 			eventClick: function(event) {	
 				if (event.url) {
 				//the launched function readjusts UI and send httprequest for view
@@ -53,6 +58,15 @@ $(document).ready(function(){
                     updateCalendar();
                 }
                 
+            },
+            eventDragStart: function(event, jsEvent, ui, view) {    		
+			    //var x = isElemOverDiv(ui, $('div.external-events'));
+			    applicationVariables.droppedWorkoutId = event.refWorkout;			
+			    $('#fullcalendar').fullCalendar('revertEvent', jsEvent);
+			    		
+		    },
+            eventDragStop: function (event, jsEvent, ui, view ) {
+              
             }
 		});
         
@@ -270,10 +284,11 @@ $(document).ready(function(){
             
 		});
         
+        /*
         $('.qtipUnitHelper').keyup(function(){
         	  qtipUnitHelperContent();
             
-		});
+		});*/
         
         
         // Remove last added segment on map trace
@@ -321,11 +336,6 @@ $(document).ready(function(){
 			}
             else{
                 
-                //var encodedPath = google.maps.geometry.encoding.encodePath(polypathObject);
-                //alert(JSON.stringify(encodedPath));
-                //alert(JSON.stringify(markersObject));
-                //alert(google.maps.geometry.encoding.decodePath( encodedPath ));
-                
                 var object =  {
                  
                     markers : markersObject,
@@ -333,9 +343,6 @@ $(document).ready(function(){
                     
                 }
                 
-                //var object = { markers: markersObject, polylines: polypathObject};
-				//var content = JSON.stringify(object);
-
 				var httpRequestUrl = restPost_newParcour + nameOfCourse + "/" + totalDistance; 
 
 				//Essential to break circular reference, else stringify will fail
@@ -352,7 +359,6 @@ $(document).ready(function(){
                    //populate dropdowns with new user data
                    refreshDropdown();
                 });
-				//alert(JSON.stringify(newParcour));
 			}
 
 		});
@@ -527,84 +533,7 @@ $(document).ready(function(){
         
 		});
 
-		//Modification of UI based on user selection
-		//rather complex, watch out for any modifications
-		$("#radio4").click(function(event) { 
-			var target = $(event.target);
-			if (target.text() == 'Social'){
-				//this if statement blocks reloading of widget if already selected
-				if(panelState !== 'Social'){
-                    intiSocialView(true, true, true);
-					// Change calendar size
-					$("#fullcalendar").animate({ 
-						height: "500px", 
-						width: "500px", 
-					}, 1000, function(){
-						//resize calendar, seems to be a glitch
-						$('#fullcalendar').fullCalendar('render');
-						}
-					);
-					//Transit between user panel functionality 
-					$("#" + panelState).hide("slide", {}, 1000, function(){
-
-						$("#Social").show("slide", {}, 1000);
-						panelState = 'Social';
-                        //Load users social view
-
-					});	
-				}
-			}
-			else if(target.text() == 'Create'){
-				//Block re-rendering of widget if already choosen
-				if(panelState !== 'Create'){					
-					// Change calendar size
-					$("#fullcalendar").animate({ 
-						height: "500px", 
-						width: "500px", 
-					}, 1000, function(){
-						//resize calendar, seems to be a glitch
-						$('#fullcalendar').fullCalendar('render');
-						}
-					);
-					//Transit between user panel functionality
-					$("#" + panelState).hide("slide", {}, 1000, function(){
-
-						$("#Create").show("slide", {}, 1000);
-						panelState = 'Create';
-					});
-				}
-			}
-			else if(target.text() == 'Map'){
-				//Block re-rendering of widget if already choosen
-				if(panelState !== 'Map'){					
-					// Change calendar size
-					$("#fullcalendar").animate({ 
-						height: "500px", 
-						width: "500px", 
-					}, 1000, function(){
-						//resize calendar, seems to be a glitch
-						$('#fullcalendar').fullCalendar('render');
-						}
-					);
-					//Transit between user panel functionality
-					$("#" + panelState).hide("slide", {}, 1000, function(){
-						$("#Map").show("slide", {}, 1000, function(){
-							//initializes map after MAP div is properly centered, sinon bug
-							if(map === undefined){
-								initialize();
-							}
-						});
-						panelState = 'Map';
-					});
-				}
-			}
-			else{
-
-
-			}
-			/*
-			*/
-		}); 
+		
 
         ///// MAPPING NAVIGATION BUTTONS 
         $('#goToSocial').click(function(){
@@ -1027,6 +956,31 @@ $(document).ready(function(){
                $("#goToSocial").qtip({hide: true});
             }); 
         });
+        
+        
+        //  !!!!!!-_-_-_-_-_- Drag and drop code -_-_-_-_-_- !!!!!!
+        
+        $('#Create').droppable({
+    		accept: ".fc-event",
+            drop: function( event, ui ) {
+			    if(applicationVariables.droppedWorkoutId !== ""){
+                    //alert(applicationVariables.droppedWorkoutId);
+                    ui.draggable.draggable({ revert: true });
+                    populateTemplate(applicationVariables.droppedWorkoutId);
+                    applicationVariables.droppedWorkoutId = "";
+			    }
+                
+			}
+		});
+        
+        $('body').droppable({
+        	accept: ".fc-event",
+            drop: function( event, ui ) {
+                ui.draggable.draggable({ revert: true });
+                applicationVariables.droppedWorkoutId = "";
+			}
+		});
+
 
         initHeaderBar();
        

@@ -112,20 +112,7 @@ var postWorkout = function(event) {
         
         //Reinitializing the fields
 		//empty intervall array so it doesnt accumulate
-		intervall = new Array();
-		tempIntervall = [];
-        cell = new Array();
-		//document.getElementById('intervallList').length = 0;
-		document.getElementById('overview').innerHTML = " "; 
-
-        $('#descriptionInput').attr('value', '');
-        $('#datepicker').attr('value', '');
-        $('#timepickerStop').attr('value', '');
-        $('#timepickerStart').attr('value', '');
-        $('#bigInput').attr('value', '');
-        $('#smallInput').attr('value', '');
-        $('#unitInput').attr('value', '');
-        $('#intervallDescInput').attr('value', '');
+        initPostFields();
 
 }
 
@@ -243,11 +230,7 @@ var postCellWorkout = function(event) {
 		}
         
 		//empty intervall array so it doesnt accumulate
-		intervall = new Array();
-		tempIntervall = [];
-        cell = new Array();
-		document.getElementById('intervallList').length = 0;
-		document.getElementById('overview').innerHTML = " ";   
+		initPostFields();
         
 }
 
@@ -322,5 +305,62 @@ function createSingleDistance(leTargetType, theMinValue, theMaxValue, theIntensi
 function getSelectedParcour(selectId, callback){
 
     document.getElementById().innerHTML = $("#" + selectId).val();
+
+}
+
+function initPostFields(){
+    
+    intervall = new Array();
+	tempIntervall = [];
+    cell = new Array();
+	//document.getElementById('intervallList').length = 0;
+	document.getElementById('overview').innerHTML = " "; 
+
+    $('#descriptionInput').attr('value', '');
+    $('#datepicker').attr('value', '');
+    $('#timepickerStop').attr('value', '');
+    $('#timepickerStart').attr('value', '');
+    $('#bigInput').attr('value', '');
+    $('#smallInput').attr('value', '');
+    $('#unitInput').attr('value', '');
+    $('#intervallDescInput').attr('value', '');
+    
+}
+
+function populateTemplate(workoutId){
+
+    $.getJSON('/workout/' + workoutId, function(workoutObject) {
+        
+        $("#sportSelection").val(workoutObject.sport);
+        
+        if(workoutObject.type === 'distance'){
+ 
+            if(workoutObject.distance.targetType === 'Time'){
+                //Bug requiring to click twice
+                $('#radioTime').click();
+                $('#radioTime').click();
+            }
+            else if(workoutObject.distance.targetType === 'Kilometers'){
+                $('#radioKiloMeters').click();
+                $('#radioKiloMeters').click();
+            }
+            else{
+                
+            }
+            $("#accordion").accordion("activate", 0);
+            $("#bigInput").val(workoutObject.distance.maxValue);
+            $("#smallInput").val(workoutObject.distance.minValue);
+            $("#intensityHtml2").html(workoutObject.distance.intensity);
+            $("#descriptionInput").val(workoutObject.description);
+        }
+        else if(workoutObject.type === 'intervall'){
+            
+            
+        }
+        else{
+            
+        }
+ 
+    });
 
 }
