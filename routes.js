@@ -1,6 +1,6 @@
 
 var mongooseLogic = require('./mongooseLogic');
-
+var notification = require('./notification');
 
 module.exports = function(app) {
     
@@ -115,7 +115,7 @@ module.exports = function(app) {
              mongooseLogic.isUserAFriend(req.params.userId, req.params.target, function(bool){ //If user is a friend request ignored
                 console.log(bool);
                 if(req.params.type === "joinMasterCell" && !bool){
-                    mongooseLogic.saveFriendshipRequestToQueu(req.params.userId, 
+                    notification.saveFriendshipRequestToQueu(req.params.userId, 
                         req.params.target, getLogedName(req), function(mongooseRes){
                         if(mongooseRes === "Success"){
                             res.json({ success: true, message:'Request sent to join Friends list.'});
@@ -137,7 +137,7 @@ module.exports = function(app) {
     });
 
     app.get("/notification/unread", function(req, res){
-        mongooseLogic.getUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
+        notification.getUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
             if(mes !== "Failed"){
                 res.json({ success: true, message:mes});
             }
@@ -149,7 +149,7 @@ module.exports = function(app) {
     });
     
     app.get("/notification/unread/reset", function(req, res){
-        mongooseLogic.resetUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
+        notification.resetUnreadNotificationsCount(parseInt(getLogedId(req)), function(mes){
             if(mes === "Success"){
                 res.json({ success: true, message:0});
             }
@@ -164,7 +164,7 @@ module.exports = function(app) {
         
         if(isAllowed(req, req.params.userId) && is_int(req.params.min) && is_int(req.params.max)){
             
-            mongooseLogic.getPendingNotifications(req.params.userId, parseInt(req.params.min), 
+            notification.getPendingNotifications(req.params.userId, parseInt(req.params.min), 
                 parseInt(req.params.max), function(mongooseRes){
                     if(mongooseRes === "not instantiated"){
                         res.json({ success: false, message:"Couldnt find information"});
@@ -190,7 +190,7 @@ module.exports = function(app) {
             if(req.params.action === "accept"){
                 mongooseLogic.isUserAFriend(req.params.userId, req.params.requester, function(bool){
                     if(bool){
-                        mongooseLogic.declinePendingFriendship(req.params.userId, req.params.requester, function(mes){
+                        notification.declinePendingFriendship(req.params.userId, req.params.requester, function(mes){
                             if(mes === "Success"){
                                 res.json({ success: true, message: "User is already a friend."});
                             }
@@ -200,7 +200,7 @@ module.exports = function(app) {
                         });
                     }
                     else{
-                        mongooseLogic.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
+                        notification.acceptPendingFriendship(req.params.userId, req.params.requester, function(mes){
                             if(mes === "Success"){
                                 res.json({ success: true, message: "Successfully added Friend to your cell"});
                             }
@@ -212,7 +212,7 @@ module.exports = function(app) {
                 });
             }
             else if(req.params.action === "decline"){
-                mongooseLogic.declinePendingFriendship(req.params.userId, req.params.requester, function(mes){
+                notification.declinePendingFriendship(req.params.userId, req.params.requester, function(mes){
                     if(mes === "Success"){
                         res.json({ success: true, message: "Declined users frienship"});
                     }
@@ -261,12 +261,27 @@ module.exports = function(app) {
             date      : new Date(), 
         }
         
-        mongooseLogic.sendNotificationToCell(req.params.cellId, newNotification, function(mes){
+        notification.sendNotificationToCell(req.params.cellId, newNotification, function(mes){
             if(mes !== "Success"){
                res.json({ success: false, message: 'Couldnt post message.'});
             }
             else{
-                res.json({ success: true, message:'Posted message to cell.'});     
+                res.json({ success: true, message:'Posted message to cell.'}); 
+                
+                var newNotification = {
+                    type      : 'newCellMessage', //joinMasterCell, workoutCell, broadcast
+                    message   : getLogedName(req) + ' posted a message', //Name of person
+                    refId     : req.params.cellId,
+                    refOId    : getLogedId(req),  //cellId
+                    date      : new Date(), 
+                }
+
+                notification.sendNotificationToCellUsers(req.params.cellId, newNotification, function(res){
+                    if(res !== "Success"){
+                          notification.pushToNotificationLog(res + " @ POST: /workout/cell/:cellId/:userId");
+                    }
+                });
+
             } 
         });
     });
@@ -578,7 +593,7 @@ module.exports = function(app) {
         if(isAllowed(req, req.params.userId) && typeof(receivedJSON.type) !== undefined){
             mongooseLogic.createCell(req.params.userId, receivedJSON, getLogedName(req), function(mes){
                 if(mes === "Success"){
-                    res.json({ success: true,  message: 'Result saved.'});    
+                    res.json({ success: true,  message: 'Cell created.'});    
                 }
                 else{
                     res.json({ success: false,  message: 'Error in saving Cell. Trace: ' + mes});
@@ -677,13 +692,13 @@ module.exports = function(app) {
 	                                    date      : new Date(), 
                                     }
 
-                                    mongooseLogic.sendNotificationToCellUsers(req.params.cellId, newNotification, function(res){
+                                    notification.sendNotificationToCellUsers(req.params.cellId, newNotification, function(res){
                                         if(res !== "Success"){
                                               mongooseLogic.pushToNotificationLog(res + " @ POST: /workout/cell/:cellId/:userId");
                                         }
                                     });
                                     
-                                    mongooseLogic.sendNotificationToCell(req.params.cellId, newNotification, function(res){
+                                    notification.sendNotificationToCell(req.params.cellId, newNotification, function(res){
                                         if(res !== "Success"){
                                             mongooseLogic.pushToNotificationLog(res + " @ POST: /workout/cell/:cellId/:userId");
                                         }

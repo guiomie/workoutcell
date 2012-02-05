@@ -29,6 +29,9 @@ function initView(workoutObject, event) {
 	if(typeof(workoutObject.description) !== "undefined"){
 		document.getElementById('description').innerHTML = "Description <br>" + workoutObject.description;
 	}
+    
+    //Add layout for users in workoutcell
+    fillWorkoutMembers(workoutObject.cell.participants);
 
     //Treat display for cell based workout id needed
     if(workoutObject.cell.participants.length === 0 || typeof(workoutObject.cell.participants) === "undefined"){
@@ -101,17 +104,20 @@ function initView(workoutObject, event) {
             }
         }
     });
-    
+
     //Show timing in a qtip
     $('#iconShowTime').qtip({
         content: {
-            text: "From " + start.getHours() + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
-                  " to " + end.getHours() + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
+            text: "From " + (start.getHours() - applicationVariables.timezone) + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
+                  " to " + (end.getHours() - applicationVariables.timezone) + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
         },
         position: {
             my: 'top center',
             at:'bottom center'
-        }     
+        },
+        style: {
+            widget: true 
+        }
     });
     
     //On load attach handler to delete button
@@ -559,4 +565,40 @@ function UIrepositionCreate(){
 		$("#Create").show("slide", {}, 1000);
 		panelState = 'Create';
 	});   
+}
+
+
+var fillWorkoutMembers = function(arrayResult){
+    
+    if(RealTypeOf(arrayResult) !== "array"){
+        document.getElementById('friendList').innerHTML = arrayResult;     
+    }
+    else{
+        var overallHtml = "";
+        for(i = 0; i < arrayResult.length; i++){
+            overallHtml = overallHtml + '<div class="btn_viewProfile" userid="' + arrayResult[i].fbid + '">' + arrayResult[i].fullName + '</div>';
+        }
+        
+        document.getElementById('workoutCellMembers').innerHTML = overallHtml;
+        
+        $("#showCell").qtip({
+                content: {
+                    text: $('#workoutCellMembers').html(),
+                },
+                show: {
+                    event: 'click', 
+                    ready: false 
+                },
+                hide: {
+                    event: 'click',
+                    inactive: 1000
+                },
+                style: {
+                    widget: true 
+                }
+            });  
+        
+    }  
+    
+    
 }

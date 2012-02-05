@@ -52,6 +52,9 @@ var renderNotifications = function(arrayNotification){
         else if(arrayNotification[i].type === "newCellWorkout"){
             createCellWorkoutElement(arrayNotification[i]);
         }
+        else if(arrayNotification[i].type === "newCellMessage"){
+            createCellMessageElement(arrayNotification[i]);
+        }
         else{
             
         }
@@ -84,7 +87,10 @@ var renderFriendList = function(arrayResult){
                     event: 'click', 
                     ready: false 
                 },
-                hide: 'click',
+                hide: {
+                    event: 'click',
+                    inactive: 1000
+                },
                 style: {
                     widget: true 
                 }
@@ -99,7 +105,7 @@ var renderFriendList = function(arrayResult){
 var renderCellList = function(arrayResult){
 
     if(RealTypeOf(arrayResult) !== "array"){
-        document.getElementById('friendList').innerHTML = arrayResult;     
+        document.getElementById('cellList').innerHTML = arrayResult;     
     }
     else{
         var overallHtml = "";
@@ -166,6 +172,14 @@ var createFriendRequestElement = function(object){
 var createCellWorkoutElement = function(object){
     
     var viewprofile = '<div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer;">' + object.message + '</div>';
+    document.getElementById('notificationList').innerHTML = viewprofile + document.getElementById('notificationList').innerHTML;
+    
+}
+
+var createCellMessageElement = function(object){
+    
+
+    var viewprofile = '<div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer;">' + object.message + '</div>';
     document.getElementById('notificationList').innerHTML = viewprofile + document.getElementById('notificationList').innerHTML;
     
 }
@@ -262,7 +276,10 @@ var renderCellMemberList = function(arrayResult){
                     event: 'click', 
                     ready: false 
                 },
-                hide: 'click',
+                hide: {
+                    event: 'click',
+                    inactive: 1000
+                },
                 style: {
                     widget: true 
                 }
@@ -287,7 +304,7 @@ var renderCellNotifications = function(array){
             if(array[i].refId === authId){
              buttonRemove = '<span class="removeCellComment" ' + 'id="' + array[i]._id + '" class="ui-icon ui-icon-close" style="float: right"></span>';   
             }
-            document.getElementById('notificationCellList').innerHTML = '<div class="cellNotificationMessage" userId ="' + array[i].refId + '">' +
+            document.getElementById('notificationCellList').innerHTML = '<div class="cellNotificationMessage" userId ="' + array[i].refId + '" style="width: 350px;">' +
             array[i].message + buttonRemove + '</div>' + document.getElementById('notificationCellList').innerHTML;
         }
         else{

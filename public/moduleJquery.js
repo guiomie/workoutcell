@@ -18,6 +18,7 @@ var applicationVariables = {
     calendarMode        : "user", //or cell
     currentCell         : "none",
     droppedWorkoutId    : "",
+    timezone            : new Date().getTimezoneOffset()/60
 }
 
 //Global functions, declared in jquery init
@@ -237,15 +238,23 @@ $(document).ready(function(){
 			}
 		});
         
+        
+        ///-----------------------------------------------------------------////
+        //
+        // ***** UNIT Conversition code when inputing distance workout *******
+        //
+        //-----------------------------------------------------------------////
+        
         function qtipUnitHelperContent(){
-            if($('input[type=radio][name=radio3]:checked + label').text() !== 'Kilometers'){
+            if($('#radioTime').is(':checked') === true ){
                 timeToSec($('#bigInput').val(), $('#smallInput').val(), function(res){
+                     //$('#bigInput').qtip({content: { text: res + ' seconds' }});
                     $('#bigInput').qtip({
                         content: {
-                            text: JSON.stringify(res) + ' seconds'
+                            text: res + ' minutes'
                         },
                         show: {
-                            ready: true 
+                            ready: true
                         },
                         style: {
                             widget: true 
@@ -253,18 +262,28 @@ $(document).ready(function(){
                         position: {
                             my: 'right center',
                             at: 'left center'
+                        },
+                        
+                        api: {
+                            onShow: function() { 
+                                setTimeout(this.hide, 1000); /// hide after a second
+                            }
                         }
-                    });
+                    });   
+
                 });
+                //var qtip = jQuery('#bigInput').qtip('api');
+                //qtip.show();
             }
             else{
                 toMeters($('#bigInput').val(), $('#smallInput').val(), function(res){
+                    //$('#bigInput').qtip({content: { text: res + ' meters or ' + (Math.round(1.609344*parseFloat(res/1000))*100)/100 + ' miles' }, show: true});
                     $('#bigInput').qtip({
                         content: {
-                            text: JSON.stringify(res) + ' meters'
+                            text: res + ' meters (' + (Math.round(1.609344*parseFloat(res/1000)*100)/100) + ' miles)' 
                         },
                         show: {
-                            ready: true 
+                            ready: true
                         },
                         style: {
                             widget: true 
@@ -279,11 +298,16 @@ $(document).ready(function(){
         }
         
         //Event handlers for displaying a qtip with minute/meter coversion
-        $('.qtipUnitHelper').focus(function(){
+        $('.qtipUnitHelper').bind('focus keypress change keydown keyup click', function(){
     		  qtipUnitHelperContent();
-            
+           
 		});
         
+        $('.qtipUnitHelper').bind('blur', function(){
+            var qtip = jQuery('#bigInput').qtip('api');
+            qtip.hide();
+            
+        });
         /*
         $('.qtipUnitHelper').keyup(function(){
         	  qtipUnitHelperContent();
@@ -587,7 +611,7 @@ $(document).ready(function(){
                 //.val('whatever')
             ;
             
-            var droplistHtml = "<option value='none'>No parcour </option>" ;
+            var droplistHtml = "<option value='none'>No Course</option>" ;
             var array = {};
             var obj = jQuery.parseJSON(string);
             $(droplistHtml).appendTo("#" + dropdownName);
@@ -836,15 +860,30 @@ $(document).ready(function(){
            UILoadNewState('profileView');
         });
         
+        $('.cellMessage').live('click',function(){
+            var id = $(this).attr('refId');
+           applicationVariables.calendarMode = "cell";
+           applicationVariables.currentCell = $(this).attr('refId');
+           initCellView(id);
+           UILoadNewState('cellView');
+           updateCalendar();
+        });
+        
+         $('.cellNotificationNewWorkout').live('click',function(){
+             initView(workout, event); 
+             
+         });
+        
         $('#postCellComment').live('click', function(){
            
            var comment = $('#cellCommentInput').val();
            var cell = applicationVariables.currentCell;
            
-           if(comment.length < 160){
+           if(comment.length < 160 && comment !== "Post a comment ..." && comment.length > 10){
                $.getJSON(postCellComment + "/" + cell + "/" + comment , function(data) {
                     if(data.success){
                         initCellView(cell);
+                        $('#cellCommentInput').val('Post a comment ...');
                         //UILoadNewStateNoAnimation('cellView');
                     }
                     else{
@@ -853,7 +892,7 @@ $(document).ready(function(){
                });
            }
            else{
-               Notifier.error('Message too long.');
+               Notifier.error('Message too long or short or invalid.');
            }
         });
         
@@ -920,13 +959,13 @@ $(document).ready(function(){
         
         
         function toMeters(km, m, callback){
-            if(parseInt(m.value) === null && parseInt(km.value) === null){
+            if(m === "" && km === ""){
                 callback(0);
             }
-            else if(km.value === ""){
+            else if(km === ""){
                 callback(parseInt(m)); 
             }
-            else if(m.value === ""){
+            else if(m === ""){
                 callback((parseInt(km) * 1000)); 
             }
             else{
@@ -935,13 +974,13 @@ $(document).ready(function(){
         }
         
         function timeToSec(m, s, callback){
-            if(parseInt(s.value) === null && parseInt(m.value) === null){
+            if(s === "" && m === ""){
                 callback(0);
             }
-            else if(m.value === ""){
+            else if(m === ""){
                  callback(parseInt(s));
             }
-            else if(s.value === ""){
+            else if(s === ""){
                  callback(60*parseInt(m)); 
             }
             else{

@@ -23,6 +23,7 @@ var postWorkout = function(event) {
 		basicStartDate.setMinutes($('#timepickerStart').datetimepicker('getDate').getMinutes());
 		basicStartDate.setHours($('#timepickerStart').datetimepicker('getDate').getHours());
 
+        
 		var basicEndDate = $("#datepicker").datepicker( "getDate" );
 		basicEndDate.setMinutes($('#timepickerStop').datetimepicker('getDate').getMinutes());
 		basicEndDate.setHours($('#timepickerStop').datetimepicker('getDate').getHours());		
@@ -31,7 +32,7 @@ var postWorkout = function(event) {
 		var activeAccordion = $( "#accordion" ).accordion( "option", "active" );
 		//interval training
         var varDescription = "none";
-        if($('#descriptionInput').val() !== 'Enter Description'){
+        if($('#descriptionInput').val() !== 'Event description (optional)'){
             varDescription = $('#descriptionInput').val();
 		}
         else{
@@ -150,7 +151,7 @@ var postCellWorkout = function(event) {
 		var activeAccordion = $( "#accordion" ).accordion( "option", "active" );
 		//interval training
         var varDescription = "none";
-        if($('#descriptionInput').val() !== 'Enter Description'){
+        if($('#descriptionInput').val() !== 'Event description (optional)'){
             varDescription = $('#descriptionInput').val();
 		}
         else{
@@ -230,7 +231,7 @@ var postCellWorkout = function(event) {
 		}
         
 		//empty intervall array so it doesnt accumulate
-		initPostFields();
+		initPostFields(); 
         
 }
 
