@@ -6,7 +6,7 @@ var userGroup = "group1";
 
 
   FB.init({
-    appId  : globalAppid,
+    appId  : 277924085557007,   //Prod: 114525048657436
     status : true, // check login status
     cookie : true, // enable cookies to allow the server to access the session
     xfbml  : true, // parse XFBML

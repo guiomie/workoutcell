@@ -26,7 +26,7 @@ function initView(workoutObject, event) {
 		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
 	}
 
-	if(typeof(workoutObject.description) !== "undefined"){
+	if(workoutObject.description !== "none"){
 		document.getElementById('description').innerHTML = "Description <br>" + workoutObject.description;
 	}
     
@@ -129,7 +129,7 @@ function initView(workoutObject, event) {
             $.get(url, function(data){
                 if(data.success){
                     Notifier.success(data.message);
-                    UIrepositionCreate();
+                    moveUI('Create');
                 }
                 else{
                     Notifier.error(data.message);       
@@ -570,8 +570,8 @@ function UIrepositionCreate(){
 
 var fillWorkoutMembers = function(arrayResult){
     
-    if(RealTypeOf(arrayResult) !== "array"){
-        document.getElementById('friendList').innerHTML = arrayResult;     
+    if(RealTypeOf(arrayResult) !== "array" || arrayResult.length === 0){
+        document.getElementById('workoutCellMembers').innerHTML = 'Yourself';     
     }
     else{
         var overallHtml = "";
@@ -580,25 +580,24 @@ var fillWorkoutMembers = function(arrayResult){
         }
         
         document.getElementById('workoutCellMembers').innerHTML = overallHtml;
-        
-        $("#showCell").qtip({
-                content: {
-                    text: $('#workoutCellMembers').html(),
-                },
-                show: {
-                    event: 'click', 
-                    ready: false 
-                },
-                hide: {
-                    event: 'click',
-                    inactive: 1000
-                },
-                style: {
-                    widget: true 
-                }
-            });  
-        
+
     }  
-    
-    
+              
+    $("#showCell").qtip({
+        content: {
+            text: $('#workoutCellMembers').html(),
+        },
+        show: {
+            event: 'click', 
+            ready: false 
+        },
+        hide: {
+            event: 'click',
+            inactive: 1000
+        },
+        style: {
+            widget: true 
+        }
+    });  
+          
 }
