@@ -352,11 +352,26 @@ module.exports = function(app) {
                 res.json({ success: false, message: "An error happened in the request."});
             }
             else{
-                res.json({ success: true, message: mes});
-            }
-            
+                if(mes.isPrivate){
+                    for(i=0; i < mes.members.length; i++){
+                        //console.log(typeof(getLogedId(req)) + " vs " + typeof(mes.members[i]));
+                        if(parseInt(getLogedId(req)) === mes.members[i]){
+                           res.json({ success: true, message: mes});
+                           break;
+                        }
+                        else if(i === mes.members.length - 1){ //When loop is doen send failure
+                            res.json({ success: true, message: "This cell is private"});
+                        }
+                        else{
+                            
+                        }
+                    } 
+                }
+                else{
+                    res.json({ success: true, message: mes});
+                }
+            } 
         });
-   
     });
     
     

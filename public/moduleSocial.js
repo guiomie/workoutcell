@@ -3,7 +3,7 @@ var intiSocialView = function(friendList, notificationList, cellTree){
     if(friendList){
         $.getJSON(getFriendCell, function(data) {
             if(data.success){
-                renderFriendList(data.message);   
+                renderFriendList(data.message, 'friendList');   
             }
             else{
                 //something wrong
@@ -63,20 +63,20 @@ var renderNotifications = function(arrayNotification){
 }
 
 
-var renderFriendList = function(arrayResult){
+var renderFriendList = function(arrayResult, locationId){
      
     if(RealTypeOf(arrayResult) !== "array"){
-        document.getElementById('friendList').innerHTML = arrayResult;     
+        document.getElementById(locationId).innerHTML = arrayResult;     
     }
     else{
        var overallHtml = "";
        for(i = 0; i < arrayResult.length; i++){
-          var pictureTag = '<span id="friendPic' + arrayResult[i] + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
-          overallHtml = overallHtml + pictureTag + '</span>';
+          var pictureTag = '<div select="no" userid="'+ arrayResult[i] +'" class="selectable' + locationId + '"  id="friendPic'+ locationId + i + '" style="margin-left: 3px; cursor: pointer; float:left;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          overallHtml = overallHtml + pictureTag + '</div>';
        }
-       document.getElementById('friendList').innerHTML = overallHtml;
+       document.getElementById(locationId).innerHTML = overallHtml;
        for(i = 0; i < arrayResult.length; i++){
-           $("#friendPic" + arrayResult[i]).qtip({
+           $("#friendPic"+ locationId + i).qtip({
                 content: {
                     text: 'Loading data...',
                     ajax: {
@@ -97,7 +97,7 @@ var renderFriendList = function(arrayResult){
             });   
        }
        
-       FB.XFBML.parse(document.getElementById('friendList'));
+       FB.XFBML.parse(document.getElementById(locationId));
 
     }  
 }
@@ -194,21 +194,47 @@ var createCellListElement = function(object){
 }
 
 
-/////!!!!-------CELL VIEIWING CODE ---------- !!!!!!! 
+/////!!!!------------------CELL VIEIWING CODE ------------------------ !!!!!!!!! 
+//
+//
+//
+////!!!!-------------------------------------------------------------------!!!!!!
 
-
-var initCellView = function(cellId){
+var initCellView = function(object){
     
-    $.getJSON('/cell/details/' + cellId, function(data) {
-        if(data.success){
-            fillCellView(data.message);   
-        }
-        else{
-            //something wrong
-            Notifier.success(data.message);
-        }   
-    }); 
+    //reinitialises view
+    $('#cellOptionsButton').hide();
+    $("#inviteInCell").die();
     
+    fillCellView(object); 
+   
+    //Load cell creators toolbox
+    if(object.owner.id === parseInt(authId)){
+        $('#cellOptionsButton').show();
+        
+        //initialise button
+        $("#inviteInCell").live("click",function(){
+            
+            
+            $.getJSON(getFriendCell, function(data) {
+                if(data.success){
+                    renderFriendList(data.message, 'inviteFriendList');
+                    $('#inviteFriends').dialog('open');
+                }
+                else{
+                    //something wrong
+                    Notifier.success(data.message);
+                }   
+            });
+        });
+        
+    }
+    
+    
+    
+    
+   
+   
 }
 
 var fillCellView = function(object){
@@ -292,7 +318,12 @@ var renderCellMemberList = function(arrayResult){
 }
 
 var renderCellNotifications = function(array){
+    
     document.getElementById('notificationCellList').innerHTML = "";
+    
+    if(array.length === 0 ){
+        document.getElementById('notificationCellList').innerHTML = "No notifications";
+    }
     
     for(i = 0; i < array.length; i++){       
         if(array[i].type === 'newCellWorkout'){
@@ -312,6 +343,10 @@ var renderCellNotifications = function(array){
     }
 }
 
+//!!!!!!!-----------------------Profile view loading  -------------------------//
+//    When you are visiting someones profile
+//
+// !!!!!!---------------------------------------------------------------------//
 var initUsersProfile = function(targetId){
     
     $.getJSON("/user/profile/" + targetId, function(data) {
@@ -433,6 +468,26 @@ var renderProfileFriendList = function(arrayResult){
        FB.XFBML.parse(document.getElementById('friendProfileList'));
 
     }  
+}
+
+var getSelectedElements = function(prefix, element){
+    
+    var returnArray = [];
+    var addedToList = 0;
+    for(i=0; i <100 ; i++){
+        
+        if($('#' + prefix + element + i).attr('select') === "yes"){
+            returnArray.push(parseInt($('#friendPic' + element + i).attr('userid'))); 
+            addedToList++;
+            if(addedToList === applicationVariables.selectedElements){
+               break; 
+            }
+        }
+    }
+    
+    return returnArray;
+   // id="friendPic'+ locationId + arrayResult[i]   
+
 }
 
 //Taken from http://joncom.be/code/realtypeof/

@@ -879,6 +879,7 @@ var createCell = function(creatorId, cellObject, userName, callback){
     var newCellDetails = new CellDetails({
         name         : cellObject.name,
 	    location     : cellObject.location,
+        isPrivate    : cellObject.isPrivate,
 	    owner        : {id: creatorId, name: userName}, 
 	    members      : [parseInt(creatorId)],
 	    description  : cellObject.description, 

@@ -213,6 +213,7 @@ var CellReference = new Schema({
 var CellDetails = new Schema({
     name         : String,
 	location     : String,
+    isPrivate    : Boolean,
 	owner        : {id: Number, name: String},
 	members      : [Number],
 	description  : String, 

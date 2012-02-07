@@ -13,12 +13,15 @@ var s = "";
 var tempIntervall = [];
 var minSlider = 0;
 var maxSlider = 0;
+
 var applicationVariables = {
     calendarFirstLoad   : true,
     calendarMode        : "user", //or cell
     currentCell         : "none",
     droppedWorkoutId    : "",
-    timezone            : new Date().getTimezoneOffset()/60
+    timezone            : new Date().getTimezoneOffset()/60,
+    
+    selectedElements    : 0
 }
 
 //Global functions, declared in jquery init
@@ -33,6 +36,7 @@ $(document).ready(function(){
 			height: 600,
 			theme: true,
             editable: true,
+            ignoreTimezone: false,
 			eventClick: function(event) {	
 				if (event.url) {
 				//the launched function readjusts UI and send httprequest for view
@@ -165,7 +169,11 @@ $(document).ready(function(){
 
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 
-		// Dialog			
+		//// !!!---------------App  Dialog	declarations ------------------///
+        //
+        //
+        // !!!--------------------------------------------------------------///
+        
 		$('#dialog').dialog({
 			autoOpen: false,
 			width: 600,
@@ -185,7 +193,28 @@ $(document).ready(function(){
 			return false;
 		});
         
-        autoOpen: false,
+        $('#inviteFriends').dialog({
+        	autoOpen: false,
+			width  : 400,
+            height : 400,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            position: {
+                my: "center",
+                at: "center",
+                of: window
+            },
+			buttons: {
+				"Ok": function() { 
+                    alert(getSelectedElements('friendPic', 'inviteFriendList'));
+                    $(this).dialog("close"); 
+				}, 
+				"Cancel": function() { 
+					$(this).dialog("close"); 
+				} 
+			}
+		});
     
         
         $('#createCellDialog').dialog({
@@ -771,26 +800,13 @@ $(document).ready(function(){
             }
         }
 
-        $('#descriptionButton').qtip({
-            content: {
-               text: "<textarea rows='5' cols='20' id='descriptionInput'>Enter Description</textarea>" 
-            },
-            show: {
-               event: 'click', 
-               ready: false 
-            },
-            hide: 'click',
-            style: {
-                widget: true 
-            }    
-        });
-        
         var grabNewCellInput = function(){
             
             var object = {
                 name         : $("input[type=text][id=cellName]").val(),
                 location     : $("#cellLocationSelect").val(),
-	            description  : $("#cellDescription").val(),      
+	            description  : $("#cellDescription").val(),
+                isPrivate    : $('#isCellOnInvite').is(':checked')
             }
             return object;
             
@@ -822,14 +838,25 @@ $(document).ready(function(){
         
         
         $('.cellCard').live('click',function(){
-           var id = $(this).attr('refId');
-           var owner = $(this).attr('owner');
-           applicationVariables.calendarMode = "cell";
-           applicationVariables.currentCell = $(this).attr('refId');
-           initCellView(id);
-           UILoadNewState('cellView');
-           updateCalendar();
-            
+            var id = $(this).attr('refId');
+           $.getJSON('/cell/details/' + id, function(data) {
+                if(data.success){
+                    if(data.message === 'This cell is private'){
+                        UILoadNewState('emptyView');
+                        document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
+                    }else{
+                        applicationVariables.calendarMode = "cell";
+                        applicationVariables.currentCell = $(this).attr('refId');
+                        initCellView(data.message);
+                        UILoadNewState('cellView');
+                        updateCalendar();
+                    }
+                }
+                else{
+                    //something wrong
+                    Notifier.success(data.message);
+                }
+           });
         });
         
         $('.cellLink').live('click',function(){
@@ -839,7 +866,6 @@ $(document).ready(function(){
            initCellView(id);
            UILoadNewState('cellView');
            updateCalendar();
-            
         });
         
         //Button found on profile snippet, click on profile mini pic
@@ -868,6 +894,22 @@ $(document).ready(function(){
            UILoadNewState('cellView');
            updateCalendar();
         });
+        
+        $(".selectableinviteFriendList").live('click', function(){
+            if($(this).attr('select') === "no"){
+                $(this).attr('select', "yes"); 
+                $(this).css('border', 'solid 4px #00A300');
+                applicationVariables.selectedElements++;
+            }
+            else{
+                $(this).attr('select', "no"); 
+                $(this).css('border', 'solid 0px white');
+                applicationVariables.selectedElements--;
+            }
+        });
+        
+        
+        
         
          $('.cellNotificationNewWorkout').live('click',function(){
              initView(workout, event); 
@@ -989,6 +1031,35 @@ $(document).ready(function(){
               
             
         }
+        
+        //Menu in cell view
+        $("#cellOptionsButton").qtip({
+            content: {
+                text: $("#viewCellOptionsContent").html()
+            },
+            show: {
+                event: 'click', 
+            },
+            position: {
+                my: 'left center', // Use the corner...
+                at: 'right center' // ...and opposite corner
+            },
+            hide: {
+                event: 'click', 
+            },
+            style: {
+                widget: true 
+            },
+            position: {
+                my: 'top center',
+                at: 'bottom center'
+            },
+            events: {
+                render: function(event, api) {
+                    api.elements.tooltip.click(api.hide);
+                }
+            }
+        }); 
         
         $('#markRead').click(function(){
             $.getJSON(resetNotificationCount, function(res) {

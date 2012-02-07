@@ -108,8 +108,8 @@ function initView(workoutObject, event) {
     //Show timing in a qtip
     $('#iconShowTime').qtip({
         content: {
-            text: "From " + (start.getHours() - applicationVariables.timezone) + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
-                  " to " + (end.getHours() - applicationVariables.timezone) + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
+            text: "From " + (start.getHours()) + ":" + ((start.getMinutes() < 10) ? ("0" + start.getMinutes()) : start.getMinutes()) +
+                  " to " + (end.getHours()) + ":" + ((end.getMinutes() < 10) ? ("0" + end.getMinutes()) : end.getMinutes())
         },
         position: {
             my: 'top center',

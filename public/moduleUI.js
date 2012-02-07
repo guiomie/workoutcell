@@ -48,6 +48,29 @@ var moveUI = function(newUI) {
 		  });
 	    }
 	}
+    else if(newUI == 'emptyView'){
+    	//Block re-rendering of widget if already choosen
+		if(panelState !== 'emptyView'){					
+			// Change calendar size
+			$("#fullcalendar").animate({ 
+				height: "500px", 
+				width: "500px", 
+			}, 1000, function(){
+			    //resize calendar, seems to be a glitch
+			    $('#fullcalendar').fullCalendar('render');
+                if(panelState !== "largeCalendar"){
+                    $("#" + panelState).hide("slide", {}, 1000, function(){
+    		            $("#emptyView").show("slide", {}, 1000);
+			            panelState = 'emptyView';
+		            });
+		        }
+                else{
+                    $("#emptyView").show("slide", {}, 1000);
+    		        panelState = 'emptyView';    
+                }
+		  });
+	    }
+	}
 	else if(newUI == 'Map'){
 		//Block re-rendering of widget if already choosen
 		if(panelState !== 'Map'){					

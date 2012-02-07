@@ -74,6 +74,7 @@
             .cellLink:hover  { background-color: #e2f1d5; cursor: pointer;}
             .cellMessage:hover  { background-color: #e2f1d5; cursor: pointer;}
             .cellNotificationMessage:hover  { background-color: #e2f1d5; cursor: pointer;}
+            .highLight:hover { background-color: #e2f1d5; cursor: pointer;}
 </style>
 
 </head>
@@ -152,6 +153,7 @@
         <option value="Ottawa, Ontario">Ottawa, Ontario</option>	
         <option value="Gatineau, Québec">Gatineau, Québec</option>
 	</select><br>
+    On invite only: <input type="checkbox" id="isCellOnInvite" /> <br><br>
     Description <br>
     <textarea rows='15' cols='40' id='cellDescription'>Enter a description of the cell</textarea>
 
@@ -214,13 +216,25 @@
 
 </div>
 
+<div id="emptyView"  style="display: none; background: white; width:510px; height:500px; margin-top:30px;">  
 
+
+</div>
+
+<div id="inviteFriends"> <div id="inviteFriendList"> </div> </div>
 
 <div id="cellView" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 
     <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
         
-        <div id="toggleCell" style="float: right; cursor: pointer;"> <span id="cellToggleName" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px 5px; margin-right: 10px;"> Join Cell</span> </div>
+        <div id="toggleCell" style="float: right; cursor: pointer; height: 22px; "> <span id="cellToggleName" class="ui-state-default ui-corner-all" style="height: 22px; font-size: 12px; padding:0px 5px; margin-right: 10px;"> Join Cell</span> </div>
+        <div id="cellOptionsButton"style="float: right; height: 19px; margin-right: 2px; display: none; cursor:pointer;" class="ui-state-default ui-corner-all">
+            <span class="ui-icon ui-icon-triangle-1-s" style="margin: 0 auto"></span>
+        </div>
+        
+        <div id="viewCellOptionsContent" style="display: none;">
+            <div id="inviteInCell" class="highLight" style="padding-top: 3px;">Invite to Cell</div>
+        </div>
         
         <span id="cellTitle" style="font-family: impact; font-size: 20px;">   </span><br>
          Created by: <span id="cellCreator"> </span><br>
