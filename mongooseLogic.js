@@ -1050,7 +1050,21 @@ function isNumber(n) {
 }
 
 
-
+var checkIfUserInCell = function(cellId, userId, callback){
+     GeneralReference.findOne({ "id" : parseInt(userId), "cells.cellDetails" : ObjectId.fromString(cellId)}, function(err, result){
+        if(err){ 
+            callback("Failed");
+        }
+        else if(result === null){
+            callback(userId);
+        }
+        else{
+            callback("Existant");
+        }
+     });
+    
+    
+}
 
 var isUserAFriend = function(userId, target, callback){
     
@@ -1142,4 +1156,5 @@ exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;
 exports.getFriendList = getFriendList;
 
+exports.checkIfUserInCell = checkIfUserInCell;
 exports.pushToNotificationLog =  pushToNotificationLog;

@@ -181,7 +181,7 @@ var BasicCell = new Schema({
 //!!!!------ Notification System ------ !!!!!
 var Notification = new Schema({
 
-    type      : String, //joinMasterCell, workoutCell, broadcast
+    type      : String, //joinMasterCell, workoutCell, broadcast, acceptCellInvite
 	message   : String, //Name of person
 	refId     : String,
 	refOId    : ObjectId,

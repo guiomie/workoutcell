@@ -108,6 +108,11 @@ module.exports = function(app) {
         
     });
     
+    //!!!!!----------------Notifications Route ------------------------------///
+    //
+    //
+    //!!!!!!!----------------------------------------------------------------///
+    
     //Adds a notification to the users queu
     app.get("/notification/:userId/:type/:target", function(req, res){
         
@@ -232,6 +237,31 @@ module.exports = function(app) {
            res.json({ success: false, message:'Invalid parameter sent(2)'}); 
         }
         
+    });
+    
+    app.get("/notification/cell/invite/:cellId/:response", function(req, res){
+
+        notification.removeCellInviteNotification(req.params.cellId, getLogedId(req), function(mes){
+            if(mes === "InvalidRequest"){
+                res.json({ success: false, message:'Invalid request'});
+            }
+            else{
+                
+                if(req.params.response === "yes"){
+                    mongooseLogic.joinCell(req.params.cellId, getLogedId(req), function(mes2){
+                        if(mes2 !== "Success"){
+                            res.json({ success: false, message:'Failed to find join Cell.'});  
+                        }
+                        else{
+                            res.json({ success: true, message: 'You joined the cell'}); 
+                        }  
+                    });
+                }
+                else{
+                   res.json({ success: true, message:'Declined cell invite'}); 
+                }
+            }
+        });
     });
     
     /*
@@ -761,6 +791,39 @@ module.exports = function(app) {
                 });
             }
         });
+    });
+    
+    app.post("/notification/invitetocell/:cellId/:cellName/", function(req, res){
+        
+        if(RealTypeOf(req.body) === "array" && req.body !== undefined){
+            var notificationObject = req.body;
+            res.json({ success: true,  message: 'Invites sent.'}); 
+            
+            for(i=0;i<notificationObject.length;i++){
+                 mongooseLogic.checkIfUserInCell(req.params.cellId, notificationObject[i], function(mes1){ //returns the userIs
+                     if(mes1 === "Existant" || mes1 === "Failed"){
+                         console.log('Cant send invite (1)');
+                         mongooseLogic.pushToNotificationLog('Cant send invite (1)');
+                     }
+                     else{
+                        notification.saveCellRequestToQueu(getLogedName(req), req.params.cellName, mes1, req.params.cellId, function(mes2){
+                            if(mes2  === "Existant" || mes2 === "Failed"){
+                                console.log('Cant send invite (2)');
+                                 mongooseLogic.pushToNotificationLog('Cant send invite (2)');
+                            }
+                            else{
+                                
+                            }
+                        }); 
+                     }
+                 });
+            }
+        }
+        else{
+            res.json({ success: false,  message: 'Invites invalid.'}); 
+            
+        }
+        
     });
         
     //*************************************************************************

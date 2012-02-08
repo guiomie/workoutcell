@@ -169,7 +169,8 @@ $(document).ready(function(){
 
 		var buttons = $('#push, #check, #clearMap, #saveMap, #addIntervall, #removeIntervall').button();
 
-		//// !!!---------------App  Dialog	declarations ------------------///
+		
+        //// !!!---------------App  Dialog	declarations ------------------///
         //
         //
         // !!!--------------------------------------------------------------///
@@ -207,7 +208,41 @@ $(document).ready(function(){
             },
 			buttons: {
 				"Ok": function() { 
-                    alert(getSelectedElements('friendPic', 'inviteFriendList'));
+                    
+                    $.ajax({
+                        url: inviteToCell + applicationVariables.currentCell + "/" + $('#cellTitle').html() + "/",
+                        type: "POST",
+                        dataType: "json",
+                        data: JSON.stringify(getSelectedElements('friendPic', 'inviteFriendList')),
+                        contentType: "application/json",
+                        cache: false,
+                        timeout: 5000,
+                        complete: function() {
+                            //called when complete
+                            Notifier.info('Saving ...');
+                        },
+                        success: function(data) {
+                            //var res =jQuery.parseJSON(data);
+                            //callback('Sending: ' + data);
+                            if(data.success){
+                                Notifier.success(data.message);
+                                 callback(data.success);
+                            }
+                            else{
+                               Notifier.error(data.message); 
+                               callback(data.success);
+                            }
+                        },
+        
+                        error: function() {
+                            //callback('Operation failed');
+                            Notifier.error('Could not send data to server');
+                             callback(false);
+                        },
+                    });
+                    
+                    document.getElementById('inviteFriendList').innerHTML = "";
+                    applicationVariables.selectedElements = 0;
                     $(this).dialog("close"); 
 				}, 
 				"Cancel": function() { 
@@ -846,7 +881,7 @@ $(document).ready(function(){
                         document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
                     }else{
                         applicationVariables.calendarMode = "cell";
-                        applicationVariables.currentCell = $(this).attr('refId');
+                        applicationVariables.currentCell = id;
                         initCellView(data.message);
                         UILoadNewState('cellView');
                         updateCalendar();
@@ -862,7 +897,7 @@ $(document).ready(function(){
         $('.cellLink').live('click',function(){
            var id = $(this).attr('refId');
            applicationVariables.calendarMode = "cell";
-           applicationVariables.currentCell = $(this).attr('refId');
+           applicationVariables.currentCell = id;
            initCellView(id);
            UILoadNewState('cellView');
            updateCalendar();
@@ -908,12 +943,8 @@ $(document).ready(function(){
             }
         });
         
-        
-        
-        
          $('.cellNotificationNewWorkout').live('click',function(){
              initView(workout, event); 
-             
          });
         
         $('#postCellComment').live('click', function(){

@@ -39,6 +39,61 @@ var saveFriendshipRequestToQueu = function(requester, requestee, requesterName, 
     
 }
 
+
+var saveCellRequestToQueu = function(requesterName, cellName, userId, cellId, callback){
+    
+    var pendingNotification = {
+        type      : "cellInvite", //joinMasterCell, workoutCell 
+        message   : requesterName + " has invited you to " + cellName + "'s cell", //Name of person
+        refId     : userId,
+        refOId    : cellId, //cell Id
+        date      : new Date()
+    }
+    
+     NotificationsReference.findOne({ "id" : parseInt(userId), "pending.refOId" : ObjectId.fromString(cellId)}, function(err, result){
+        if(err){ 
+            callback("Failed");
+        }
+        else if(result === null){
+            //This means user hasnt filled in any result for this workout yet
+            NotificationsReference.update({ "id" : parseInt(userId)}, { $push: { pending: pendingNotification}, $inc: { unRead : 1 }}, function(err){
+                if(err){
+                    callback("Error in pushing not to found user. User:" + result.members[i]);
+                }
+                else{ 
+                    callback("Success");
+                }
+            });
+        }
+        else{
+            callback("Existant");
+        }
+     }); 
+}
+
+var removeCellInviteNotification = function(cellId, userId, callback){
+    
+    
+    NotificationsReference.findOne({ 'id' : userId, "pending.refOId" :  ObjectId.fromString(cellId)}, function(err, result){
+        if(err || result === null){
+            console.log(err + " - " + result);
+            callback('InvalidRequest');
+        }
+        else{
+            NotificationsReference.update({ "id" : userId}, { $pull: { pending: { refOId :  ObjectId.fromString(cellId)}}}, function(err, result){
+                if(err || result === null){
+                    console.log("User isnt part of this cell. Stack: " + err );
+                    callback("InvalidRequest");
+                }
+                else{ //Memeber not in cell yet, so he can join
+                    callback("User removed");
+                
+                }
+            });
+        }
+    });
+}
+
 //This will return the values in between the ranges in relation to the array size
 var getPendingNotifications = function(userId, rangeMin, rangeMax, callback){
     
@@ -266,11 +321,27 @@ var checkIfpending = function(requester, array, callback){
     callback(callbackResult);
 }
 
+var checkIfCellpending = function(cellId, array, callback){
+
+    for(i = 0; i < array.length;i++){
+        if(array[i].type === "cellInvite" && array[i].refOId === cellId){
+            callback("isPending");
+            break;
+        }
+        else if(i === array.length - 1){
+             callbackResult("isNotPending");
+        }
+        else{
+            
+        }       
+    }
+}
 
 // --------------------- Exports  -------------------------------------//
 
 exports.getCellNotifications = getCellNotifications;
 exports.saveFriendshipRequestToQueu = saveFriendshipRequestToQueu;
+exports.saveCellRequestToQueu = saveCellRequestToQueu;
 exports.getPendingNotifications = getPendingNotifications;
 exports.acceptPendingFriendship = acceptPendingFriendship;
 exports.declinePendingFriendship = declinePendingFriendship;
@@ -279,3 +350,4 @@ exports.sendNotificationToCell = sendNotificationToCell;
 exports.getUnreadNotificationsCount = getUnreadNotificationsCount;
 exports.resetUnreadNotificationsCount = resetUnreadNotificationsCount;
 exports.getCellNotifications = getCellNotifications;
+exports.removeCellInviteNotification = removeCellInviteNotification;

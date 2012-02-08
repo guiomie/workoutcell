@@ -69,6 +69,7 @@ Post result:  /result/:userId/:workoutId  | ex: /result/100000268779394/4edbdc71
 Post a cell:  /cell/create/:userId  | ex: /cell/create/100000268779394   <br>
 Post a workout to a cell: /workout/cell/:cellId/:userId |    <br>
 Post Event to join the workout: /workout/cell/join/<br>
+Post cell invite: /notification/invitetocell/:cellId/:cellName/ <br>
 <form action="/" id="requestForm">
 
 httpPost url: <input type="text" name="url" placeholder="" /> <br>
@@ -147,6 +148,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
 /notification/unread/reset <br>
 (*disabled*) /notifications/cell/:cellId/:from/:to | ex: /notifications/cell/4f2214d49513a0474a00003d/0/10 <br> 
 /notification/cell/message/:cellId/:message  | ex: /notification/cell/message/:cellId/:message   <br>
+/notification/cell/invite/:cellId/:response   | ex: /notification/cell/invite/:cellId/:response <br>
 
 httpGet url: <input type="text" id="getUrl" placeholder="" /> <br>
 

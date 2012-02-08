@@ -55,6 +55,9 @@ var renderNotifications = function(arrayNotification){
         else if(arrayNotification[i].type === "newCellMessage"){
             createCellMessageElement(arrayNotification[i]);
         }
+        else if(arrayNotification[i].type === "cellInvite"){
+            createCellInviteElement(arrayNotification[i]);
+        }
         else{
             
         }
@@ -190,6 +193,44 @@ var createCellListElement = function(object){
     object.cellDetails + "' owner='" + object.owner  + "'>" + object.name + "</div>";
     
     return html;
+    
+}
+
+var  createCellInviteElement = function(object){
+    
+    var html = '<div id="cellnotification" >' + object.message + '<span id="refuseCellInvite' + object.refOId + '" class="ui-icon ui-icon-close" style="float: right"></span>' +
+    '<span id="acceptCellInvite' + object.refOId + '" class="ui-icon ui-icon-check" style="float: right"></span></div>';
+ 
+    document.getElementById('notificationList').innerHTML = html + document.getElementById('notificationList').innerHTML;
+    
+    $('#acceptCellInvite' + object.refId).live('click', function(){
+        var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/accept";
+        $.getJSON(theUrl, function(data) {
+            if(data.success){
+                intiSocialView(true, true, false);
+                Notifier.success(data.message);
+            }
+            else{
+                //something wrong
+                Notifier.success(data.message);
+            }   
+        }); 
+    });
+
+    $('#refuseCellInvite' + object.refId).live('click', function(){
+        var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/decline";
+        $.getJSON(theUrl, function(data) {
+            if(data.success){
+                intiSocialView(true, true, false);
+                Notifier.success(data.message);
+            }
+            else{
+                //something wrong
+                Notifier.success(data.message);
+            }   
+        }); 
+    });
+
     
 }
 
