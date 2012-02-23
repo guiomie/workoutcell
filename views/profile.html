@@ -60,8 +60,11 @@ Content
 </script>
     <br>
     <a href="/view/index"> Switch to Training planner </a><br>
-    
-    
+
+
+
+</div>
+     <br>
  ----------------------------- POST Testing Area ---------------------------<br>
 Post a map with coordinates: /parcour/100000268779394/map1/5 <br>
 Post workout:    /workout/:userId  |  ex: /workout/100000268779394  <br>
@@ -132,7 +135,8 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
 /workout/:workoutid   |  ex: /workout/4eb3218b32bac49d3d000002 <br>
 /workout/delete/:userid/:year/:month/:workoutid/:eventid   | ex: /workout/delete/100000268779394/2011/12/4ee693b3554e61821700000f/4ee693b3554e618217000016    <br>
 /search/fullname/:first/:last     | ex: /search/fullname/Elizabeth/Lisky <br>
-/notification/queu/:userId/:min/:max  | ex: /notification/queu/100000268779394/0/10 <br>
+(*deprecated*) /notification/queu/:userId/:min/:max  | ex: /notification/queu/100000268779394/0/10 <br>
+/notification/queu/:userId/:page  | ex: /notification/queu/100000268779394/1 <br>
 /notification/:userId/:type/:target   | ex: /notification/100000268779394/joinMasterCell/100000268779395   <br>
 /notification/joinMasterCell/:userId/:requester/:action  | ex: /notification/joinMasterCell/100000268779394/100000268779395/accept (or decline) <br>
 /cell/friends/:userId/  | ex:  /cell/friends/100000268779394     <br>
@@ -146,7 +150,7 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
 /parcour/delete/:parcourId <br>
 /notification/unread <br>
 /notification/unread/reset <br>
-(*disabled*) /notifications/cell/:cellId/:from/:to | ex: /notifications/cell/4f2214d49513a0474a00003d/0/10 <br> 
+(*deprecated*) /notifications/cell/:cellId/:from/:to | ex: /notifications/cell/4f2214d49513a0474a00003d/0/10 <br> 
 /notification/cell/message/:cellId/:message  | ex: /notification/cell/message/:cellId/:message   <br>
 /notification/cell/invite/:cellId/:response   | ex: /notification/cell/invite/:cellId/:response <br>
 

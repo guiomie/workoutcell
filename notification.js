@@ -19,6 +19,7 @@ var saveFriendshipRequestToQueu = function(requester, requestee, requesterName, 
             checkIfpending(requester, result.pending, function(mes){     
                 if(mes === "isNotPending"){
                     result.pending.push(pendingNotification);
+                    result.pendingSize++;
                     result.save(function (err) {
                         if (err) { 
                             //console.log("In deleteEvent error(2)");
@@ -56,7 +57,7 @@ var saveCellRequestToQueu = function(requesterName, cellName, userId, cellId, ca
         }
         else if(result === null){
             //This means user hasnt filled in any result for this workout yet
-            NotificationsReference.update({ "id" : parseInt(userId)}, { $push: { pending: pendingNotification}, $inc: { unRead : 1 }}, function(err){
+            NotificationsReference.update({ "id" : parseInt(userId)}, { $push: { pending: pendingNotification}, $inc: { unRead : 1 }, $inc: { pendingSize: 1 }}, function(err){
                 if(err){
                     callback("Error in pushing not to found user. User:" + result.members[i]);
                 }
@@ -80,7 +81,7 @@ var removeCellInviteNotification = function(cellId, userId, callback){
             callback('InvalidRequest');
         }
         else{
-            NotificationsReference.update({ "id" : userId}, { $pull: { pending: { refOId :  ObjectId.fromString(cellId)}}}, function(err, result){
+            NotificationsReference.update({ "id" : userId}, { $pull: { pending: { refOId :  ObjectId.fromString(cellId)}}, $inc:{ pendingSize: -1 }}, function(err, result){
                 if(err || result === null){
                     console.log("User isnt part of this cell. Stack: " + err );
                     callback("InvalidRequest");
@@ -95,7 +96,7 @@ var removeCellInviteNotification = function(cellId, userId, callback){
 }
 
 //This will return the values in between the ranges in relation to the array size
-var getPendingNotifications = function(userId, rangeMin, rangeMax, callback){
+/*var getPendingNotifications = function(userId, rangeMin, rangeMax, callback){
     
     NotificationsReference.findOne({ id: userId}, function(err, result){
         if(err || result === null){
@@ -129,6 +130,43 @@ var getPendingNotifications = function(userId, rangeMin, rangeMax, callback){
     });
     
 }
+*/
+
+
+var getPendingNotifications = function(userId, page, callback){
+
+     NotificationsReference.find({ id: userId}, {pendingSize: 1}, function(err, result){
+         if(err || result === null){
+            callback("Failed"); 
+             
+         }
+         else if( result === 0){
+            callback("Empty"); 
+         }
+         else{
+            //console.log(result);
+            var arraySize = result[0].pendingSize;
+            var elementsPerPage = 5;
+            var numberOfPages = Math.ceil(arraySize / elementsPerPage);
+            var skip = Math.ceil(arraySize - (page * elementsPerPage));
+            if(skip < 0){
+                //var lastValidLocation = arraySize - ((page - 1) * elementsPerPage);
+                
+                elementsPerPage = elementsPerPage + skip ;
+                skip = 0;
+            }
+            console.log(skip + " - " + numberOfPages + " - " + arraySize + " - " + JSON.stringify(result));
+            NotificationsReference.find({ id: userId}, { pending: { $slice: [skip, elementsPerPage]}}, function(err, result){
+               if(err || result === null){
+                    callback("Failed");
+               }
+               else{
+                   callback(result[0].pending);
+               }
+            });
+         }
+     });
+}
 
 //This will go in the users pending notifications, remove the requesters id
 //and copy it to its friends list in the his general reference collection
@@ -145,6 +183,7 @@ var acceptPendingFriendship = function(userId, requesterId, callback){
                if( result.pending[i].refId === requesterId){
                     //console.log(deletedRefId);
                     deletedRefId = result.pending.splice(i, 1);
+                    result.pendingSize--;
                     //console.log(deletedRefId + " - " + JSON.stringify(result));
                     result.save(function (err) {
                         if (err) { 
@@ -205,6 +244,7 @@ var declinePendingFriendship = function(userId, requesterId, callback){
                if( result.pending[i].refId === requesterId && result.pending[i].type === "joinMasterCell"){
                     inIf = true;
                     deletedRefId = result.pending.splice(i, 1);
+                    result.pendingSize--; 
                     result.save(function (err) {
                         if (err) { 
                             callback("Error in saving request(1). Stack Trace: " + err);
@@ -237,7 +277,7 @@ var sendNotificationToCellUsers = function(cellId, notification, callback){
         
             for(i =0; i < result.members.length; i++){
                 console.log( i  + " user is " + result.members[i]);
-                NotificationsReference.update({ "id" : result.members[i]}, { $push: { pending: notification}, $inc: { unRead : 1 }}, function(err){
+                NotificationsReference.update({ "id" : result.members[i]}, { $push: { pending: notification}, $inc: { unRead : 1 }, $inc: { pendingSize: 1 }}, function(err){
                     if(err){
                         callback("Error in pushing not to found user. User:" + result.members[i]);
                     }
@@ -351,3 +391,4 @@ exports.getUnreadNotificationsCount = getUnreadNotificationsCount;
 exports.resetUnreadNotificationsCount = resetUnreadNotificationsCount;
 exports.getCellNotifications = getCellNotifications;
 exports.removeCellInviteNotification = removeCellInviteNotification;
+exports.getPendingNotifications = getPendingNotifications;

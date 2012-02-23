@@ -75,6 +75,8 @@
             .cellMessage:hover  { background-color: #e2f1d5; cursor: pointer;}
             .cellNotificationMessage:hover  { background-color: #e2f1d5; cursor: pointer;}
             .highLight:hover { background-color: #e2f1d5; cursor: pointer;}
+            .metricDiv { background-color: #e2f1d5; cursor: pointer;}
+            .metricDiv:hover { background-color: #DEDEDE; cursor: pointer;}
 </style>
 
 </head>
@@ -167,9 +169,11 @@
         <div style="float: left;">Notifications</div>
         <div style="float: right; cursor:pointer;"><span id="markRead" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px 5px; margin-right: 10px;"> Mark as seen</span></div>
         </div>
+        
         <div id="notificationList" style="height: 350px; font-size: 12px;" >  
             No notifications
         </div>
+        <div id="getMoreNews"> More feed ... </div>
         
         Your Cells &nbsp;<span style="font-size: 10px; cursor: pointer;" id="createCell">(create a cell) </span>
         <div id="cellList" style="height: 200px; padding-top: 10px;"> 
@@ -254,6 +258,7 @@
             <div id="notificationCellList" style="width: 350px; height: 300px; font-size: 12px; margin-top:5px;" >  
                 No notifications
             </div>
+            <div id="getMoreFeed" style="display: none;"> more... </div>
 
         
         
@@ -432,60 +437,82 @@
 	<h3><a href="#">Intervall</a></h3>
 	<div id="intervall" >
 		
-        <div style="height: 200px; width: 120px;  float:left;">
-                
-                <div style="width: 120px; height: 55px;">
-			        <div id="radio2"  style="float:left;">
-                        Target<br>
-				        <input type="radio" id="radioMeters" name="radio2"  /><label for="radioMeters">m</label>
-				        <input type="radio" id="radioSeconds" name="radio2" checked="checked" /><label for="radioSeconds">s</label>
-			        </div>
-                
-                    <div style="float:left;">
-                        Value <br>
-    		            <input type="text" id="unitInput" size="3" ></input>
-		            </div>
-                </div>
-                
-                <div style="width: 120px; margin-bottom: 15px;">
-                    <span style="float:left;">Metric:&nbsp;</span> 
-                    <span id="swapIntensity" style="cursor: pointer;">
-                        <span id="lbl_intensity" style="float:left;">
-                            Intensity&nbsp;
-                        </span>
-                        <span class="ui-icon ui-icon-arrowrefresh-1-s" style="float:left;">
-                        </span>
-                    </span>
-                </div>
+        
 
-                <div style="width: 120px">
-                    <span id="intensityHtml" >0</span>&nbsp;<span id="targetType">%</span>
-                </div>
-                
-                <div id="sliderIntensity" style="width:100px; margin-top: 8px;"></div><br>
-                
-            <textarea rows='3' cols='16' id='intervallDescInput' style="resize: none;"></textarea>
-            
+        <div id="intervallInputContainer" style="width: 500px">  
             <div>
-                <ul id="icons" class="ui-widget ui-helper-clearfix">
-                   <li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-plus" id="addIntervalli"></span></li>
-			       <li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-minus" id="removeIntervalli"></span></li>
-                </ul>
-		   </div>
-         </div>  
-         
-        <div style=" float: right;">
-        <div id="scrollbar1" style="height: 150px; width: 320px;">
-                <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-                <div class="viewport">
-		        <div class="overview" id="overview">
-		        </div>
+            
+                <div style="float: left; width: 130px;"> 
+                Metric &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value
                 </div>
-	   </div>
+                
+                <div style="float: left; width: 130px;"> 
+                &nbsp;&nbsp;Target &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value
+                </div>
+                
+                <div style="float: left; width: 200px;"> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Description
+                </div>
+            
+            </div>
+            
+            <div class="intervallInputElement" elementNumber="0" >
+                <div>
+                <div style="float: left; width: 130px;"> 
+                    <select class="metricType" element="0">
+                        <option value="m">meters</option>
+                        <option value="s">seconds</option>
+                    </select>
+            
+                    <input type="text" class="metricValue" size="1" >  
+                </div>
+                
+                <div class='metricDiv' style="float: left; width: 190px;"> 
+                    <select class="targetType" element="0">
+                        <option value="none">none</option>
+                        <option value="bpm">bpm</option>
+                        <option value="range">range</option>
+                        <option value="%">%</option>
+                        <option value="watt">watt</option>
+                    </select>
+                    
+                    <span class="targetValue">  </span>
+                </div>
+                
+                <div style="float: left; width: 120px"> 
+                    <input type="text" class="intervallDescription" element="0" size="16" >
+                </div>
+                
+                <div style="float: left; width: 20px; cursor: pointer; margin-left:10px">
+                    <span class="ui-icon ui-icon-closethick"></span>
+                </div>
+                </div>
+                
+                <div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;">
+                    <div id="sliderIntervallIntensity" style="width:100px;"></div>
+                </div>
+        
+            
+            </div>
+        
+            
        </div>
-   
+       
+       <div id="addAnotherIntervall" style="cursor:pointer; "> 
+       &nbsp;&nbsp;&nbsp;&nbsp; Add another intervall
+       </div> 
+       
+       
+       
+       
 </div>                       
 
+    <div style="display: none;" id="qtipIntervallMetric">
+            <!-- <div>Units: <span id="intervallMetricUnit"> </span> </div>
+            <div id="changeMetricUnit" style="cursor: pointer;" >Change metric unit</div> -->
+            
+        
+    </div>
            
 		
 	</div><!-- end of create -->

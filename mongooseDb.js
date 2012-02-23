@@ -191,9 +191,10 @@ var Notification = new Schema({
 
 var NotificationsReference = new Schema({
 
-    id       : Number, //fbid
-    unRead   : Number,
-	pending  : [Notification]
+    id             : Number, //fbid
+    unRead         : Number,
+    pendingSize    : Number,
+	pending        : [Notification]
 
 });
 

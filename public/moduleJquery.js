@@ -20,14 +20,18 @@ var applicationVariables = {
     currentCell         : "none",
     droppedWorkoutId    : "",
     timezone            : new Date().getTimezoneOffset()/60,
-    
-    selectedElements    : 0
+    feedPage            : 2,
+    selectedElements    : 0,
+    intervallInput      : [],
+    intervallSliderUsed : false,
 }
 
 //Global functions, declared in jquery init
 var updateCalendar;
 
 $(document).ready(function(){
+        
+        
         
         $('#scrollbar1').tinyscrollbar();
 
@@ -378,6 +382,10 @@ $(document).ready(function(){
             
 		});*/
         
+        //-------------------MAP RELATED JQUERY -----------------------------//
+        //
+        //
+        //--------------------------------------------------------------------
         
         // Remove last added segment on map trace
     	$('#undoTrace').click(function(){
@@ -474,37 +482,146 @@ $(document).ready(function(){
            
             
         });
+        
+        //------------- Intervall interface logic -----------------------------
+        //
+        //---------------------------------------------------------------------
+        
+        var addIntervallInput = function(elementNumber){
+            
+        var html = '<div class="intervallInputElement" elementNumber="'+ elementNumber + '"><div style="float: left; width: 130px;"> <select class="metricType" element="0"><option value="m">meters</option>' 
+            +'<option value="s">seconds</option></select><input type="text" class="metricValue" size="1" ></div><div class="metricDiv" style="float: left; width: 180px;"> <select class="targetType" element="0"><option value="none">none</option>'
+            + '<option value="bpm">bpm</option><option value="range">range</option><option value="perc">%</option><option value="watt">watt</option></select><span class="targetValue"></span></div>'
+            + '<div style="float: left; width: 130px"> <input type="text" class="intervallDescription" element="0" size="16" ></div><div style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div>'
+            + '<div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;"></div></div>'    
+           
+            $('#intervallInputContainer').append(html);
+            
+            //kill any previous handler so theres no snowball effect
+            
+            refreshSlider();
+           
+        }
+        
+        var refreshSlider = function(){
+        
+            $('.metricDiv').die();
+            $('.targetType').die();
+        
+            $('.targetType').change(function(){
 
-		 $('#addIntervalli').click(function(){
+                var parent = $(this).closest('.metricDiv');
+                var value = $(this).val();
+                var sliderContainer = $(this).closest('.metricDiv').closest('.intervallInputElement').children('.sliderIntervallContainer');
+                sliderContainer.show();
+                
+                $("#sliderIntervallIntensity").slider("destroy");
+                $("#sliderIntervallIntensity").remove();
+                
+                sliderContainer.append('<div id="sliderIntervallIntensity" style="width:100px;"></div>');
+                
+                if(value === "bpm"){
+    
+                     $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: "min",
+                        step: 5,
+                        min: 0, max: 300, value: 150,
+                        slide: function(event, ui){   
+                             parent.children('.targetValue').html(ui.value);
+                        },
+                        stop: function(event, ui) { 
+                            $(this).hide();
+                        }
+                     });
+                     parent.children('.targetValue').html(150);
+                     //createQtip(parent);
+                     
+                }
+                else if(value === "watt"){
+                     $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: "min",
+                        step: 5,
+                        min: 0, max: 600, value: 300,
+                        slide: function(event, ui){ 
+                             parent.children('.targetValue').html(ui.value);
+                        },
+                        stop: function(event, ui) { 
+                            $(this).hide();
+                        }
+                     });
+                     parent.children('.targetValue').html(300);
+                     //createQtip(parent);
+                }
+                else if(value === "%"){
+                     $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: "min",
+                        step: 5,
+                        min: 0, max: 100, value: 50,
+                        slide: function(event, ui){ 
+                             parent.children('.targetValue').html(ui.value);
+                        },
+                        stop: function(event, ui) { 
+                            $(this).hide();
+                        }
+                     });
+                     parent.children('.targetValue').html(50);
+                     //createQtip(parent);
+                }
+                else if(value === "range"){
+                    $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: true,
+                        step: 5,
+                        min: 0, max: 300,
+                        values: [30, 60],
+                        slide: function(event, ui){ 
+                            var minValueHtml = '<span class="intervallMin" seconds="' + ui.values[0] + '">' + Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60)) + '</span>';
+                            var maxValueHtml = '<span class="intervallMax" seconds="' + ui.values[1] + '">' + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60)) + '</span>';
+                            parent.children('.targetValue').html(minValueHtml + " - " + maxValueHtml + " min");
 
-			var target = $("input[type=text][id=unitInput]").val();
+                        },
+                        stop: function(event, ui) { 
+                            if(!applicationVariables.intervallSliderUsed){
+                                applicationVariables.intervallSliderUsed = true;
+                            }
+                            else{
+                               applicationVariables.intervallSliderUsed = false;
+                               $(this).hide(); 
+                            }
+                            
+                        }
+                    });
+                    parent.children('.targetValue').html(Math.floor(30 / 60) + ":" + (30 - (Math.floor(30 / 60) * 60)) + "-" + Math.floor(60 / 60) +":" + (60 - (Math.floor(60 / 60) * 60)));
+                    //createQtip(parent);       
+                }
+                else{ //none
+                   $("#sliderIntervallIntensity" ).slider({disabled: true});
+                   sliderContainer.hide();
+                   parent.children('.targetValue').html("");
+                }
+                
+            });
+        
+        }
+       
+       refreshSlider();
+        
+        
+        
+        $('#addAnotherIntervall').click(function(){
+            addIntervallInput(1);
+            
+        });
+
+        
+		 var addIntervallModel = function(elementNumber){
+            var parent = $("input[class=intervallInputElement][elementnumber="+elementNumber+"]");
+			var target = parent.children('.metricType').val();
+            
 			var option = $('input[type=radio][name=radio2]:checked').attr('id');
 			var intervallDescription = $("#intervallDescInput").val();
             var intensityMetric = document.getElementById('targetType').innerHTML;
             var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
             var intensityTime = [];    
-                if (option === 'radioMeters'){
-					var str = "<div style='height: 20px;'><div style='float: left;'>" +target+"m @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right;'></div></div>";
-                    if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = "<div style='height: 20px;'><div style='float: left;'>" + target + "m" + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length + "' style='float: right;'></div></div>";
-                        intensityMetric = 0;
-                        intensityWorth = 0;
-                    }
-                    if(document.getElementById('targetType').innerHTML === "min"){
-                        intensityWorth = 0;    
-                    }
-                    tempIntervall.push(str);
-                    tempIntDesc.push(intervallDescription);
-                    
-                    printArray(tempIntervall, function(html){
-                        //document.getElementById('overview').innerHTML = "";
-                        document.getElementById('overview').innerHTML = html;
-                        $("#scrollbar1").tinyscrollbar_update();
-                        loadDynamicQtip((tempIntervall.length - 1),  tempIntDesc);
-                    });
-                    
-                    intensityTime.push(minSlider);
-                    intensityTime.push(maxSlider);
 
                     var intervallObject = {
                         targetUnit     : "m",
@@ -517,48 +634,7 @@ $(document).ready(function(){
                     
                     intervall.push(intervallObject);
 
-				}
-				else if(option === 'radioSeconds'){
-			        var str = "<div style='height: 20px;'><div style='float: left;'>" + target+"s @"+ intensityWorth + " " + intensityMetric + "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right;'></div></div>";
-                    if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                        str = "<div style='height: 20px;'><div style='float: left;'>" + target+"s"+ "</div><div class='ui-icon ui-icon-pin-w' id='qtipIntervall" + tempIntervall.length +"' style='float: right;'></div></div>";
-                        intensityMetric = 0;
-                        intensityWorth = 0;
-                    }
-                    if(document.getElementById('targetType').innerHTML === "min"){
-                        intensityWorth = 0;    
-                    }
-                    tempIntervall.push(str);
-                    tempIntDesc.push(intervallDescription);
-                    
-                    printArray(tempIntervall, function(html){
-                        document.getElementById('overview').innerHTML = html;
-                        $("#scrollbar1").tinyscrollbar_update();
-                        loadDynamicQtip((tempIntervall.length - 1), tempIntDesc);
-                    });
-                    
-                    intensityTime.push(minSlider);
-                    intensityTime.push(maxSlider);
-
-                    var intervallObject = {
-                        targetUnit     : "s",
-                        targetValue    : target,
-                        intensityUnit  : intensityMetric,
-                        intensityValue : intensityWorth, 
-                        intensityRange : intensityTime,
-                        description    : intervallDescription
-                    }
-                    
-                    intervall.push(intervallObject);
-
-				}
-				else{
-
-				}
-                //alert(JSON.stringify(intervall));
-                //minSlider = 0;
-                //maxSlider = 0;
-		});
+		}
 
 		$('#removeIntervalli').click(function(){
 
@@ -626,6 +702,7 @@ $(document).ready(function(){
         ///// MAPPING NAVIGATION BUTTONS 
         $('#goToSocial').click(function(){
             applicationVariables.calendarMode = "user";
+            applicationVariables.feedPage = 2;
             moveUI('Social'); 
             
         });
@@ -1096,6 +1173,19 @@ $(document).ready(function(){
             $.getJSON(resetNotificationCount, function(res) {
                $("#goToSocial").qtip({hide: true});
             }); 
+        });
+        
+        $('#getMoreNews').click(function(){
+            $.getJSON(getNotfication + "/" + applicationVariables.feedPage, function(data) {
+                if(data.success){
+                    renderNotifications(data.message, false);
+                    applicationVariables.feedPage++;
+                }
+                else{
+                    //something wrong
+                    Notifier.success(data.message);
+                }   
+            });   
         });
         
         

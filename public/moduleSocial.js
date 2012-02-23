@@ -12,9 +12,9 @@ var intiSocialView = function(friendList, notificationList, cellTree){
         }); 
     }
     if(notificationList){
-        $.getJSON(getNotfication, function(data) {
+        $.getJSON(getNotfication + "/1", function(data) {
             if(data.success){
-                renderNotifications(data.message);   
+                renderNotifications(data.message, true);   
             }
             else{
                 //something wrong
@@ -36,27 +36,30 @@ var intiSocialView = function(friendList, notificationList, cellTree){
 
 }
 
-var renderNotifications = function(arrayNotification){
+//Set second parameter to false if you want to reinitialize the whole feed
+var renderNotifications = function(arrayNotification, reInit){
     
-    document.getElementById('notificationList').innerHTML = "";
-    
-    if(arrayNotification.length === 0){
-        document.getElementById('notificationList').innerHTML = "No pending notifications";     
+    if(reInit){
+        document.getElementById('notificationList').innerHTML = "";
     }
     
-    for(i = 0; i < arrayNotification.length; i++){
+    if(arrayNotification.length === 0){
+        document.getElementById('notificationList').innerHTML =   document.getElementById('notificationList').innerHTML + " <br> No pending notifications";     
+    }
     
-        if(arrayNotification[i].type === "joinMasterCell"){
-            createFriendRequestElement(arrayNotification[i]);  
+    for(i = arrayNotification.length; i > 0; i--){
+    
+        if(arrayNotification[i - 1].type === "joinMasterCell"){
+            createFriendRequestElement(arrayNotification[i - 1]);  
         }
-        else if(arrayNotification[i].type === "newCellWorkout"){
-            createCellWorkoutElement(arrayNotification[i]);
+        else if(arrayNotification[i - 1].type === "newCellWorkout"){
+            createCellWorkoutElement(arrayNotification[i - 1]);
         }
-        else if(arrayNotification[i].type === "newCellMessage"){
-            createCellMessageElement(arrayNotification[i]);
+        else if(arrayNotification[i - 1].type === "newCellMessage"){
+            createCellMessageElement(arrayNotification[i - 1]);
         }
-        else if(arrayNotification[i].type === "cellInvite"){
-            createCellInviteElement(arrayNotification[i]);
+        else if(arrayNotification[i - 1].type === "cellInvite"){
+            createCellInviteElement(arrayNotification[i - 1]);
         }
         else{
             
@@ -139,7 +142,7 @@ var createFriendRequestElement = function(object){
     var html = '<div id="singlenotification" >' + object.message + '<span id="declineFriend' + object.refId + '" class="ui-icon ui-icon-close" style="float: right"></span>' +
     '<span id="acceptFriend' + object.refId + '" class="ui-icon ui-icon-check" style="float: right"></span></div>';
  
-    document.getElementById('notificationList').innerHTML = html + document.getElementById('notificationList').innerHTML;
+    document.getElementById('notificationList').innerHTML =  document.getElementById('notificationList').innerHTML + html;
     
     $('#acceptFriend' + object.refId).live('click', function(){
         var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/accept";
@@ -175,7 +178,7 @@ var createFriendRequestElement = function(object){
 var createCellWorkoutElement = function(object){
     
     var viewprofile = '<div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer;">' + object.message + '</div>';
-    document.getElementById('notificationList').innerHTML = viewprofile + document.getElementById('notificationList').innerHTML;
+    document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile;
     
 }
 
@@ -183,7 +186,7 @@ var createCellMessageElement = function(object){
     
 
     var viewprofile = '<div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer;">' + object.message + '</div>';
-    document.getElementById('notificationList').innerHTML = viewprofile + document.getElementById('notificationList').innerHTML;
+    document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile  ;
     
 }
 
@@ -201,7 +204,7 @@ var  createCellInviteElement = function(object){
     var html = '<div id="cellnotification" >' + object.message + '<span id="refuseCellInvite' + object.refOId + '" class="ui-icon ui-icon-close" style="float: right"></span>' +
     '<span id="acceptCellInvite' + object.refOId + '" class="ui-icon ui-icon-check" style="float: right"></span></div>';
  
-    document.getElementById('notificationList').innerHTML = html + document.getElementById('notificationList').innerHTML;
+    document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + html;
     
     $('#acceptCellInvite' + object.refId).live('click', function(){
         var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/accept";

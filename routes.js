@@ -113,6 +113,32 @@ module.exports = function(app) {
     //
     //!!!!!!!----------------------------------------------------------------///
     
+        
+    //Receive all what is in pending  notification queu of user, optimized version
+    app.get("/notification/queu/:userId/:page", function(req, res){
+        //console.log("in get");
+        if(isAllowed(req, req.params.userId) && is_int(req.params.page)){
+            notification.getPendingNotifications(req.params.userId, parseInt(req.params.page), 
+                function(mongooseRes){
+                    if(mongooseRes === "Failed"){
+                        res.json({ success: false, message:"Couldnt get pending notifications"});
+                    }
+                    else if(mongooseRes === "Empty"){
+                        res.json({ success: true, message:[]});
+                    }
+                    else{   
+                        res.json({ success: true, message:mongooseRes});
+                    }
+            });
+                
+        }
+        else{
+            res.json({ success: false, message:'Invalid parameter sent'});
+        }
+   
+    });
+
+    
     //Adds a notification to the users queu
     app.get("/notification/:userId/:type/:target", function(req, res){
         
@@ -164,8 +190,8 @@ module.exports = function(app) {
         });
     });
     
-    //Receive all what is in pending  notification queu of use
-    app.get("/notification/queu/:userId/:min/:max", function(req, res){
+    //Receive all what is in pending  notification queu of use 
+    /*app.get("/notification/queu/:userId/:min/:max", function(req, res){
         
         if(isAllowed(req, req.params.userId) && is_int(req.params.min) && is_int(req.params.max)){
             
@@ -184,7 +210,8 @@ module.exports = function(app) {
             res.json({ success: false, message:'Invalid parameter sent'});
         }
    
-    });
+    });*/
+
     
     //Send a response to either accepting or denying someone in your cell
     app.get("/notification/joinMasterCell/:userId/:requester/:action", function(req,res){

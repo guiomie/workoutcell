@@ -5,6 +5,7 @@ var userObject = "empty";
 var userGroup = "group1";  
 
 
+
   FB.init({
     appId  : 277924085557007,   //Prod: 114525048657436
     status : true, // check login status
