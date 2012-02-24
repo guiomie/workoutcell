@@ -43,13 +43,13 @@ var postWorkout = function(event) {
 		if(activeAccordion === 1){
 			//updateCalendarData(eventObject);
 			//alert(JSON.stringify(intervall));
-
+            createIntervallModel();
 			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
 
 			workout = {
 			sport       : selectedSport,
 			type        : "intervall",
-			intervalls  : intervall, 
+			intervalls  : applicationVariables.intervallInput, 
 			description : varDescription,
 			cell        : tempCell,
 			parcour     : parcourId,
@@ -334,6 +334,11 @@ function populateTemplate(workoutId){
         
         $("#sportSelection").val(workoutObject.sport);
         
+        if(workoutObject.description !== "none"){
+            $('#description').val("Description<br>" + workoutObject.description);
+        }
+        
+        
         if(workoutObject.type === 'distance'){
  
             if(workoutObject.distance.targetType === 'Time'){
@@ -356,12 +361,71 @@ function populateTemplate(workoutId){
         }
         else if(workoutObject.type === 'intervall'){
             
+            for(i=0; i < workoutObject.intervalls.length; i++){
+                
+                if(workoutObject.intervalls[i].intensityUnit === "range"){
+                    var obj = workoutObject.intervalls[i];
+                    addIntervallInput("range", "", obj.targetUnit, obj.targetValue, obj.description, obj.intensityRange[0], obj.intensityRange[1]);
+                }
+                else if(workoutObject.intervalls[i].intensityUnit === "none"){
+                    var obj = workoutObject.intervalls[i];
+                    addIntervallInput("none", "", obj.targetUnit, obj.targetValue, obj.description, "", "");
+                }
+                else{
+                    var obj = workoutObject.intervalls[i];
+                    addIntervallInput(obj.intensityUnit, obj.intensityValue, obj.targetUnit, obj.targetValue, obj.description, "", "");
+                }
+                
+            }
+            
+            $("#accordion").accordion("activate", 1);
             
         }
         else{
             
         }
  
+    });
+
+}
+
+var createIntervallModel = function(callback){
+            
+    applicationVariables.intervallInput = [];
+	
+    //var count = $('#intervallInputContainer > .intervallInputElement').length;
+    //alert(count);
+    
+    //for(i = 0; i < count; i++){
+    $('.intervallInputElement').each(function(i){
+        
+        var parent = $(this); //$(".intervallInputElement[elementnumber="+i+"]");
+        //alert(JSON.stringify(parent.html()));
+        if(parent.children('.metricDiv').children('.targetType').val() === "range"){
+
+            var intervallObject = {
+                targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
+                targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
+                intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
+                intensityValue : "", 
+                intensityRange : [parent.children('.metricDiv').children('.targetValue').children('.intervallMin').attr('seconds'), parent.children('.metricDiv').children('.targetValue').children('.intervallMax').attr('seconds')] ,
+                description    : parent.children('.descContainer').children('.intervallDescription').val()
+            }
+            applicationVariables.intervallInput.push(intervallObject);
+        }
+        else{
+        
+            var intervallObject = {
+                targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
+                targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
+                intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
+                intensityValue : parent.children('.metricDiv').children('.targetValue').html(), 
+                intensityRange : "",
+                description    : parent.children('.descContainer').children('.intervallDescription').val()
+            }
+            
+            applicationVariables.intervallInput.push(intervallObject);
+        }
     });
 
 }

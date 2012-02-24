@@ -28,6 +28,7 @@ var applicationVariables = {
 
 //Global functions, declared in jquery init
 var updateCalendar;
+var addIntervallInput;
 
 $(document).ready(function(){
         
@@ -487,13 +488,49 @@ $(document).ready(function(){
         //
         //---------------------------------------------------------------------
         
-        var addIntervallInput = function(elementNumber){
+
+        
+        
+        addIntervallInput = function(metricType, metricValue, targetType, targetValue, intervallDescription, minSec, maxSec){
             
-        var html = '<div class="intervallInputElement" elementNumber="'+ elementNumber + '"><div style="float: left; width: 130px;" class="targetDiv"> <select class="metricType" element="0"><option value="m">meters</option>' 
-            +'<option value="s">seconds</option></select><input type="text" class="metricValue" size="1" ></div><div class="metricDiv" style="float: left; width: 180px;"> <select class="targetType" element="0"><option value="none">none</option>'
-            + '<option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select><span class="targetValue"></span></div>'
-            + '<div style="float: left; width: 130px" class="descContainer"> <input type="text" class="intervallDescription" element="0" size="16" ></div><div class="removeIntervallIcon" style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div>'
-            + '<div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;"></div></div>'    
+            var firstOption = '<select class="metricType" element="0"><option value="m">meters</option><option value="s">seconds</option></select>';
+            var secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%" >%</option><option value="watt">watt</option></select>';
+            var theMetricValue = metricValue;
+            
+            
+            
+            if(targetType === "m"){
+                firstOption =  '<select class="metricType" element="0"><option value="m" selected="selected">meters</option><option value="s">seconds</option></select>';   
+            }
+            else{
+                firstOption =  '<select class="metricType" element="0"><option value="m" >meters</option><option value="s" selected="selected">seconds</option></select>';
+            }
+            
+            
+            if(metricType === "%"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%" selected="selected">%</option><option value="watt">watt</option></select>'
+            }
+            else if(metricType === "range"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range" selected="selected">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+                minValueHtml = '<span class="intervallMin" seconds="' + minSec + '">' + Math.floor(minSec / 60) +":" + (minSec - (Math.floor(minSec / 60) * 60)) + '</span>';
+                maxValueHtml = '<span class="intervallMax" seconds="' + maxSec + '">' + Math.floor(maxSec / 60) +":" + (maxSec - (Math.floor(maxSec / 60) * 60)) + '</span>';
+                theMetricValue = minValueHtml + " - " + maxValueHtml + " min";
+            }
+            else if(metricType === "watt"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt" selected="selected">watt</option></select>'       
+            }
+            else if(metricType === "bpm"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm" selected="selected">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+            }
+            else{
+                secondOption = '<select class="targetType" element="0"><option value="none" selected="selected">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+            }
+
+
+        
+        var html = '<div class="intervallInputElement"><div style="float: left; width: 130px;" class="targetDiv">'+ firstOption +'<input type="text" class="metricValue" size="1" value="' + targetValue +'"></div><div class="metricDiv" style="float: left; width: 180px;">' + 
+                secondOption +'<span class="targetValue">' + theMetricValue + '</span></div><div style="float: left; width: 130px" class="descContainer"> <input type="text" class="intervallDescription" element="0" size="16" value="' + intervallDescription + '"></div><div class="removeIntervallIcon"' + 
+                'style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div><div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;"></div></div>'    
            
             $('#intervallInputContainer').append(html);
             
@@ -612,57 +649,16 @@ $(document).ready(function(){
        
        refreshSlider();
         
-        
+        //addIntervallInput("bpm", "200", "m", "100", "totototot", "", "");
+        //addIntervallInput("range", "200", "m", "100", "totototot", "30", "120");
+        //addIntervallInput("%", "70", "s", "100", "totototot", "", "");
         
         $('#addAnotherIntervall').click(function(){
-            addIntervallInput(1);
-            createIntervallModel();
+            addIntervallInput("", "", "", "", "", "", "");
+            //addIntervallInput();
+            //createIntervallModel();
             
         });
-
-        
-		 var createIntervallModel = function(elementNumber){
-            
-            //applicationVariables.intervallInput = [];
-			
-            //var count = $('#intervallInputContainer > .intervallInputElement').length;
-            //alert(count);
-            
-            //for(i = 0; i < count; i++){
-            $('.intervallInputElement').each(function(i){
-                
-                var parent = $(this); //$(".intervallInputElement[elementnumber="+i+"]");
-                //alert(JSON.stringify(parent.html()));
-                if(parent.children('.metricDiv').children('.targetType').val() === "range"){
-
-                    var intervallObject = {
-                        targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
-                        targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
-                        intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
-                        intensityValue : "", 
-                        intensityRange : [parent.children('.metricDiv').children('.targetValue').children('.intervallMin').attr('seconds'), parent.children('.metricDiv').children('.targetValue').children('.intervallMax').attr('seconds')] ,
-                        description    : parent.children('.descContainer').children('.intervallDescription').val()
-                    }
-                    applicationVariables.intervallInput.push(intervallObject);
-                }
-                else{
-                
-                    var intervallObject = {
-                        targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
-                        targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
-                        intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
-                        intensityValue : parent.children('.metricDiv').children('.targetValue').html(), 
-                        intensityRange : "",
-                        description    : parent.children('.descContainer').children('.intervallDescription').val()
-                    }
-                    
-                    applicationVariables.intervallInput.push(intervallObject);
-                }
-            });
-
-		}
-
-		
 
 		//You can only enter numerical number in the field with this event
 		$("input[type=text][id=unitInput]").keydown(function(event) {

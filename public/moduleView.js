@@ -236,7 +236,7 @@ function renderDetails(object, callback){
 		for(i = 0; i < intervalls.length; i++){
 
 			//Intervall training without any intensity objective, requires special handling
-			if(intervalls[i].intensityUnit === "0"){
+			if(intervalls[i].intensityUnit === "none"){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed <br>" : "Not Completed <br>";	
@@ -247,7 +247,7 @@ function renderDetails(object, callback){
 
 
 			} //Intervall training with a range, requires special handling
-			else if(intervalls[i].intensityUnit === "min"){
+			else if(intervalls[i].intensityUnit === "range"){
 
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
