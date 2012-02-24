@@ -11,7 +11,7 @@ module.exports = function(app) {
     
     app.get('/view/:htmlpage', function(req, res){
         console.log(req.loggedIn);
-        
+
         if(req.loggedIn) {
             res.sendfile('./views/' + req.params.htmlpage + '.html');
         }
@@ -864,7 +864,7 @@ module.exports = function(app) {
                 res.redirect('/logout');
             }
             else if(result){
-                res.redirect('/view/profile');
+                res.redirect('/view/index');
             }
             else{
                 res.redirect('/logout');

@@ -79,38 +79,7 @@ everyauth.facebook
         });
     });
     return promise;
-    
-    /*try{
-        var id = fbUserMetadata.id;
-        var promise = this.Promise();
-        User.findOne({ fbid: id}, function(err, result) {
-        var user;
-        if(!result) {
-            //iniate also the users unique reference doc in ref collection
-            var newUserRefDoc = new GeneralReference();
-            var newUserWorkoutRef = new CalendarEventReference();
-            //newUserWorkoutRef = emptyWorkoutRef;
-            user = new User();
-            user.fbid = id;
-            newUserRefDoc.id = id;
-            newUserWorkoutRef.id = id;
-            user.firstName = fbUserMetadata.first_name;
-            user.lastName = fbUserMetadata.last_name;
-            user.save();
-            newUserRefDoc.save();
-            newUserWorkoutRef.save();
-        } else {
-            user = result;
-        }
-        //console.log(user);
-        promise.fulfill(user);
-        });
-        return promise;
-    }
-    catch(err){
-        console.log(err); 
-     
-    }*/
+
   })
   //.redirectPath('/view/profile');
   .redirectPath('/hasRights');
@@ -130,7 +99,7 @@ require('./routes')(app);
 
 app.get('/', function(req, res) {
    //console.log(everyauth.facebook.routes + everyauth.facebook.configurable());  // FTW!
-   res.sendfile('./welcome.html');
+   res.sendfile('./views/welcome.html');
 });
 
 

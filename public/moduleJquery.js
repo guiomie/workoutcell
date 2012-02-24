@@ -73,10 +73,11 @@ $(document).ready(function(){
 			    //var x = isElemOverDiv(ui, $('div.external-events'));
 			    applicationVariables.droppedWorkoutId = event.refWorkout;			
 			    $('#fullcalendar').fullCalendar('revertEvent', jsEvent);
+                $('#drophere').show();
 			    		
 		    },
             eventDragStop: function (event, jsEvent, ui, view ) {
-              
+                $('#drophere').hide();
             }
 		});
         
@@ -1195,6 +1196,17 @@ $(document).ready(function(){
             });   
         });
         
+        $('#descriptionInput').focus(function(){
+            if($(this).val() == "Enter a description for this workout"){
+                $(this).val("");
+             }
+        });
+        $('#descriptionInput').blur(function(){
+              if($(this).val() == "" || $(this).val() == "Enter a description for this workout"){
+                  $(this).val("Enter a description for this workout");
+              }
+        });
+        
         
         //  !!!!!!-_-_-_-_-_- Drag and drop code -_-_-_-_-_- !!!!!!
         
@@ -1206,6 +1218,7 @@ $(document).ready(function(){
                     ui.draggable.draggable({ revert: true });
                     populateTemplate(applicationVariables.droppedWorkoutId);
                     applicationVariables.droppedWorkoutId = "";
+                    $('#drophere').hide();
 			    }
                 
 			}
@@ -1216,6 +1229,7 @@ $(document).ready(function(){
             drop: function( event, ui ) {
                 ui.draggable.draggable({ revert: true });
                 applicationVariables.droppedWorkoutId = "";
+                $('#drophere').hide();
 			}
 		});
 

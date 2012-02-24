@@ -32,7 +32,7 @@ var postWorkout = function(event) {
 		var activeAccordion = $( "#accordion" ).accordion( "option", "active" );
 		//interval training
         var varDescription = "none";
-        if($('#descriptionInput').val() !== 'Event description (optional)'){
+        if($('#descriptionInput').val() !== 'Enter a description for this workout' ){
             varDescription = $('#descriptionInput').val();
 		}
         else{

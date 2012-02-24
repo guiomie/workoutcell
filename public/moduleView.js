@@ -25,7 +25,8 @@ function initView(workoutObject, event) {
     if(typeof(workoutObject.parcour) !== "undefined" ){
 		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
 	}
-
+    
+    document.getElementById('description').innerHTML = "";
 	if(workoutObject.description !== "none"){
 		document.getElementById('description').innerHTML = "Description <br>" + workoutObject.description;
 	}
@@ -63,6 +64,22 @@ function initView(workoutObject, event) {
 		document.getElementById('typeDetail').innerHTML = output;
         if(workoutObject.type === "intervall"){
             loadDynamicQtip(workoutObject.intervalls.length, workoutObject.intervalls);
+            
+            $('.intervallUnit').die();   
+            $('.intervallUnit').qtip({
+                content: {
+                    attr: 'description'
+                },
+                position: {
+                    my: 'left center', // Use the corner...
+                    at: 'right center' // ...and opposite corner
+                },
+                style: {
+                    widget: true 
+                }
+            });
+
+            
         }
 	});
 
@@ -242,8 +259,8 @@ function renderDetails(object, callback){
 					resultHtml =  (intervallResult[i].completed) ? "Completed <br>" : "Not Completed <br>";	
 				}
 
-				output = output + "<div style='height: 20px; background-color: #e2f1d5; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit +
-                     "</div><div class='ui-icon ui-icon-tag' id='qtipIntervallView" + i + "' style='float: right'></div></div><div style='font-size: 10px;'>" + resultHtml + "</div>";
+				output = output + "<div class='intervallUnit' description='" + intervalls[i].description + "' style='height: 20px; cursor: default; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit +
+                     "</div></div><div style='font-size: 10px; background-color: #e2f1d5;'>" + resultHtml + "</div>";
 
 
 			} //Intervall training with a range, requires special handling
@@ -256,8 +273,8 @@ function renderDetails(object, callback){
 				}
 
 				var rangeHtml =   " from <span id='unitSeconds'>" + intervalls[i].intensityRange[0] + "</span> s to " + "<span id='unitSeconds'>" + intervalls[i].intensityRange[1] + "</span> s";
-				output = output + "<div style='height: 20px; background-color: #e2f1d5; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + rangeHtml + 
-                    "</div><div class='ui-icon ui-icon-tag' id='qtipIntervallView" + i + "' style='float: right'></div></div><div style='font-size: 10px;'>" +	resultHtml + "</div>";
+				output = output + "<div class='intervallUnit' description='" + intervalls[i].description + "' style='height: 20px; cursor: default; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + rangeHtml + 
+                    "</div></div><div style='font-size: 10px; background-color: #e2f1d5;'>" +	resultHtml + "</div>";
 			}
 			else{
 
@@ -267,12 +284,16 @@ function renderDetails(object, callback){
 					resultHtml = (intervallResult[i].value !== "0" && intervallResult[i].value !== 0) ? (resultHtml + " in " + intervallResult[i].value + intervallResult[i].unit + '<br>') : (resultHtml+ '<br>');
 				}
 
-				output = output + "<div style='height: 20px; background-color: #e2f1d5; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
+				output = output + "<div class='intervallUnit' description='" + intervalls[i].description + "' style='height: 20px;  cursor: default; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
 					intervalls[i].intensityValue + '&nbsp;' + intervalls[i].intensityUnit + 
-                    "</div><div class='ui-icon ui-icon-tag' id='qtipIntervallView" + i + "' style='float: right'></div></div><div style='font-size: 10px;'>"+ resultHtml + "</div>";		
-			}
-
+                    "</div></div><div style='font-size: 10px; background-color: #e2f1d5;'>"+ resultHtml + "</div>";		
+			}  
+            
+            
 		}
+        
+        
+        
 
 		output = output + '&nbsp;Total intervalls: ' + (intervalls.length);
 	}
@@ -435,12 +456,45 @@ function initToggleButton (object){
                 renderDetails(object, function(output){
     		        document.getElementById('typeDetail').innerHTML = output;
 			        document.getElementById('toggleEdit').innerHTML = "(Edit results)";
+                    
+                    $('.intervallUnit').die();   
+        
+                    $('.intervallUnit').qtip({
+                        content: {
+                            attr: 'description'
+                        },
+                        position: {
+                            my: 'left center', // Use the corner...
+                            at: 'right center' // ...and opposite corner
+                        },
+                        style: {
+                            widget: true 
+                        }
+                    });
+
     		    });	                     
             }
             else{              
                 renderDetails(object, function(output){
         	        document.getElementById('typeDetail').innerHTML = output;
 			        document.getElementById('toggleEdit').innerHTML = "(Edit results)";
+                    
+                    $('.intervallUnit').die();   
+        
+                    $('.intervallUnit').qtip({
+                        content: {
+                            attr: 'description'
+                        },
+                        position: {
+                            my: 'left center', // Use the corner...
+                            at: 'right center' // ...and opposite corner
+                        },
+                        style: {
+                            widget: true 
+                        }
+                    });
+
+                    
     		    }); 
             }
         });

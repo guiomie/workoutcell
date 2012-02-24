@@ -81,7 +81,7 @@ require('./routes')(app);
 
 app.get('/', function(req, res) {
    //console.log(everyauth.facebook.routes + everyauth.facebook.configurable());  // FTW!
-   res.sendfile('./welcome.html');
+   res.sendfile('./views/welcome.html');
 });
 
 

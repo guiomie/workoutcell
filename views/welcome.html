@@ -1,0 +1,62 @@
+
+<html>
+    <head>
+      <title>WorkoutCell - Welcome to the login page</title>
+      
+      <script type="text/javascript" src="/js/jquery-1.7.1.js"></script>
+      <script src='/jquery.corner.js'></script>
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+      
+      <script>
+      
+      $(document).ready(function(){
+          
+        $("#welcomeBox").corner(); 
+        
+         /*FB.init({ 
+            appId:'277924085557007', cookie:true, 
+            status:true, xfbml:true 
+         });
+         
+         FB.Event.subscribe('auth.login', function () {
+          window.location = "http://wc.guiomie.cloud9ide.com/auth/facebook";
+         }); */
+         
+         $('#loginButton').show();
+         $('#enableJs').hide();
+          
+      });
+      
+      </script>
+    
+    </head>
+    
+    <body background="/background/pattern.png">
+     
+     <div style="padding-top: 100px;">
+
+     <h1 style="text-align: center"> <font size="9" face="verdana" color="white">WorkoutCell</font> </h1>     
+     <div id="welcomeBox" style="padding-top: 40px; margin-left: auto; margin-right: auto; width: 400px; height: 300px; background-color:#FFFFFF;">
+     
+    
+       <div style="vertical-align: middle; text-align: center">
+       
+       <font face="verdana">
+         
+         We currently are closed to the public. <br> <br>
+         For those with access, you can login with the link below.<br><br><br>
+      
+        <div id="loginButton" style="display: none;"> <a href="/auth/facebook"> <img src="img/login_button.png"> </a> <br><br><br><br> </div>
+        <div id="enableJs"> It seems like javascript isn't enabled. <br> Enable it, or switch browser.</div><br>
+        <font size="2"> For any questions: gui.ouellet@gmail.com<br>  <br> Optimized for Google Chrome  </font>
+        
+       </font>
+       
+       </div>
+       
+     </div>
+    
+    </div>
+    
+    </body>
+ </html>

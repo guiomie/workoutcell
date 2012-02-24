@@ -77,12 +77,30 @@
             .highLight:hover { background-color: #e2f1d5; cursor: pointer;}
             .metricDiv { background-color: #e2f1d5; cursor: pointer;}
             .metricDiv:hover { background-color: #DEDEDE; cursor: pointer;}
+            .intervallUnit:hover { background-color: #DEDEDE; }
+            
+            #drophere {
+            background-color: rgba(0,0,0,.5);
+            margin:100px auto;
+            font-size: 15px;
+            color: white;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            height: auto;
+            font-weight: bold;
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 1000 !important;
+            }
+            
 </style>
 
 </head>
 
 <body background="/background/pattern.png" style="margin-top: 2px;">
 
+<!-- overlys are declared here -->
 
 
 <div id='header' style="width:1000px; height: 100px;  margin-bottom: 20px; padding-bottom:10px;"> 
@@ -116,7 +134,7 @@
 		</div>
 
 		<div id='pub' style="float:right; display: table-cell; "> 
-			
+			<div style="float:right;" > <a href="/logout" style="font-size: medium;">Sign out</a>  </div>
 		</div>
 
 	</div>
@@ -173,7 +191,7 @@
         <div id="notificationList" style="height: 350px; font-size: 12px;" >  
             No notifications
         </div>
-        <div id="getMoreNews"> More feed ... </div>
+        <div id="getMoreNews" style="font-size: 12px; cursor:pointer; margin-bottom: 15px;"> More feed ... </div>
         
         Your Cells &nbsp;<span style="font-size: 10px; cursor: pointer;" id="createCell">(create a cell) </span>
         <div id="cellList" style="height: 200px; padding-top: 10px;"> 
@@ -369,6 +387,8 @@
 <!-- Load the training planner -->
 <div id="Create" style="display: none; width: 510px; height: 500px; margin-top:5px;">
     
+    <div id="drophere" style="display: none;">To use a previous workout as template <br> Drag & Drop over here! </div>
+    
      <span style="font-size: 20px; font-family: impact;">Create a workout </span><br><br>
     
     <div style="height: 170px;">
@@ -379,7 +399,7 @@
                 <option value="Swim"> Swim </option>
                 <option value="Run"> Run </option>
 	        </select> <br>
-            <textarea rows='3' cols='20' id='descriptionInput' style="resize: none;">Event description (optional)</textarea>
+            <textarea rows='3' cols='20' id='descriptionInput' style="resize: none;">Enter a description for this workout</textarea>
             
             <span style="font-size: 15px; font-family: impact;">Who</span><br>
             <select id="cellSelection" style='width: 120px;'>
@@ -455,50 +475,10 @@
                 </div>
             
             </div>
-            <!--
-            <div class="intervallInputElement" elementNumber="0" >
-                <div>
-                <div style="float: left; width: 130px;" class="targetDiv"> 
-                    <select class="metricType" element="0">
-                        <option value="m">meters</option>
-                        <option value="s">seconds</option>
-                    </select>
-            
-                    <input type="text" class="metricValue" size="1" >  
-                </div>
-                
-                <div class='metricDiv' style="float: left; width: 190px;"> 
-                    <select class="targetType" element="0">
-                        <option value="none">none</option>
-                        <option value="bpm">bpm</option>
-                        <option value="range">range</option>
-                        <option value="%">%</option>
-                        <option value="watt">watt</option>
-                    </select>
-                    
-                    <span class="targetValue">  </span>
-                </div>
-                
-                <div style="float: left; width: 120px" class="descContainer"> 
-                    <input type="text" class="intervallDescription" element="0" size="16" >
-                </div>
-                
-                <div class="removeIntervallIcon" style="float: left; width: 20px; cursor: pointer; margin-left:10px">
-                    <span class="ui-icon ui-icon-closethick"></span>
-                </div>
-                </div>
-                
-                <div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;">
-                    <div id="sliderIntervallIntensity" style="width:100px;"></div>
-                </div>
-        
-            
-            </div> -->
-        
-            
+           
        </div>
        
-       <div id="addAnotherIntervall" style="cursor:pointer; "> 
+       <div id="addAnotherIntervall" style="cursor:pointer; margin-top: 10px; "> 
        <br>&nbsp;&nbsp;&nbsp;&nbsp; Add another intervall
        </div> 
        
