@@ -489,15 +489,21 @@ $(document).ready(function(){
         
         var addIntervallInput = function(elementNumber){
             
-        var html = '<div class="intervallInputElement" elementNumber="'+ elementNumber + '"><div style="float: left; width: 130px;"> <select class="metricType" element="0"><option value="m">meters</option>' 
+        var html = '<div class="intervallInputElement" elementNumber="'+ elementNumber + '"><div style="float: left; width: 130px;" class="targetDiv"> <select class="metricType" element="0"><option value="m">meters</option>' 
             +'<option value="s">seconds</option></select><input type="text" class="metricValue" size="1" ></div><div class="metricDiv" style="float: left; width: 180px;"> <select class="targetType" element="0"><option value="none">none</option>'
-            + '<option value="bpm">bpm</option><option value="range">range</option><option value="perc">%</option><option value="watt">watt</option></select><span class="targetValue"></span></div>'
-            + '<div style="float: left; width: 130px"> <input type="text" class="intervallDescription" element="0" size="16" ></div><div style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div>'
+            + '<option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select><span class="targetValue"></span></div>'
+            + '<div style="float: left; width: 130px" class="descContainer"> <input type="text" class="intervallDescription" element="0" size="16" ></div><div class="removeIntervallIcon" style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div>'
             + '<div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;"></div></div>'    
            
             $('#intervallInputContainer').append(html);
             
             //kill any previous handler so theres no snowball effect
+            $('.removeIntervallIcon').die();
+            
+            $('.removeIntervallIcon').click(function(){
+                $(this).parent().remove();
+		    });
+            
             
             refreshSlider();
            
@@ -590,8 +596,9 @@ $(document).ready(function(){
                             
                         }
                     });
-                    parent.children('.targetValue').html(Math.floor(30 / 60) + ":" + (30 - (Math.floor(30 / 60) * 60)) + "-" + Math.floor(60 / 60) +":" + (60 - (Math.floor(60 / 60) * 60)));
-                    //createQtip(parent);       
+                    var minValueHtml = '<span class="intervallMin" seconds="' + 30 + '">' + Math.floor(30 / 60) +":" + (30 - (Math.floor(30 / 60) * 60)) + '</span>';
+                    var maxValueHtml = '<span class="intervallMax" seconds="' + 105 + '">' + Math.floor(105 / 60) +":" + (105 - (Math.floor(105 / 60) * 60)) + '</span>';
+                    parent.children('.targetValue').html(minValueHtml + " - " + maxValueHtml + " min");       
                 }
                 else{ //none
                    $("#sliderIntervallIntensity" ).slider({disabled: true});
@@ -609,49 +616,53 @@ $(document).ready(function(){
         
         $('#addAnotherIntervall').click(function(){
             addIntervallInput(1);
+            createIntervallModel();
             
         });
 
         
-		 var addIntervallModel = function(elementNumber){
-            var parent = $("input[class=intervallInputElement][elementnumber="+elementNumber+"]");
-			var target = parent.children('.metricType').val();
+		 var createIntervallModel = function(elementNumber){
             
-			var option = $('input[type=radio][name=radio2]:checked').attr('id');
-			var intervallDescription = $("#intervallDescInput").val();
-            var intensityMetric = document.getElementById('targetType').innerHTML;
-            var intensityWorth = document.getElementById('intensityHtml').innerHTML;     
-            var intensityTime = [];    
+            //applicationVariables.intervallInput = [];
+			
+            //var count = $('#intervallInputContainer > .intervallInputElement').length;
+            //alert(count);
+            
+            //for(i = 0; i < count; i++){
+            $('.intervallInputElement').each(function(i){
+                
+                var parent = $(this); //$(".intervallInputElement[elementnumber="+i+"]");
+                //alert(JSON.stringify(parent.html()));
+                if(parent.children('.metricDiv').children('.targetType').val() === "range"){
 
                     var intervallObject = {
-                        targetUnit     : "m",
-                        targetValue    : target,
-                        intensityUnit  : intensityMetric,
-                        intensityValue : intensityWorth, 
-                        intensityRange : intensityTime,
-                        description    : intervallDescription
+                        targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
+                        targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
+                        intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
+                        intensityValue : "", 
+                        intensityRange : [parent.children('.metricDiv').children('.targetValue').children('.intervallMin').attr('seconds'), parent.children('.metricDiv').children('.targetValue').children('.intervallMax').attr('seconds')] ,
+                        description    : parent.children('.descContainer').children('.intervallDescription').val()
+                    }
+                    applicationVariables.intervallInput.push(intervallObject);
+                }
+                else{
+                
+                    var intervallObject = {
+                        targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
+                        targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
+                        intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
+                        intensityValue : parent.children('.metricDiv').children('.targetValue').html(), 
+                        intensityRange : "",
+                        description    : parent.children('.descContainer').children('.intervallDescription').val()
                     }
                     
-                    intervall.push(intervallObject);
+                    applicationVariables.intervallInput.push(intervallObject);
+                }
+            });
 
 		}
 
-		$('#removeIntervalli').click(function(){
-
-		//delete in global array and temp array
-		//get index value to delete proper value in array
-			//var index = document.getElementById('intervallList').selectedIndex;
-			//$("select[name='intervallList'] :selected").remove();
-			//Update intervall array
-			tempIntervall.pop();
-            intervall.pop();
-            tempIntDesc.pop();
-            printArray(tempIntervall, function(html){
-                document.getElementById('overview').innerHTML = html;
-                $("#scrollbar1").tinyscrollbar_update();
-                loadDynamicQtip((tempIntervall.length - 1),  tempIntDesc);
-            });
-		});
+		
 
 		//You can only enter numerical number in the field with this event
 		$("input[type=text][id=unitInput]").keydown(function(event) {
