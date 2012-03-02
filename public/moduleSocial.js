@@ -383,14 +383,42 @@ var renderCellNotifications = function(array){
         else if(array[i].type === 'newCellMessage'){
             var buttonRemove = "";
             if(array[i].refId === authId){
-             buttonRemove = '<span class="removeCellComment" ' + 'id="' + array[i]._id + '" class="ui-icon ui-icon-close" style="float: right"></span>';   
+             buttonRemove = '<div style="float: left;"><span class="ui-icon ui-icon-close removeCellComment" ' + 'id="' + array[i]._id + '"></span></div>';   
             }
-            document.getElementById('notificationCellList').innerHTML = '<div title="'+strDate+'" class="cellNotificationMessage" userId ="' + array[i].refId + '" style="width: 350px;">' +
-            array[i].message + buttonRemove + '</div>' + document.getElementById('notificationCellList').innerHTML;
+            document.getElementById('notificationCellList').innerHTML = '<div title="'+strDate+'" class="cellNotificationMessage" userId ="' + array[i].refId + '" style="width: 330px; float:left;">' +
+            array[i].message + '</div>' + buttonRemove + document.getElementById('notificationCellList').innerHTML;
         }
         else{
         }
     }
+    
+    $('.removeCellComment').die();
+    $('.removeCellComment').live('click', function(){
+        var theUrl = deleteCellMessage + applicationVariables.currentCell + "/" + $(this).attr('id');
+        $.getJSON(theUrl, function(data) {
+            if(data.success){
+                Notifier.success(data.message);
+                
+                $.getJSON('/cell/details/' + applicationVariables.currentCell, function(data) {
+                    if(data.success){
+                        if(data.message === 'This cell is private'){
+                            UILoadNewState('emptyView');
+                            document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
+                        }else{
+                            initCellView(data.message);
+                        }
+                    }
+                    else{
+                        //something wrong
+                        Notifier.error(data.message);
+                    }
+                });     
+            }
+            else{
+                Notifier.error(data.message);
+            } 
+        });
+    });
 }
 
 //!!!!!!!-----------------------Profile view loading  -------------------------//

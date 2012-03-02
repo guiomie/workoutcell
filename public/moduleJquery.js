@@ -1079,10 +1079,9 @@ $(document).ready(function(){
                                     $('#cellCommentInput').val('Post a comment ...');
                                 }else{
                                     applicationVariables.calendarMode = "cell";
-                                    applicationVariables.currentCell = id;
                                     initCellView(data.message);
                                     //UILoadNewState('cellView');
-                                    updateCalendar();
+                                    //updateCalendar();
                                     $('#cellCommentInput').val('Post a comment ...');
                                 }
                             }

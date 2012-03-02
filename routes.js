@@ -362,6 +362,20 @@ module.exports = function(app) {
          
      });
      
+     app.get("/cell/notification/remove/:cellid/:notificationid", function(req, res){
+         
+        notification.removeCellMessage(req.params.cellid, req.params.notificationid, function(mes){
+             if(mes === "Success"){
+                res.json({ success: true, message: "Removed message"});   
+            }
+            else{
+                res.json({ success: false, message:mes});
+            }
+        });   
+         
+         
+     });
+     
      app.get("/cell/join/:cellId", function(req,res){
         
         mongooseLogic.joinCell(req.params.cellId, getLogedId(req), function(mes){
@@ -401,7 +415,7 @@ module.exports = function(app) {
         });       
     });
     
-    //Stakes a objectid and returns workout for it
+    //takes a objectid and returns workout for it
     app.get("/cell/details/:cellId", function(req, res){
      
         mongooseLogic.getCellDetails(req.params.cellId, function(mes){

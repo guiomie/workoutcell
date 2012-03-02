@@ -345,6 +345,20 @@ var getCellNotifications = function(cellId, from, to, callback){
 }
 
 
+var removeCellMessage = function(cellId, notificationId, callback){
+
+     CellDetails.update({_id: cellId }, { $pull: { notification: { _id :  ObjectId.fromString(notificationId)}}}, function(err, result){
+        if(err || result === null){
+            console.log("No such notification. Stack: " + err );
+            callback("No such notification. Stack: " + err);
+        }
+        else{ //Memeber not in cell yet, so he can join
+            callback("Success");
+        
+        }
+    });     
+ 
+}
 
 
 //!---------------------- Private functions to this module------------------ //
@@ -392,3 +406,4 @@ exports.resetUnreadNotificationsCount = resetUnreadNotificationsCount;
 exports.getCellNotifications = getCellNotifications;
 exports.removeCellInviteNotification = removeCellInviteNotification;
 exports.getPendingNotifications = getPendingNotifications;
+exports.removeCellMessage = removeCellMessage;
