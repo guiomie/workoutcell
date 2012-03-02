@@ -124,8 +124,6 @@
 <div id="centered">
 
 <div id='header' style="width:1000px; height: 100px;  margin-bottom: 20px; padding-bottom:10px;"> 
-	
-    
     
 	<a href="viewYourProfile" id="profileLink" style="text-decoration: underline;"></a><br>
 	<div>
@@ -195,7 +193,15 @@
 	</select><br>
     On invite only: <input type="checkbox" id="isCellOnInvite" /> <br><br>
     Description <br>
-    <textarea rows='15' cols='40' id='cellDescription'>Enter a description of the cell</textarea>
+    <textarea rows='5' cols='50' id='cellDescription'>Enter a description of the cell</textarea>
+    
+     <div class="ui-widget" style="width: 315px; ">
+    	<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+			<p><span class="ui-icon ui-icon-info" style="margin-right: .3em; float: left;"></span>
+			<strong>On invite only</strong><br><br> Checking "On invite only" will make your cell private. You will need to send invitation(s) (accessible in the cells main page) to any 
+            user that you wish to grant access.</p>
+		</div>
+	</div>
 
 </div>
 
@@ -263,7 +269,18 @@
 
 </div>
 
-<div id="inviteFriends"> <div id="inviteFriendList"> </div> </div>
+<div id="inviteFriends"> 
+
+    <div id="inviteFriendList" style="height: 250px;"> </div>
+
+    <div class="ui-widget" style="width: 430px; ">
+		<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+			<p><span class="ui-icon ui-icon-info" style="margin-right: .3em; float: left;"></span>
+			<strong>Invite friends in your cell</strong><br><br> 1. Click on one or multiple friends profile picture to select him/them. <br> 2. Click a second time to unselect him. <br> 3. Your friend will receive a notification inviting him to join your cell. He can accept or decline.</p>
+		</div>
+	</div>
+
+</div>
 
 <div id="cellView" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
 

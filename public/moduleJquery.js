@@ -202,8 +202,8 @@ $(document).ready(function(){
         
         $('#inviteFriends').dialog({
         	autoOpen: false,
-			width  : 400,
-            height : 400,
+			width  : 550,
+            height : 500,
             resizable: false,
             draggable: false,
             modal: true,

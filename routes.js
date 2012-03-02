@@ -673,7 +673,7 @@ module.exports = function(app) {
     
     //Creates a cell with his reference
     app.post("/cell/create/:userId", function(req, res){
-        
+        console.log('in create cell route');
         var receivedJSON = req.body
         
         if(isAllowed(req, req.params.userId) && typeof(receivedJSON.type) !== undefined){

@@ -875,7 +875,7 @@ var searchByFullName = function(first, last, callback){
 
 var createCell = function(creatorId, cellObject, userName, callback){
  
-
+    console.log('in createCell()');
     var newCellDetails = new CellDetails({
         name         : cellObject.name,
 	    location     : cellObject.location,
