@@ -39,7 +39,7 @@ var GeneralReference = new Schema({
     friends      : [Number],    //Array of fbids
     //coaches      : [PersonnaReference],  To be implemented in futur releases
     //parcours     : [ParcourReference],
-    parcours     : [ new mongoose.Schema({realId: ObjectId, name: String, distance: Number})],
+    parcours     : [ new mongoose.Schema({realId: ObjectId, name: String, distance: Number, staticUrl: String})],
     cells        : [ new mongoose.Schema({name: String,location: String,owner: {id: Number, name: String},cellDetails : ObjectId})]
         
 });
@@ -57,7 +57,8 @@ var ParcourReference = new Schema({
    //ref to Parcour which has the content
    realId      : ObjectId,
    name        : String,
-   distance    : Number
+   distance    : Number,
+   staticUrl   : String
     
 });
 
@@ -150,7 +151,7 @@ var CardioWorkout = new Schema({
     distance              :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
     description           :String,
     cell                  :{creator: String, participants: [TinyUser], cellId: ObjectId}, //Temporarly not a basicCell,
-    parcour               :{id: ObjectId, name: String},
+    parcour               :{id: ObjectId, name: String, distance: Number, staticUrl: String},
     distanceResult        :{unit: String , value:Number, completed:Boolean},
     intervallResult       :[SingleIntervallResult],
     feed                  :[{type: String, sender: String, senderId: Number, message: String }]   //type is either notification or message

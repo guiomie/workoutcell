@@ -4,46 +4,47 @@ var ObjectId = require('./node_modules/mongoose').Types.ObjectId;
 //Save a parcour un referencial collection and in data collection
 var saveParcour = function(object, distance, name, userId, callback){
     
-var newParcour = new Parcour();
-//newParcour.content = JSON.stringify(object);
-newParcour.distance = distance;
-newParcour.markers.latlng = object.markers.latlng;
-newParcour.markers.titles = object.markers.titles;
-newParcour.path = object.path;
-newParcour.name = name;
-
-var newParcourReference = new ParcourReference();
-newParcourReference.realId = newParcour._id;
-newParcourReference.name = name;
-newParcourReference.distance = distance;
-
-newParcour.save(function(err){
-
-  if(err) { 
-    console.log("error in save: " + err);
-    callback("Couldn't save document, Database error");
-  }else{
+    var newParcour = new Parcour();
+    //newParcour.content = JSON.stringify(object);
+    newParcour.distance = distance;
+    newParcour.markers.latlng = object.markers.latlng;
+    newParcour.markers.titles = object.markers.titles;
+    newParcour.path = object.path;
+    newParcour.name = name;
     
-    GeneralReference.findOne({ id: userId}, function(err, result){
- 
-      if(err || result === null){
-        console.log("error in save: " + err + " - User returned for " + userId + " : " + result);
-        callback("Couldn't find users General Reference Collection");
+    var newParcourReference = new ParcourReference();
+    newParcourReference.realId = newParcour._id;
+    newParcourReference.name = name;
+    newParcourReference.distance = distance;
+    newParcourReference.staticUrl = object.staticUrl;
+
+    newParcour.save(function(err){
+    
+      if(err) { 
+        console.log("error in save: " + err);
+        callback("Couldn't save document, Database error");
       }else{
         
-        result.parcours.push(newParcourReference);
-        result.save(function(err){
-          if(err){
-             console.log("Error in save: " + err); 
-             callback("Couldn't save Parcour Reference");
+        GeneralReference.findOne({ id: userId}, function(err, result){
+     
+          if(err || result === null){
+            console.log("error in save: " + err + " - User returned for " + userId + " : " + result);
+            callback("Couldn't find users General Reference Collection");
           }else{
-             callback("success");
+            
+            result.parcours.push(newParcourReference);
+            result.save(function(err){
+              if(err){
+                 console.log("Error in save: " + err); 
+                 callback("Couldn't save Parcour Reference");
+              }else{
+                 callback("success");
+              }
+            });
           }
-        });
-      }
+        }); 
+      }    
     }); 
-  }    
-}); 
   
 }
 

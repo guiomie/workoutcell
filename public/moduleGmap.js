@@ -4,6 +4,7 @@ var distance = 0;
 var markerArray = [];
 var bikeLayer = null;
 var lastAddedDistance = [];
+var markerString = "";
 
 function initialize() {
 	
@@ -123,12 +124,16 @@ function markertTitleArray(array, callback){
     
     callback(callbackArray);         
 }
-        
+
+//This will create proper converted array for database
+//It will also create the marker stirng part of the static image
 function markerLatLngArray(array, callback){
     var callbackArray = [];
+    markerString = "&markers=label:S%7C" + array[0].getPosition().lat() + "," + array[0].getPosition().lng()
+    + "&markers=label:F%7C" + array[array.length-1].getPosition().lat() + "," + array[array.length-1].getPosition().lng();
     
     for(i=0; i < array.length; i++){
-        callbackArray.push(array[i].getPosition());            
+        callbackArray.push(array[i].getPosition());
     }
     callback(callbackArray);
 }

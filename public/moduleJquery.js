@@ -419,14 +419,14 @@ $(document).ready(function(){
 			var markersObject;             
     		var nameOfCourse = $("input[type=text][id=courseName]").val();
 			var totalDistance = document.getElementById('distance').innerHTML;
-            
+            var staticMap = "http://maps.googleapis.com/maps/api/staticmap?size=300x300&sensor=false&path=weight:3%7Ccolor:red%7Cenc:" + polypathObject;
             //Transform the golbal variable of marker to a non circular json 
             markertTitleArray(markerArray, function(titleArray){
                
                markerLatLngArray(markerArray, function(latArray){
                
                     markersObject = { titles: titleArray, latlng: latArray };
-
+                    staticMap = staticMap + markerString;
                });
             });
             
@@ -443,9 +443,9 @@ $(document).ready(function(){
                 
                 var object =  {
                  
-                    markers : markersObject,
-                    path : polypathObject
-                    
+                    markers   : markersObject,
+                    path      : polypathObject,
+                    staticUrl : staticMap
                 }
                 
 				var httpRequestUrl = restPost_newParcour + nameOfCourse + "/" + totalDistance; 
@@ -459,6 +459,7 @@ $(document).ready(function(){
                    distance = 0;
                    markerArray = [];
                    lastAddedDistance = [];
+                   markerString = "";
                    $("#courseName").val('Save course as ...');
                    document.getElementById('distance').innerHTML = "0";
                    //populate dropdowns with new user data
@@ -787,7 +788,7 @@ $(document).ready(function(){
             $(droplistHtml).appendTo("#" + dropdownName);
   
             for(i = 0; i < obj.length;i++){
-                droplistHtml = "<option value='" +  obj[i].realId + "'>"+ obj[i].name+"</option>";
+                droplistHtml = "<option value='" +  obj[i].realId + "' distance='" +obj[i].distance + "'  staticUrl='"+ obj[i].staticUrl +"'>"+ obj[i].name+"</option>";
                 $(droplistHtml).appendTo("#" + dropdownName);
             } 
         }
