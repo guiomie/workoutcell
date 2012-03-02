@@ -139,39 +139,38 @@ var renderCellList = function(arrayResult){
 
 var createFriendRequestElement = function(object){
  
-    var html = '<div id="singlenotification" >' + object.message + '<span id="declineFriend' + object.refId + '" class="ui-icon ui-icon-close" style="float: right"></span>' +
-    '<span id="acceptFriend' + object.refId + '" class="ui-icon ui-icon-check" style="float: right"></span></div>';
+    var html = '<div class="friendRequestNotification" refId="' + object.refId + '" >' + object.message + '<span class="ui-icon ui-icon-close" style="float: right"></span>' +
+    '<span class="ui-icon ui-icon-check" style="float: right"></span></div>';
  
     document.getElementById('notificationList').innerHTML =  document.getElementById('notificationList').innerHTML + html;
     
-    $('#acceptFriend' + object.refId).live('click', function(){
-        var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/accept";
+    $('.friendRequestNotification').die();
+    $('.friendRequestNotification').live('click', function(){
+        var theUrl;
+        var target = $(event.target);
+        
+        if(target.hasClass('ui-icon-close')){
+            theUrl = "/notification/joinMasterCell/" + authId +"/" +  $(this).attr('refId') + "/decline";           
+        }
+        else if(target.hasClass('ui-icon-check')){
+            theUrl = "/notification/joinMasterCell/" + authId +"/" +  $(this).attr('refId') + "/accept"; 
+        }
+        else{
+            
+        }
+        
         $.getJSON(theUrl, function(data) {
             if(data.success){
-                intiSocialView(true, true, false);
+                intiSocialView(true, true, true);
                 Notifier.success(data.message);
             }
             else{
                 //something wrong
-                Notifier.success(data.message);
+                Notifier.error(data.message);
             }   
         }); 
-    });
-
-    $('#declineFriend' + object.refId).live('click', function(){
-        var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/decline";
-        $.getJSON(theUrl, function(data) {
-            if(data.success){
-                intiSocialView(true, true, false);
-                Notifier.success(data.message);
-            }
-            else{
-                //something wrong
-                Notifier.success(data.message);
-            }   
-        }); 
-    });
-
+        
+    }); 
  
 }
 
@@ -201,39 +200,40 @@ var createCellListElement = function(object){
 
 var  createCellInviteElement = function(object){
     
-    var html = '<div id="cellnotification" >' + object.message + '<span id="refuseCellInvite' + object.refOId + '" class="ui-icon ui-icon-close" style="float: right"></span>' +
-    '<span id="acceptCellInvite' + object.refOId + '" class="ui-icon ui-icon-check" style="float: right"></span></div>';
+    var html = '<div class="cellnotification"  notificationid="' + object.refOId + '">' + object.message + '<span class="ui-icon ui-icon-close"  style="float: right"></span>' +
+    '<span class="ui-icon ui-icon-check" style="float: right"></span></div>';
  
     document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + html;
     
-    $('#acceptCellInvite' + object.refId).live('click', function(){
-        var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/accept";
+    
+    $('.cellnotification').die();
+    $('.cellnotification').live('click', function(event){
+        var theUrl;
+        var target = $(event.target);
+        
+        if(target.hasClass('ui-icon-close')){  
+            theUrl = "/notification/cell/invite/" + $(this).attr('notificationid') + "/decline"; 
+            
+        }
+        else if(target.hasClass('ui-icon-check')){
+            theUrl = "/notification/cell/invite/" + $(this).attr('notificationid') + "/accept";  
+        }
+        else{
+            //Do nothing
+        }
+
+        //Send request to seerver        
         $.getJSON(theUrl, function(data) {
             if(data.success){
-                intiSocialView(true, true, false);
+                intiSocialView(true, true, true);
                 Notifier.success(data.message);
             }
             else{
                 //something wrong
-                Notifier.success(data.message);
+                Notifier.error(data.message);
             }   
         }); 
-    });
-
-    $('#refuseCellInvite' + object.refId).live('click', function(){
-        var theUrl = "/notification/joinMasterCell/" + authId +"/" + object.refId + "/decline";
-        $.getJSON(theUrl, function(data) {
-            if(data.success){
-                intiSocialView(true, true, false);
-                Notifier.success(data.message);
-            }
-            else{
-                //something wrong
-                Notifier.success(data.message);
-            }   
-        }); 
-    });
-
+    }); 
     
 }
 
@@ -257,6 +257,7 @@ var initCellView = function(object){
         $('#cellOptionsButton').show();
         
         //initialise button
+        $("#inviteInCell").die();
         $("#inviteInCell").live("click",function(){
             
             
@@ -326,10 +327,14 @@ var renderCellMemberList = function(arrayResult){
     }
     else{
        var overallHtml = "";
+       //Set to Join cell, and if user in cell, will be changed in loop
+       document.getElementById('cellToggleName').innerHTML = 'Join cell';
        for(i = 0; i < arrayResult.length; i++){
+
           if(arrayResult[i].toString() == authId){
               document.getElementById('cellToggleName').innerHTML = 'Quit cell';
           }
+
           var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
           overallHtml = overallHtml + pictureTag + '</span>';
        }

@@ -34,8 +34,24 @@
 <script src='/moduleWorkoutPost.js'></script>
 
 <style type="text/css">
-			/*demo page css*/
-			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			/*demo page css
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}*/
+            body 
+            { 
+            font: 62.5% "Trebuchet MS", sans-serif; 
+             margin: 0; 
+             padding: 0; 
+             padding-top: 10px;
+             text-align: left; 
+            } 
+            #centered
+            { 
+             width: 75%; 
+             text-align: left;
+             border: 0px; 
+             padding: 0;  
+             margin: 0 auto; 
+            } 
 			.demoHeaders { margin-top: 2em; }
 			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
 			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
@@ -101,7 +117,7 @@
 <body background="/background/pattern.png" style="margin-top: 2px;">
 
 <!-- overlys are declared here -->
-
+<div id="centered">
 
 <div id='header' style="width:1000px; height: 100px;  margin-bottom: 20px; padding-bottom:10px;"> 
 	
@@ -354,17 +370,14 @@
 		</div>
 		
 		<div style="float: middle;">
-		
-		<li class="ui-state-default ui-corner-all" title="Save Trace" id="saveTrace"><span class="ui-icon ui-icon-disk"></span></li>
-		Course name:<input type="text" id="courseName" style="width:120px" /> 
-		<br><br><br>
-		</div>
+    		<input type="text" value="Save course as ..." onfocus="if(this.value=='Save course as ...'){this.value='';}" onblur="if(this.value==''){this.value='Save course as ...';}" id="courseName" style="width:120px; float: left; margin-top:6px; margin-right: 10px;" />
+            <li class="ui-state-default ui-corner-all" title="Save Trace" id="saveTrace"><span class="ui-icon ui-icon-disk"></span></li>
+    		<br><br><br>
+		</div> 
 		
 		<div style="float: bottom;">
-		
-		<li class="ui-state-default ui-corner-all" title="Remove Selecred Trace" id="unSaveTrace"><span class="ui-icon ui-icon-trash"></span></li>
-		Your courses: <select id="dropdownMap" style='width: 120px;'> <option>Click to load...</option> </select>
-
+    		<select id="dropdownMap" style='width: 120px; float:left; margin-top:6px; margin-right: 10px;'> <option>Click to load...</option> </select>
+            <li class="ui-state-default ui-corner-all" title="Remove Selecred Trace" id="unSaveTrace"><span class="ui-icon ui-icon-trash"></span></li>
 		</div>
 		</ul>
 		
@@ -516,7 +529,7 @@
 
 </div>
 
-
+</div>
 </body>
 
 </html>

@@ -419,13 +419,20 @@ $(document).ready(function(){
 			var markersObject;             
     		var nameOfCourse = $("input[type=text][id=courseName]").val();
 			var totalDistance = document.getElementById('distance').innerHTML;
+            
+            //Transform the golbal variable of marker to a non circular json 
             markertTitleArray(markerArray, function(titleArray){
                
                markerLatLngArray(markerArray, function(latArray){
                
                     markersObject = { titles: titleArray, latlng: latArray };
+
                });
             });
+            
+            if(nameOfCourse === 'Save course as ...' || nameOfCourse === ' '){
+                nameOfCourse = "MyCourse" + $('#dropdownMap option').length;  
+            }
             			
 			if(polypathObject.length === 0 || markerArray.length === 0 || nameOfCourse === "" ){
 
@@ -452,7 +459,7 @@ $(document).ready(function(){
                    distance = 0;
                    markerArray = [];
                    lastAddedDistance = [];
-                   $("#courseName").val('');
+                   $("#courseName").val('Save course as ...');
                    document.getElementById('distance').innerHTML = "0";
                    //populate dropdowns with new user data
                    refreshDropdown();
@@ -479,11 +486,25 @@ $(document).ready(function(){
                 //something wrong
                     Notifier.error(data.message);
                 }   
-            });
-           
-           
-            
+            }); 
         });
+        
+        
+        $("#dropdownMap").change(function() { 
+            
+            var url = getParcour + $(this).val();
+            $.get(url, function(data){
+                clearMap();
+                distance = 0;
+                markerArray = [];
+                decodeToMap(data.path)
+                loadMarkers(data.markers.latlng, data.markers.titles);
+                document.getElementById('distance').innerHTML = data.distance;
+                
+            }, "json");
+
+        }); 
+        
         
         //------------- Intervall interface logic -----------------------------
         //
@@ -880,23 +901,6 @@ $(document).ready(function(){
         });*/
     
 
-        $("#dropdownMap").change(function() { 
-            
-            var url = getParcour + $(this).val();
-            $.get(url, function(data){
-                clearMap();
-                //var contentObject = jQuery.parseJSON(receivedObject.content);
-                //loadPolylines(contentObject.polylines);
-                decodeToMap(data.path)
-                loadMarkers(data.markers.latlng, data.markers.titles);
-                document.getElementById('distance').innerHTML = data.distance;
-                //document.getElementById('console').innerHTML = JSON.stringify(contentObject.polylines);
-                
-                
-                
-            }, "json");
-
-        }); 
         
         
         var timeStringToSeconds = function(string, callback){
@@ -981,11 +985,46 @@ $(document).ready(function(){
         
         $('.cellLink').live('click',function(){
            var id = $(this).attr('refId');
-           applicationVariables.calendarMode = "cell";
-           applicationVariables.currentCell = id;
-           initCellView(id);
-           UILoadNewState('cellView');
-           updateCalendar();
+           $.getJSON('/cell/details/' + id, function(data) {
+                if(data.success){
+                    if(data.message === 'This cell is private'){
+                        UILoadNewState('emptyView');
+                        document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
+                    }else{
+                        applicationVariables.calendarMode = "cell";
+                        applicationVariables.currentCell = id;
+                        initCellView(data.message);
+                        UILoadNewState('cellView');
+                        updateCalendar();
+                    }
+                }
+                else{
+                    //something wrong
+                    Notifier.success(data.message);
+                }
+           });  
+        });
+         
+        $('.cellMessage').live('click',function(){
+            var id = $(this).attr('refId');
+           $.getJSON('/cell/details/' + id, function(data) {
+                if(data.success){
+                    if(data.message === 'This cell is private'){
+                        UILoadNewState('emptyView');
+                        document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
+                    }else{
+                        applicationVariables.calendarMode = "cell";
+                        applicationVariables.currentCell = id;
+                        initCellView(data.message);
+                        UILoadNewState('cellView');
+                        updateCalendar();
+                    }
+                }
+                else{
+                    //something wrong
+                    Notifier.success(data.message);
+                }
+           });
         });
         
         //Button found on profile snippet, click on profile mini pic
@@ -1006,15 +1045,6 @@ $(document).ready(function(){
            UILoadNewState('profileView');
         });
         
-        $('.cellMessage').live('click',function(){
-            var id = $(this).attr('refId');
-           applicationVariables.calendarMode = "cell";
-           applicationVariables.currentCell = $(this).attr('refId');
-           initCellView(id);
-           UILoadNewState('cellView');
-           updateCalendar();
-        });
-        
         $(".selectableinviteFriendList").live('click', function(){
             if($(this).attr('select') === "no"){
                 $(this).attr('select', "yes"); 
@@ -1028,9 +1058,9 @@ $(document).ready(function(){
             }
         });
         
-         $('.cellNotificationNewWorkout').live('click',function(){
+        $('.cellNotificationNewWorkout').live('click',function(){
              initView(workout, event); 
-         });
+        });
         
         $('#postCellComment').live('click', function(){
            
@@ -1040,9 +1070,28 @@ $(document).ready(function(){
            if(comment.length < 160 && comment !== "Post a comment ..." && comment.length > 10){
                $.getJSON(postCellComment + "/" + cell + "/" + comment , function(data) {
                     if(data.success){
-                        initCellView(cell);
-                        $('#cellCommentInput').val('Post a comment ...');
-                        //UILoadNewStateNoAnimation('cellView');
+                        var id = $(this).attr('refId');
+                        $.getJSON('/cell/details/' + cell, function(data) {
+                            if(data.success){
+                                if(data.message === 'This cell is private'){
+                                    UILoadNewState('emptyView');
+                                    document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
+                                    $('#cellCommentInput').val('Post a comment ...');
+                                }else{
+                                    applicationVariables.calendarMode = "cell";
+                                    applicationVariables.currentCell = id;
+                                    initCellView(data.message);
+                                    //UILoadNewState('cellView');
+                                    updateCalendar();
+                                    $('#cellCommentInput').val('Post a comment ...');
+                                }
+                            }
+                            else{
+                                //something wrong
+                                Notifier.success(data.message);
+                                $('#cellCommentInput').val('Post a comment ...');
+                            }
+                        });
                     }
                     else{
                         
