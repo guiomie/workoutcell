@@ -23,7 +23,30 @@ function initView(workoutObject, event) {
     }
     
     if(typeof(workoutObject.parcour) !== "undefined" ){
-		document.getElementById('parcour').innerHTML = workoutObject.parcour.name;
+		var html = '<span class="mapReference" staticUrl="' + workoutObject.parcour.staticUrl + 
+        'distance="' + workoutObject.parcour.distance + '">' + workoutObject.parcour.name + '</span><span class="ui-icon ui-icon-home" style="float: left; margin-top: 2px;">';
+        document.getElementById('parcour').innerHTML = html;
+        var img = $("<img />").attr('src', workoutObject.parcour.staticUrl);
+        
+        $("#staticMapPicture").empty();
+        $("#mapInformation").empty();
+        
+        $("#staticMapPicture").append(img);
+        $("#mapInformation").html(workoutObject.parcour.distance + ' km');
+        
+        $('#parcour').die();
+        $('#parcour').qtip({
+            content: $('#courseMap').html(),
+            position: {
+                my: 'left center', // Use the corner...
+                at: 'right center' // ...and opposite corner
+            },
+            style: {
+                widget: true 
+            }
+        });
+        
+        
 	}
     
     document.getElementById('description').innerHTML = "";

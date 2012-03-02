@@ -226,8 +226,10 @@ var saveWorkout = function(workoutObject, logedId, logedName, idCell, callback){
     }
     else{
         receivedParcour = {
-            id: ObjectId(workoutObject.parcour.id), 
-            name: workoutObject.parcour.name        
+            id       : ObjectId(workoutObject.parcour.id), 
+            name     : workoutObject.parcour.name,
+            distance : workoutObject.parcour.distance,
+            staticUrl: workoutObject.parcour.staticUrl
         };
     }
     
