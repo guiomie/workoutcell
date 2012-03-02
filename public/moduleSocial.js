@@ -175,16 +175,16 @@ var createFriendRequestElement = function(object){
 }
 
 var createCellWorkoutElement = function(object){
-    
-    var viewprofile = '<div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer;">' + object.message + '</div>';
+    var strDate = new Date(object.date).toDateString();
+    var viewprofile = '<div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer;" title="'+strDate+'" >' + object.message + '</div>';
     document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile;
     
 }
 
 var createCellMessageElement = function(object){
     
-
-    var viewprofile = '<div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer;">' + object.message + '</div>';
+    var strDate = new Date(object.date).toDateString();
+    var viewprofile = '<div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer;" title="'+strDate+'">' + object.message + '</div>';
     document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile  ;
     
 }
@@ -375,8 +375,9 @@ var renderCellNotifications = function(array){
     }
     
     for(i = 0; i < array.length; i++){       
+        var strDate = new Date(array[i].date).toDateString();
         if(array[i].type === 'newCellWorkout'){
-            document.getElementById('notificationCellList').innerHTML = '<div class="cellNotificationNewWorkout" workoutId ="' + array[i].refId + '">' +
+            document.getElementById('notificationCellList').innerHTML = '<div title="'+strDate+'" class="cellNotificationNewWorkout" workoutId ="' + array[i].refId + '">' +
             array[i].message + '</div>' + document.getElementById('notificationCellList').innerHTML;
         }
         else if(array[i].type === 'newCellMessage'){
@@ -384,7 +385,7 @@ var renderCellNotifications = function(array){
             if(array[i].refId === authId){
              buttonRemove = '<span class="removeCellComment" ' + 'id="' + array[i]._id + '" class="ui-icon ui-icon-close" style="float: right"></span>';   
             }
-            document.getElementById('notificationCellList').innerHTML = '<div class="cellNotificationMessage" userId ="' + array[i].refId + '" style="width: 350px;">' +
+            document.getElementById('notificationCellList').innerHTML = '<div title="'+strDate+'" class="cellNotificationMessage" userId ="' + array[i].refId + '" style="width: 350px;">' +
             array[i].message + buttonRemove + '</div>' + document.getElementById('notificationCellList').innerHTML;
         }
         else{
