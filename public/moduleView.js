@@ -23,23 +23,23 @@ function initView(workoutObject, event) {
     }
     
     if(typeof(workoutObject.parcour) !== "undefined" ){
-		var html = '<span class="mapReference" staticUrl="' + workoutObject.parcour.staticUrl + 
+		/*var html = '<span class="mapReference" staticUrl="' + workoutObject.parcour.staticUrl + 
         'distance="' + workoutObject.parcour.distance + '">' + workoutObject.parcour.name + '</span><span class="ui-icon ui-icon-home" style="float: left; margin-top: 2px;">';
-        document.getElementById('parcour').innerHTML = html;
+        document.getElementById('parcour').innerHTML = html; */
         var img = $("<img />").attr('src', workoutObject.parcour.staticUrl);
         
         $("#staticMapPicture").empty();
         $("#mapInformation").empty();
         
         $("#staticMapPicture").append(img);
-        $("#mapInformation").html(workoutObject.parcour.distance + ' km');
+        $("#mapInformation").html(workoutObject.parcour.name + " - " + workoutObject.parcour.distance + ' km');
         
-        $('#parcour').die();
-        $('#parcour').qtip({
+        $('#showWhere').die();
+        $('#showWhere').qtip({
             content: $('#courseMap').html(),
             position: {
-                my: 'left center', // Use the corner...
-                at: 'right center' // ...and opposite corner
+                my: 'top center', // Use the corner...
+                at: 'bottom center' // ...and opposite corner
             },
             style: {
                 widget: true 
@@ -49,9 +49,46 @@ function initView(workoutObject, event) {
         
 	}
     
-    document.getElementById('description').innerHTML = "";
+    //Empty descriptiom, then look if there is one
+    document.getElementById('descFbId').innerHTML = "";
+    $('#qtipLocationDesc').die();
+    
 	if(workoutObject.description !== "none"){
-		document.getElementById('description').innerHTML = "Description <br>" + workoutObject.description;
+        var descPictureTag;
+        
+        if(workoutObject.cell.creator != undefined){
+             descPictureTag = '­­<fb:profile-pic uid="' + workoutObject.cell.creator.fbid 
+             + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+
+        }
+        else{
+            descPictureTag = '­­<fb:profile-pic uid="'+ authId 
+             + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>';
+        }
+        document.getElementById('descFbId').innerHTML =  descPictureTag ;
+        FB.XFBML.parse(document.getElementById('descFbId'), function(){
+            $('#qtipLocationDesc').qtip({
+                content: workoutObject.description,
+                position: {
+                    my: 'left center', // Use the corner...
+                    at: 'right center' // ...and opposite corner
+                },
+                show: {
+                  ready: true
+                },
+                hide: false,
+                style: {
+                    classes: 'ui-tooltip-rounded ui-tooltip-shadow'
+                },
+                events: {
+                    hide: function(event, api) {
+                        $('.showMe').show();
+                    }
+               }
+            }); 
+        });
+ 
+		//document.getElementById('description').innerHTML = "Description <br><div style='font-size: 12px;'>" + workoutObject.description + "</div>";
 	}
     
     //Add layout for users in workoutcell

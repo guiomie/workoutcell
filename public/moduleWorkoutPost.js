@@ -127,16 +127,23 @@ var postWorkout = function(event) {
 
 var postCellWorkout = function(event) {
     
-  
-        var selectedSport = $('#sportSelection').val();
         var cellId =  $('#cellSelection').val();
         
+        var selectedSport = $('#sportSelection').val();
+        //var parcourId = $("#parcourSelection").val();
         var parcourId = {
 
-			id     :  $("#parcourSelection").val(),
+            id     :  $("#parcourSelection").val(),
 			name   :  $('#parcourSelection :selected').text()
 
 		};
+        //Add map data is a course is selected
+	    if($('#parcourSelection :selected').text() !== "No Course"){
+            parcourId.staticUrl = $("#parcourSelection :selected").attr('staticUrl');
+            parcourId.distance = $("#parcourSelection :selected").attr('distance');
+            
+	    }
+        
 		var postUrl = postcellworkout + cellId + "/" + authId;
 		var workout;
 		var eventObject;

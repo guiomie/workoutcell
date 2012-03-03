@@ -66,7 +66,7 @@ var ParcourReference = new Schema({
 //Currently no point in transforming the json in an actual object
 var Parcour = new Schema({
    
-   path    : String,
+   path       : String,
    distance   : Number,
    name       : String,
    markers    : {latlng: [{Oa: Number, Pa: Number}], titles: [String]}
@@ -150,7 +150,7 @@ var CardioWorkout = new Schema({
     intervalls            :[singleIntervall],
     distance              :{targetType:String, minValue:Number,maxValue:Number, intensity:Number},
     description           :String,
-    cell                  :{creator: String, participants: [TinyUser], cellId: ObjectId}, //Temporarly not a basicCell,
+    cell                  :{creator: { fbid: Number, fullName  : String}, participants: [TinyUser], cellId: ObjectId}, //Temporarly not a basicCell,
     parcour               :{id: ObjectId, name: String, distance: Number, staticUrl: String},
     distanceResult        :{unit: String , value:Number, completed:Boolean},
     intervallResult       :[SingleIntervallResult],

@@ -128,17 +128,17 @@ var moveUI = function(newUI) {
 			$("#fullcalendar").animate({ 
 				height: "500px", 
 				width: "500px", 
-			}, 1000, function(){
+			}, 1, function(){
 			    //resize calendar, seems to be a glitch
 			    $('#fullcalendar').fullCalendar('render');
                 if(panelState !== "largeCalendar"){
-                    $("#" + panelState).hide("slide", {}, 1000, function(){
-    		            $("#View").show("slide", {}, 1000);
+                    $("#" + panelState).hide(1, function(){
+    		            $("#View").show();
 			            panelState = 'View';
 		            });
 		        }
                 else{
-                    $("#View").show("slide", {}, 1000);
+                    $("#View").show();
     		        panelState = 'View';    
                 }
 		  });
@@ -147,7 +147,11 @@ var moveUI = function(newUI) {
 	else{
 
 	}
-			/*
+	
+    
+    $('#qtipLocationDesc').qtip("destroy");
+    
+    /*
 			*/
 } 
 

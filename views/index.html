@@ -333,7 +333,7 @@
 </div>
 
 <!-- Load the training viewer -->
-<div id="View" style="display: none; background: white; width:510px; height:500px; margin-top:30px;">
+<div id="View" style="display: none; background: white; width:510px; height:500px; margin-top:2px;">
 
 <div id="viewLayout" style="width: 500px; float: top;">
 
@@ -343,7 +343,8 @@
 			<div id="viewDate" style="font-family: impact; font-size: 20px; float:left;"> </div>
 			<li class="ui-state-default ui-corner-all" title="View your cell" id="showCell" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
 			<!--<li class="ui-state-default ui-corner-all" title="View your rating" id="showRating" style="float: right;"><span class="ui-icon ui-icon-star"></span></li>-->
-			<li class="ui-state-default ui-corner-all" id="showTime" style="float: right;"><span class="ui-icon ui-icon-clock" id="iconShowTime"></span></li>
+            <li class="ui-state-default ui-corner-all" id="showTime" style="float: right;"><span class="ui-icon ui-icon-clock" id="iconShowTime"></span></li>
+            <li class="ui-state-default ui-corner-all" id="showWhere" style="float: right;"><span class="ui-icon ui-icon-flag" id="iconShowWhere"></span></li>
             <li class="ui-state-default ui-corner-all" title="More options!" id="viewOptions" style="float: right; width: 15px;"><span class="ui-icon ui-icon-triangle-1-s" style="margin: 0 auto"></span></li>
 		</ul>
 		
@@ -355,13 +356,15 @@
             <div id="quitWorkout" style="cursor: pointer; padding-top: 3px; display: none;">Quit this Workout</div>
         </div>
         
-		<div id="statement"> </div>
-	
-		<span id="parcour"> </span>
-	
-		<div id="description">   </div>
-	
-		<br>Planned workout <span id="toggleEdit" style="font-size: 10px;">(Edit results)</span>
+		<div id="workoutDescription" style="height:60px;">
+            <div id="descFbId" style="width:50px; float:left;"></div>
+            <div id="qtipLocationDesc" style="float:left; height:50px;"></div>   
+        </div>
+        
+        <div>
+		    Planned workout <span id="toggleEdit" style="font-size: 10px;">(Edit results)</span>
+        </div>
+        
 		<div id="typeDetail">   </div>
 
 		<br>Comments

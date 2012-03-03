@@ -244,7 +244,7 @@ var saveWorkout = function(workoutObject, logedId, logedName, idCell, callback){
         array.push(tinyuser);
             
         cell = {
-           creator       : logedName,
+           creator       : tinyuser,
            participants  : array,
            cellId        : ObjectId(idCell)
            
