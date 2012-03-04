@@ -13,8 +13,8 @@ var moveUI = function(newUI) {
 				$('#fullcalendar').fullCalendar('render');
                 
                 if(panelState !== "largeCalendar"){
-                    $("#" + panelState).hide("slide", {}, 1000, function(){
-    			        $("#Social").show("slide", {}, 1000);
+                    $("#" + panelState).hide(1, function(){
+    			        $("#Social").show();
 				        panelState = 'Social';
 			        });	
 			    }
@@ -36,8 +36,8 @@ var moveUI = function(newUI) {
 			    //resize calendar, seems to be a glitch
 			    $('#fullcalendar').fullCalendar('render');
                 if(panelState !== "largeCalendar"){
-                    $("#" + panelState).hide("slide", {}, 1000, function(){
-    		            $("#Create").show("slide", {}, 1000);
+                    $("#" + panelState).hide(1, function(){
+    		            $("#Create").show();
 			            panelState = 'Create';
 		            });
 		        }
@@ -59,8 +59,8 @@ var moveUI = function(newUI) {
 			    //resize calendar, seems to be a glitch
 			    $('#fullcalendar').fullCalendar('render');
                 if(panelState !== "largeCalendar"){
-                    $("#" + panelState).hide("slide", {}, 1000, function(){
-    		            $("#emptyView").show("slide", {}, 1000);
+                    $("#" + panelState).hide(1, function(){
+    		            $("#emptyView").show();
 			            panelState = 'emptyView';
 		            });
 		        }
@@ -83,8 +83,8 @@ var moveUI = function(newUI) {
 				$('#fullcalendar').fullCalendar('render');
                 //Transit between user panel functionality
 			    if(panelState !== "largeCalendar"){
-                    $("#" + panelState).hide("slide", {}, 1000, function(){
-				        $("#Map").show("slide", {}, 1000, function(){
+                    $("#" + panelState).hide(1, function(){
+				        $("#Map").show(1, function(){
 					        if(map === undefined){
 						        initialize();
 					        }

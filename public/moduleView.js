@@ -23,9 +23,7 @@ function initView(workoutObject, event) {
     }
     
     if(typeof(workoutObject.parcour) !== "undefined" ){
-		/*var html = '<span class="mapReference" staticUrl="' + workoutObject.parcour.staticUrl + 
-        'distance="' + workoutObject.parcour.distance + '">' + workoutObject.parcour.name + '</span><span class="ui-icon ui-icon-home" style="float: left; margin-top: 2px;">';
-        document.getElementById('parcour').innerHTML = html; */
+		$('#showWhere').show();
         var img = $("<img />").attr('src', workoutObject.parcour.staticUrl);
         
         $("#staticMapPicture").empty();
@@ -45,9 +43,11 @@ function initView(workoutObject, event) {
                 widget: true 
             }
         });
-        
-        
+   
 	}
+    else{
+        $('#showWhere').hide();
+    }
     
     //Empty descriptiom, then look if there is one
     document.getElementById('descFbId').innerHTML = "";
@@ -55,11 +55,11 @@ function initView(workoutObject, event) {
     
 	if(workoutObject.description !== "none"){
         var descPictureTag;
-        
+        var name = "Your description: ";
         if(workoutObject.cell.creator != undefined){
              descPictureTag = '­­<fb:profile-pic uid="' + workoutObject.cell.creator.fbid 
              + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
-
+            name = workoutObject.cell.creator.fullName +"s description: ";
         }
         else{
             descPictureTag = '­­<fb:profile-pic uid="'+ authId 
@@ -68,7 +68,7 @@ function initView(workoutObject, event) {
         document.getElementById('descFbId').innerHTML =  descPictureTag ;
         FB.XFBML.parse(document.getElementById('descFbId'), function(){
             $('#qtipLocationDesc').qtip({
-                content: workoutObject.description,
+                content: name + workoutObject.description,
                 position: {
                     my: 'left center', // Use the corner...
                     at: 'right center' // ...and opposite corner
@@ -78,13 +78,10 @@ function initView(workoutObject, event) {
                 },
                 hide: false,
                 style: {
-                    classes: 'ui-tooltip-rounded ui-tooltip-shadow'
-                },
-                events: {
-                    hide: function(event, api) {
-                        $('.showMe').show();
-                    }
-               }
+                    widget : true,
+                    classes: 'ui-tooltip-rounded ui-tooltip-shadow',
+                    width  : '300px'
+                }
             }); 
         });
  

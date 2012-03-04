@@ -885,7 +885,7 @@ var createCell = function(creatorId, cellObject, userName, callback){
         isPrivate    : cellObject.isPrivate,
 	    owner        : {id: creatorId, name: userName}, 
 	    members      : [parseInt(creatorId)],
-	    description  : cellObject.description, 
+	    description  : cellObject.description 
     });
     
     newCellDetails.save(function(err, result){
@@ -1010,8 +1010,8 @@ var joinCell = function(cellId, userId, callback){
 
 
 var quitCell = function(userId, cellId, callback){
-    console.log(cellId + " is " + typeof(cellId)  +" at " + userId );
-   GeneralReference.update({ "id" : userId}, { $pull: { cells: { cellDetails :  ObjectId.fromString(cellId)}}}, function(err){
+    //console.log(cellId + " is " + typeof(cellId)  +" at " + userId );
+    GeneralReference.update({ "id" : userId}, { $pull: { cells: { cellDetails :  ObjectId.fromString(cellId)}}}, function(err){
         if(err){
             callback("User isnt part of this cell. Stack: " + err );
         }

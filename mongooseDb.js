@@ -3,9 +3,6 @@ var mongoHQadress = 'staff.mongohq.com:10072/workoutcellDb';
 var mongoHQuser = 'mongoose';
 var mongoHQpassword = '12345';
 
-var mongoDbAdress = '24.202.230.241:27017';
-var mongoDbName = 'workoutcellDb';
-
 var mongoose = require('mongoose');
 var everyauth= require('everyauth');
 var Promise = everyauth.Promise;

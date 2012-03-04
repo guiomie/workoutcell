@@ -57,7 +57,7 @@ var saveCellRequestToQueu = function(requesterName, cellName, userId, cellId, ca
         }
         else if(result === null){
             //This means user hasnt filled in any result for this workout yet
-            NotificationsReference.update({ "id" : parseInt(userId)}, { $push: { pending: pendingNotification}, $inc: { unRead : 1 }, $inc: { pendingSize: 1 }}, function(err){
+            NotificationsReference.update({ "id" : parseInt(userId)}, { $push: { pending: pendingNotification}, $inc: { unRead : 1 , pendingSize: 1 }}, function(err){
                 if(err){
                     callback("Error in pushing not to found user. User:" + result.members[i]);
                 }
@@ -264,10 +264,8 @@ var declinePendingFriendship = function(userId, requesterId, callback){
 }
 
 
-
-
 var sendNotificationToCellUsers = function(cellId, notification, callback){
-    console.log('in not for users');
+    //console.log('in not for users');
     CellDetails.findOne({_id: cellId}, function(err, result){
         if(err || null){
             console.log(result + " - " + err);
@@ -277,11 +275,13 @@ var sendNotificationToCellUsers = function(cellId, notification, callback){
         
             for(i =0; i < result.members.length; i++){
                 console.log( i  + " user is " + result.members[i]);
-                NotificationsReference.update({ "id" : result.members[i]}, { $push: { pending: notification}, $inc: { unRead : 1 }, $inc: { pendingSize: 1 }}, function(err){
+                NotificationsReference.update({ "id" : result.members[i]}, { $push: { pending: notification}, $inc: { unRead : 1 , pendingSize: 1 }}, function(err){
                     if(err){
+                        console.log('update failed');
                         callback("Error in pushing not to found user. User:" + result.members[i]);
                     }
                     else{ 
+                        console.log('update succes');
                         callback("Success");
                     }
                 });
@@ -391,6 +391,21 @@ var checkIfCellpending = function(cellId, array, callback){
     }
 }
 
+var pushToNotificationLog = function (error){
+    console.log('in push to not log'); 
+    var newError = new Log();
+    newError.notificationError.push(error);
+    newError.save(function(err){
+        if(err) {
+            console.log('Cant save to notification error log'); 
+        }
+        else{
+           
+        }
+    });
+    
+}
+
 // --------------------- Exports  -------------------------------------//
 
 exports.getCellNotifications = getCellNotifications;
@@ -407,3 +422,4 @@ exports.getCellNotifications = getCellNotifications;
 exports.removeCellInviteNotification = removeCellInviteNotification;
 exports.getPendingNotifications = getPendingNotifications;
 exports.removeCellMessage = removeCellMessage;
+exports.pushToNotificationLog = pushToNotificationLog;

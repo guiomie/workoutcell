@@ -88,7 +88,6 @@ module.exports = function(app) {
     });
     
     //Retreive specific workout
-    
     app.get("/event/:year/:month/:userId", function(req, res){
     
     
@@ -315,7 +314,7 @@ module.exports = function(app) {
             message   : getLogedName(req) + ' says: ' + req.params.message + '.', 
             refId     : getLogedId(req),
             refOId    : "",  //cellId
-            date      : new Date(), 
+            date      : new Date()
         }
         
         notification.sendNotificationToCell(req.params.cellId, newNotification, function(mes){
@@ -330,7 +329,7 @@ module.exports = function(app) {
                     message   : getLogedName(req) + ' posted a message', //Name of person
                     refId     : req.params.cellId,
                     refOId    : getLogedId(req),  //cellId
-                    date      : new Date(), 
+                    date      : new Date() 
                 }
 
                 notification.sendNotificationToCellUsers(req.params.cellId, newNotification, function(res){
@@ -346,8 +345,7 @@ module.exports = function(app) {
     
     //Returns the users friend list, an array with their Facebook Ids
     app.get("/cell/friends/:userId", function(req,res){
-        
-        
+ 
         mongooseLogic.getFriendList(req.params.userId, function(mes){
             if(mes === "Error"){
                 res.json({ success: false, message:'Failed to find List.'});  

@@ -31,11 +31,14 @@ var updateCalendar;
 var addIntervallInput;
 
 $(document).ready(function(){
-        
-        
-        
-        $('#scrollbar1').tinyscrollbar();
 
+        $('#scrollbar1').tinyscrollbar();
+        
+        //----Jcalendar initialisation ----------------------//
+        //
+        //
+        //--------------------------------------------------//
+        
 		$('#fullcalendar').fullCalendar({
 			// put your options and callbacks here
 			height: 600,
@@ -80,81 +83,22 @@ $(document).ready(function(){
                 $('#drophere').hide();
             }
 		});
-        
-        
-        //Unread notifications
-        
+
+        //--------------------------------------------------------
+        //      Rounded corner initialisation
+        //--------------------------------------------------------
         
 		$('#mainContent').corner();
 		$('#xfbmlPic').corner();
         $('#cellMessageInput').corner("5px");
-
-        $("#swapIntensity").click(function(){
-            
-            if( $("#targetType").text() === "%"){
-                document.getElementById('targetType').innerHTML = "watt";
-                $( "#sliderIntensity" ).slider({min: 0, max: 600, step: 10 });
-            }
-            else if($("#targetType").text() === "watt"){
-                document.getElementById('targetType').innerHTML = "bpm";
-                $( "#sliderIntensity" ).slider({min: 0, max: 300, step: 5 });
-                
-            }
-            else if($("#targetType").text() === "bpm"){
-                
-                $("#sliderIntensity" ).slider( "destroy" );
-                $("#sliderIntensity" ).slider({ 
-                    //orientation: "vertical",
-                    disabled: true
-                });
-                var maskedZero = "<FONT COLOR=WHITE> 0 </FONT>";
-                document.getElementById('lbl_intensity').innerHTML = "Metric <br> disabled";
-                document.getElementById('targetType').innerHTML = maskedZero;
-    		    document.getElementById('intensityHtml').innerHTML = maskedZero;
-                
-            }
-            else if(document.getElementById('lbl_intensity').innerHTML === "Metric <br> disabled"){
-                
-                $("#sliderIntensity" ).slider( "destroy" );
-                $("#sliderIntensity" ).slider({ 
-                    //orientation: "vertical", 
-                    disabled: false,
-                    range: true, 
-                    step: 5,
-                    min: 0, max: 300, 
-                    values: [30, 60],
-                    slide: function( event, ui ) {  
-
-                        document.getElementById('targetType').innerHTML = "min";
-			            document.getElementById('intensityHtml').innerHTML =Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60))+ "-" + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60));
-                        minSlider = ui.values[0];
-                        maxSlider = ui.values[1];
-                    } 
-                });
-                document.getElementById('lbl_intensity').innerHTML = "Range";
-                document.getElementById('targetType').innerHTML = "min";
-    		    document.getElementById('intensityHtml').innerHTML = Math.floor(30 / 60) + ":" + (30 - (Math.floor(30 / 60) * 60)) + "-" + Math.floor(60 / 60) +":" + (60 - (Math.floor(60 / 60) * 60));
-                
-            }
-            else{ //time intervall
-                document.getElementById('targetType').innerHTML = "%";
-                $("#sliderIntensity" ).slider( "destroy" );
-                $( "#sliderIntensity" ).slider({
-    		        //orientation: "vertical",
-			        range: "min",
-                    step: 5,
-		        	min: 0,
-			        max: 100,
-			        value: 40,
-			        slide: function( event, ui ) {
-				        document.getElementById('intensityHtml').innerHTML = ui.value;
-			        }
-		        });
-                document.getElementById('intensityHtml').innerHTML = 40;
-                document.getElementById('lbl_intensity').innerHTML = "Intensity";
-            }
-            
-        });
+        
+        
+        //--------------------------------------------------------
+        //       Carousel initiation (jcarousel)  
+        //       http://sorgalla.com/projects/jcarousel/
+        //--------------------------------------------------------
+        
+        $('#mycarousel').jcarousel();
         
 		//Date picker is ISO 8601
 		$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
@@ -282,7 +226,6 @@ $(document).ready(function(){
 				} 
 			}
 		});
-
 
 		$( "#sliderIntensity" ).slider({
 			//orientation: "horizontal",
@@ -878,32 +821,13 @@ $(document).ready(function(){
         var refreshDropdown = function(){
          
             getJson(getParcourList, function(data){
-               
                //will populate dropdown with parcour list
                populateDroplist("dropdownMap", data);
                populateDroplist("parcourSelection", data);
                
             });  
         }
-        
-        /*
-        //unelegant way of loading dropdown with latest parcours
-        $("#dropdownMap").mouseover(function() {
-           
-           refreshDropdown();
-           
-        });
-        
-        
-        $("#parcourSelection").mouseover(function() {
-           
-           refreshDropdown();
-           
-        });*/
-    
-
-        
-        
+       
         var timeStringToSeconds = function(string, callback){
             var splittedArray = string.split(":");
             callback((parseInt(splittedArray[0]) * 60) + parseInt(splittedArray[1]));
@@ -1008,7 +932,7 @@ $(document).ready(function(){
          
         $('.cellMessage').live('click',function(){
             var id = $(this).attr('refId');
-           $.getJSON('/cell/details/' + id, function(data) {
+            $.getJSON('/cell/details/' + id, function(data) {
                 if(data.success){
                     if(data.message === 'This cell is private'){
                         UILoadNewState('emptyView');
@@ -1117,9 +1041,11 @@ $(document).ready(function(){
             //clear select
             $('#cellSelection option').each(function(index, option) {
                 $(option).remove();
-                droplistHtml = "<option value='yourself'>Yourself</option>";
-                $(droplistHtml).appendTo("#cellSelection");
             });
+            
+            //Add back basic
+            droplistHtml = "<option value='yourself'>Yourself</option>";
+            $(droplistHtml).appendTo("#cellSelection");
             
             $.getJSON(getAllCell, function(data) {
                 if(data.success){
