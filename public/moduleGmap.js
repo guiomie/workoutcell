@@ -174,7 +174,7 @@ function loadMarkers(arrayLatLng, arrayTitle){
 
     //alert(arrayLatLng + " : " + arrayTitle);
     for(i = 0; i < arrayLatLng.length; i++){
-        var pos = new google.maps.LatLng(arrayLatLng[i].Oa, arrayLatLng[i].Pa);
+        var pos = new google.maps.LatLng(arrayLatLng[i].Ta, arrayLatLng[i].Sa);
         
         var marker = new google.maps.Marker({
             position: pos,

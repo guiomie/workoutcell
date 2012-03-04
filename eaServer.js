@@ -1,6 +1,5 @@
 var fbId= "277924085557007";              // provided by facebook          
 var fbSecret= "6a4c2dbefa84c7ba0d824ef981a2157f";          // provided by facebook
-var fbCallbackAddress= "/signin"; // this could point to your /signin page
 var cookieSecret = "cook";     // enter a random hash for security
 
 var express= require('express');
