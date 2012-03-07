@@ -457,24 +457,32 @@ $(document).ready(function(){
 
         
         
-        addIntervallInput = function(metricType, metricValue, targetType, targetValue, intervallDescription, minSec, maxSec){
+        addIntervallInput = function(metricType, metricValue, targetType, targetValue, intervallDescription, quantity, minSec, maxSec){
             
-            var firstOption = '<select class="metricType" element="0"><option value="m">meters</option><option value="s">seconds</option></select>';
-            var secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%" >%</option><option value="watt">watt</option></select>';
+            var firstOption = '<select class="metricType" element="0"><option value="m">meters</option><option value="s">seconds</option><option value="min">minutes</option></select>';
+            var secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie">calories</option><option value="rpm">rpm</option><option value="kmh">km/h</option><option value="bpm">bpm</option><option value="range">range</option><option value="%" >%</option><option value="watt">watt</option></select>';
             var theMetricValue = metricValue;
             
+            var quantityValue = quantity;
+            
+            if(quantity === ""){
+               quantityValue = 1; 
+            }
             
             
             if(targetType === "m"){
-                firstOption =  '<select class="metricType" element="0"><option value="m" selected="selected">meters</option><option value="s">seconds</option></select>';   
+                firstOption =  '<select class="metricType" element="0"><option value="m" selected="selected">meters</option><option value="s">seconds</option><option value="min">minutes</option></select>';   
+            }
+            if(targetType === "min"){
+                firstOption =  '<select class="metricType" element="0"><option value="m">meters</option><option value="s">seconds</option><option value="min" selected="selected">minutes</option></select>';   
             }
             else{
-                firstOption =  '<select class="metricType" element="0"><option value="m" >meters</option><option value="s" selected="selected">seconds</option></select>';
+                firstOption =  '<select class="metricType" element="0"><option value="m" >meters</option><option value="s" selected="selected">seconds</option><option value="min">minutes</option></select>';
             }
             
             
             if(metricType === "%"){
-                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%" selected="selected">%</option><option value="watt">watt</option></select>'
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie">calories</option><option value="rpm">rpm</option><option value="kmh">km/h</option><option value="bpm">bpm</option><option value="range">range</option><option value="%" selected="selected">%</option><option value="watt">watt</option></select>'
             }
             else if(metricType === "range"){
                 secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range" selected="selected">range</option><option value="%">%</option><option value="watt">watt</option></select>'
@@ -483,19 +491,28 @@ $(document).ready(function(){
                 theMetricValue = minValueHtml + " - " + maxValueHtml + " min";
             }
             else if(metricType === "watt"){
-                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt" selected="selected">watt</option></select>'       
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie">calories</option><option value="rpm">rpm</option><option value="kmh">km/h</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt" selected="selected">watt</option></select>'       
             }
             else if(metricType === "bpm"){
-                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="bpm" selected="selected">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie">calories</option><option value="rpm">rpm</option><option value="kmh">km/h</option><option value="bpm" selected="selected">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+            }
+            else if(metricType === "rpm"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie">calories</option><option value="rpm" selected="selected">rpm</option><option value="kmh">km/h</option><option value="bpm" >bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+            }
+            else if(metricType === "kmh"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie">calories</option><option value="rpm">rpm</option><option value="kmh"  selected="selected">km/h</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+            }
+            else if(metricType === "calorie"){
+                secondOption = '<select class="targetType" element="0"><option value="none">none</option><option value="calorie"  selected="selected">calories</option><option value="rpm">rpm</option><option value="kmh">km/h</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
             }
             else{
-                secondOption = '<select class="targetType" element="0"><option value="none" selected="selected">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
+                //secondOption = '<select class="targetType" element="0"><option value="none" selected="selected">none</option><option value="bpm">bpm</option><option value="range">range</option><option value="%">%</option><option value="watt">watt</option></select>'
             }
 
 
         
-        var html = '<div class="intervallInputElement"><div style="float: left; width: 130px;" class="targetDiv">'+ firstOption +'<input type="text" class="metricValue" size="1" value="' + targetValue +'"></div><div class="metricDiv" style="float: left; width: 180px;">' + 
-                secondOption +'<span class="targetValue">' + theMetricValue + '</span></div><div style="float: left; width: 130px" class="descContainer"> <input type="text" class="intervallDescription" element="0" size="16" value="' + intervallDescription + '"></div><div class="removeIntervallIcon"' + 
+            var html = '<div class="intervallInputElement"><div style="float: left; width: 150px;" class="targetDiv">'+ firstOption +'<input type="text" class="metricValue" size="1" value="' + targetValue +'">&nbsp;<input type="text" class="quantityValue" size="1" value="' + quantityValue +'"></div><div class="metricDiv" style="float: left; width: 180px;">' + 
+                secondOption +'<span class="targetValue">' + theMetricValue + '</span></div><div style="float: left; width: 110px" class="descContainer"> <input type="text" class="intervallDescription" element="0" size="13" value="' + intervallDescription + '"></div><div class="removeIntervallIcon"' + 
                 'style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div><div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;"></div></div>'    
            
             $('#intervallInputContainer').append(html);
@@ -566,6 +583,51 @@ $(document).ready(function(){
                         disabled: false, range: "min",
                         step: 5,
                         min: 0, max: 100, value: 50,
+                        slide: function(event, ui){ 
+                             parent.children('.targetValue').html(ui.value);
+                        },
+                        stop: function(event, ui) { 
+                            $(this).hide();
+                        }
+                     });
+                     parent.children('.targetValue').html(50);
+                     //createQtip(parent);
+                }
+                else if(value === "calorie"){
+                     $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: "min",
+                        step: 50,
+                        min: 0, max: 1200, value: 500,
+                        slide: function(event, ui){ 
+                             parent.children('.targetValue').html(ui.value);
+                        },
+                        stop: function(event, ui) { 
+                            $(this).hide();
+                        }
+                     });
+                     parent.children('.targetValue').html(50);
+                     //createQtip(parent);
+                }
+                else if(value === "rpm"){
+                     $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: "min",
+                        step: 5,
+                        min: 0, max: 120, value: 50,
+                        slide: function(event, ui){ 
+                             parent.children('.targetValue').html(ui.value);
+                        },
+                        stop: function(event, ui) { 
+                            $(this).hide();
+                        }
+                     });
+                     parent.children('.targetValue').html(50);
+                     //createQtip(parent);
+                }
+                else if(value === "kmh"){
+                     $("#sliderIntervallIntensity" ).slider({
+                        disabled: false, range: "min",
+                        step: 5,
+                        min: 0, max: 70, value: 20,
                         slide: function(event, ui){ 
                              parent.children('.targetValue').html(ui.value);
                         },

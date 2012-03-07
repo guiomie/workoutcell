@@ -121,7 +121,8 @@ var singleIntervall = new Schema({
     targetUnit     : String,
     targetValue    : Number,
     intensityUnit  : String,
-    intensityValue : Number, 
+    intensityValue : Number,
+    quantity       : Number,
     intensityRange : [Number], //TIME IN SECONDS
     description    : String
 });

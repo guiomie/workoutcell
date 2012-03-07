@@ -421,8 +421,9 @@ var createIntervallModel = function(callback){
             var intervallObject = {
                 targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
                 targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
+                quantity       : parent.children('.targetDiv').children('.quantityValue').val(),
                 intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
-                intensityValue : "", 
+                intensityValue : "",
                 intensityRange : [parent.children('.metricDiv').children('.targetValue').children('.intervallMin').attr('seconds'), parent.children('.metricDiv').children('.targetValue').children('.intervallMax').attr('seconds')] ,
                 description    : parent.children('.descContainer').children('.intervallDescription').val()
             }
@@ -433,6 +434,7 @@ var createIntervallModel = function(callback){
             var intervallObject = {
                 targetUnit     : parent.children('.targetDiv').children('.metricType').val(),
                 targetValue    : parent.children('.targetDiv').children('.metricValue').val(),
+                quantity       : parent.children('.targetDiv').children('.quantityValue').val(),
                 intensityUnit  : parent.children('.metricDiv').children('.targetType').val(),
                 intensityValue : parent.children('.metricDiv').children('.targetValue').html(), 
                 intensityRange : "",
