@@ -67,7 +67,7 @@ everyauth.facebook
                if (err) return promise.fail(err);   
             }); 
             
-            NotificationsReference.create({ id: id}, function(err, ref){
+            NotificationsReference.create({ id: id, pendingSize: 0, unRead: 0}, function(err, ref){
                if (err) return promise.fail(err);   
             });
             

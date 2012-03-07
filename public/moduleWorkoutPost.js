@@ -177,13 +177,13 @@ var postCellWorkout = function(event) {
 		if(activeAccordion === 1){
 			//updateCalendarData(eventObject);
 			//alert(JSON.stringify(intervall));
-
+            createIntervallModel();
 			eventObject = createEvent(basicStartDate, basicEndDate, false, createTitleCalendar(basicStartDate), "ServerSideCreated", selectedSport);
 
 			workout = {
 			sport       : selectedSport,
 			type        : "intervall",
-			intervalls  : intervall, 
+			intervalls  : applicationVariables.intervallInput, 
 			description : varDescription,
 			cell        : tempCell,
 			parcour     : parcourId,

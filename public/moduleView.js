@@ -293,7 +293,7 @@ function renderDetails(object, callback){
 				}	
 			}
 
-			if(distance.intensity === "0"){
+			if(distance.intensity === 0){
 				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes <br>' + resultHtml ;
 			}else{
 				output = sport + ' of ' + distance.maxValue + ' hour(s) and ' + distance.minValue + ' minutes at an intensity of ' +
@@ -306,18 +306,23 @@ function renderDetails(object, callback){
 		}
 	}
 	else if(type === 'intervall'){
-
+        var quantityHtml = "";
 		for(i = 0; i < intervalls.length; i++){
-
+            
+            if(intervalls[i].quantity > 1){
+                quantityHtml = "<div style='float: left'> &nbsp;&nbsp; X &nbsp;" + intervalls[i].quantity + '</div>';
+            }
+            
 			//Intervall training without any intensity objective, requires special handling
 			if(intervalls[i].intensityUnit === "none"){
 				var resultHtml = "";
 				if(intervallResult.length !== 0){
 					resultHtml =  (intervallResult[i].completed) ? "Completed <br>" : "Not Completed <br>";	
 				}
+                
 
 				output = output + "<div class='intervallUnit' description='" + intervalls[i].description + "' style='height: 20px; cursor: default; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit +
-                     "</div></div><div style='font-size: 10px; background-color: #e2f1d5;'>" + resultHtml + "</div>";
+                     "</div>" + quantityHtml + "</div><div style='font-size: 10px; background-color: #e2f1d5;'>" + resultHtml + "</div>";
 
 
 			} //Intervall training with a range, requires special handling
@@ -331,7 +336,7 @@ function renderDetails(object, callback){
 
 				var rangeHtml =   " from <span id='unitSeconds'>" + intervalls[i].intensityRange[0] + "</span> s to " + "<span id='unitSeconds'>" + intervalls[i].intensityRange[1] + "</span> s";
 				output = output + "<div class='intervallUnit' description='" + intervalls[i].description + "' style='height: 20px; cursor: default; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + rangeHtml + 
-                    "</div></div><div style='font-size: 10px; background-color: #e2f1d5;'>" +	resultHtml + "</div>";
+                    "</div>" + quantityHtml + "</div><div style='font-size: 10px; background-color: #e2f1d5;'>" +	resultHtml + "</div>";
 			}
 			else{
 
@@ -343,7 +348,7 @@ function renderDetails(object, callback){
 
 				output = output + "<div class='intervallUnit' description='" + intervalls[i].description + "' style='height: 20px;  cursor: default; font-size: 12px;'><div style='float: left'>" + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + ' at ' + 
 					intervalls[i].intensityValue + '&nbsp;' + intervalls[i].intensityUnit + 
-                    "</div></div><div style='font-size: 10px; background-color: #e2f1d5;'>"+ resultHtml + "</div>";		
+                    "</div>" + quantityHtml + "</div><div style='font-size: 10px; background-color: #e2f1d5;'>"+ resultHtml + "</div>";		
 			}  
             
             
@@ -424,7 +429,7 @@ function resultsEditable(object, callback){
 				//totalDistance = totalDistance + parseInt(intervalls[i].distance);
 
 			} //Intervall training with a range, requires special handling
-			else if(intervalls[i].intensityUnit === "min"){
+			else if(intervalls[i].intensityUnit === "range"){
 				var resultHtml = " - Completed <input type=checkbox id=checkbox"+i+"> in <input type='text' id=text"+i+" value='0' style='width:20; height: 20px;' /> s";
 				var rangeHtml =   " from <span id='unitSeconds'>" + intervalls[i].intensityRange[0] + "</span> s to " + "<span id='unitSeconds'>" + intervalls[i].intensityRange[1] + "</span> s";
 				output = output + '&nbsp;' + intervalls[i].targetValue + '&nbsp;' + intervalls[i].targetUnit + rangeHtml + resultHtml + '<br>';
