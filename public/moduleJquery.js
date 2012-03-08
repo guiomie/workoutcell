@@ -98,7 +98,27 @@ $(document).ready(function(){
         //       http://sorgalla.com/projects/jcarousel/
         //--------------------------------------------------------
         
-        $('#mycarousel').jcarousel();
+        $('#mycarousel').jcarousel({
+            initCallback: initCallbackFunction
+            
+        });
+        
+        function initCallbackFunction(carousel, state) {
+            $('#mycarousel').click(function() {
+                var idx = $(this).data('index');
+                carousel.scroll(idx);
+                return false;
+            });
+        };
+        /*
+         $('#mycarousel').hover(function(){
+            // $('#mycarousel').jcarousel('scroll', $('#mycarousel').index);
+            var idx = $(this).data('index');
+            carousel.scroll(idx);
+         });*/
+        
+        
+        
         
 		//Date picker is ISO 8601
 		$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
