@@ -91,7 +91,8 @@ app.configure(function(){
   app.use(express.session({secret: cookieSecret}));
   app.use(everyauth.middleware());
   app.use(express.favicon());
-  
+  app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
+
 });
 
 require('./routes')(app);
@@ -101,6 +102,8 @@ app.get('/', function(req, res) {
    res.sendfile('./views/welcome.html');
 });
 
-
+app.error(function(err, req, res){
+    console.log(err);
+});
 
 app.listen(process.env.C9_PORT);

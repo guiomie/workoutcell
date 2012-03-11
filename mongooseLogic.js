@@ -457,8 +457,8 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
                             }
                             else{
                                 console.log("in else (2)");
-                                 callback("Success");
-                            }
+                                callback("Success");
+                            } 
                     }); 
                 }
             }); 

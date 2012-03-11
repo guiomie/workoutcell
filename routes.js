@@ -661,14 +661,12 @@ module.exports = function(app) {
     
     //To post/update the results of a workout 
     app.post("/result/:userId/:workoutId", function(req, res){
-        console.log("In route");
-        
-        var receivedJSON = req.body;    
-        
+        console.log("In route: " + JSON.stringify(req.params) + " - body: " + JSON.stringify(req.body));
+
         //Making sure the receive request is valid
-        if(typeof(receivedJSON.type) !== undefined){
+        if(typeof(req.body.type) !== undefined){
         
-            mongooseLogic.saveResults(req.params.workoutId, receivedJSON, req.params.userId, function(message){
+            mongooseLogic.saveResults(req.params.workoutId, req.body, req.params.userId, function(message){
                 if(message === "Success"){
                     console.log("received call back success");
                     res.json({ success: true,  message: 'Result saved.'});    
