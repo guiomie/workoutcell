@@ -376,7 +376,7 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
 
 var saveResults = function(workoutRefId, receivedResult, userId, callback){
     
-    console.log(JSON.stringify(receivedResult + " : " + workoutRefId));
+    console.log("Top:" + JSON.stringify(receivedResult) + " : " + workoutRefId);
     
     if(workoutRefId.toString().length !== 24 ){
         
@@ -422,11 +422,13 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
             });   
         }
         else{ //should be a distance training
+            console.log("in else");
             CardioResult.findOne({ "id" : userId, "distanceResult.workoutId": workoutRefId }, function(err, result){
                 if(err){
                     callback("No Document found: " + err);
                 }
                 else if( result === null){
+                    console.log("in null");
                     var tempResult =  {
                         workoutId    : workoutRefId, 
                         unit         : receivedResult.unit, 
@@ -454,6 +456,7 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
                                 callback("Cant update doc: " + err);
                             }
                             else{
+                                console.log("in else (2)");
                                  callback("Success");
                             }
                     }); 
@@ -505,12 +508,14 @@ var getWorkout = function(workoutRefId, userId, callback){
                                 if(workoutResult.type === "distance"){
                                     //console.log("Found match " + JSON.stringify(element));
                                     workoutResult[parameterName] = element;
-                                    callback(workoutResult);  
+                                    callback(workoutResult);
+                                    
                                 }
                                 else{
                                     workoutResult[parameterName] = element.intervalls;
                                     callback(workoutResult);
                                 } 
+
                             }
                         });
                     
@@ -883,8 +888,9 @@ var createCell = function(creatorId, cellObject, userName, callback){
         name         : cellObject.name,
 	    location     : cellObject.location,
         isPrivate    : cellObject.isPrivate,
+        isCoach      : cellObject.isCoach,
 	    owner        : {id: creatorId, name: userName}, 
-	    members      : [parseInt(creatorId)],
+	    members      : [{fbid: parseInt(creatorId), fullName: userName}],
 	    description  : cellObject.description 
     });
     
@@ -898,7 +904,8 @@ var createCell = function(creatorId, cellObject, userName, callback){
                 name        : cellObject.name,
                 location    : cellObject.location,
                 owner       : {id: creatorId, name: userName}, //creators id
-	            cellDetails : result._id
+	            cellDetails : result._id,
+                isCoach     : cellObject.isCoach
             });
             
             GeneralReference.findOne({ id: creatorId}, function(err, result){
@@ -941,7 +948,7 @@ var getUsersCells = function(userId, callback){
 }
 
 var getCellDetails = function(cellId, callback){
-    
+    console.log("looking for: " + cellId);
     if(cellId.toString().length !== 24 ){
        //console.log("not 24 char");
        callback("Error");
@@ -959,8 +966,32 @@ var getCellDetails = function(cellId, callback){
     }
 }
 
+var isCellCoach = function(cellId, userId, callback){
+    console.log("looking for: " + cellId);
+    if(cellId.toString().length !== 24 ){
+       //console.log("not 24 char");
+       callback("Error");
+    }
+    else{
+        CellDetails.findOne({ _id: cellId }, function(err, result){
+            if(err || result === null){
+                console.log(err);
+                callback("Error");
+            }
+            else{
+                console.log(typeof(userId) + " vs " + typeof(result.owner.id)); 
+                if(userId === result.owner.id.toString() && result.isCoach){
+                    callback(true);
+                }
+                else{
+                    callback(false);    
+                }
+            }
+        });
+    }
+}
 
-var joinCell = function(cellId, userId, callback){
+var joinCell = function(cellId, userId, userName, callback){
     
    if(cellId.toString().length !== 24 && isNumber(parseInt(userId)) ){
        //console.log("not 24 char");
@@ -973,7 +1004,7 @@ var joinCell = function(cellId, userId, callback){
                 callback("Error in finding Cell. Stack: " + err);
             }
             else{
-                resultCellDetails.members.push(userId);
+                resultCellDetails.members.push({fbid: parseInt(userId), fullName: userName});
                 resultCellDetails.save(function(err){
                     if(err){
                         callback("Error in saving cellRef: Stack: " + err);        
@@ -987,8 +1018,9 @@ var joinCell = function(cellId, userId, callback){
                                 var newCellRef = new CellReference({
                                     name        : resultCellDetails.name,
                                     location    : resultCellDetails.location,
-                                    owner       : resultCellDetails.owner, 
-                                    cellDetails : resultCellDetails._id
+                                    owner       : {id: creatorId, name: userName}, 
+                                    cellDetails : resultCellDetails._id,
+                                    isCoach     : resultCellDetails.isCoach
                                 });
                                 result.cells.push(newCellRef);
                                 result.save(function(err){
@@ -1153,7 +1185,7 @@ exports.getUsersCells = getUsersCells;
 exports.joinCell = joinCell;
 exports.quitCell = quitCell;
 
-
+exports.isCellCoach = isCellCoach;
 exports.isUserAFriend = isUserAFriend;
 exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;

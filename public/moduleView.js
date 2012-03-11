@@ -49,6 +49,58 @@ function initView(workoutObject, event) {
         $('#showWhere').hide();
     }
     
+    $.getJSON(isCoach + workoutObject.cell.cellId + "/" + authId , function(data) {
+        if(data.success){
+            if(data.message){
+                $('#viewUsersResult').show();
+                $('#viewUsersResult')
+                    .find('option')
+                    .remove()
+                    .end()
+                ;
+                
+                //Fill dropdown with usrs joinning the workout
+                var droplistHtml = "<option value='none'>View athletes results...</option>" ;
+                $(droplistHtml).appendTo("#viewUsersResult");
+                
+                for(i = 0; i < workoutObject.cell.participants.length; i++){
+                    droplistHtml = "<option value='" +  workoutObject.cell.participants[i].fbid + "'>"+ workoutObject.cell.participants[i].fullName+"</option>";
+                    $(droplistHtml).appendTo("#viewUsersResult");
+                }
+                
+                //Add a listener that will load selected users result
+                $('#viewUsersResult').die();
+                $('#viewUsersResult').live('change', function(){
+                     
+                     var id = $('#viewUsersResult').val(':selected');
+                     if(id === "none"){
+                         
+                     }
+                     else{
+                        $.getJSON(isCoach + workoutObject.cell.cellId + "/" + authId , function(data) {
+                            if(data.success){
+                                
+                            }
+                            else{
+                                //renderDetails(workoutObject, function(output){});
+                            }
+                        
+                        });
+                     }
+                 });
+                
+                
+            }
+            else{
+                $('#viewUsersResult').hide();  
+            }
+        }
+        else{
+        //something wrong
+            $('#viewUsersResult').hide(); 
+        }   
+    });
+    
     //Empty descriptiom, then look if there is one
     document.getElementById('descFbId').innerHTML = "";
     $('#qtipLocationDesc').die();

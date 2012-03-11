@@ -274,7 +274,7 @@ module.exports = function(app) {
             else{
                 
                 if(req.params.response === "yes"){
-                    mongooseLogic.joinCell(req.params.cellId, getLogedId(req), function(mes2){
+                    mongooseLogic.joinCell(req.params.cellId, getLogedId(req), getLogedName(req), function(mes2){
                         if(mes2 !== "Success"){
                             res.json({ success: false, message:'Failed to find join Cell.'});  
                         }
@@ -376,7 +376,7 @@ module.exports = function(app) {
      
      app.get("/cell/join/:cellId", function(req,res){
         
-        mongooseLogic.joinCell(req.params.cellId, getLogedId(req), function(mes){
+        mongooseLogic.joinCell(req.params.cellId, getLogedId(req), getLogedName(req), function(mes){
             if(mes !== "Success"){
                 res.json({ success: false, message:'Failed to find join Cell.'});  
             }
@@ -423,8 +423,9 @@ module.exports = function(app) {
             else{
                 if(mes.isPrivate){
                     for(i=0; i < mes.members.length; i++){
-                        //console.log(typeof(getLogedId(req)) + " vs " + typeof(mes.members[i]));
-                        if(parseInt(getLogedId(req)) === mes.members[i]){
+                        //console.log(typeof(getLogedId(req)) + " vs " + typeof(mes.members[i].fbid));
+                        //console.log(getLogedId(req) + " vs " + mes.members[i].fbid);
+                        if(parseInt(getLogedId(req)) === parseInt(mes.members[i].fbid)){
                            res.json({ success: true, message: mes});
                            break;
                         }
@@ -441,6 +442,20 @@ module.exports = function(app) {
                 }
             } 
         });
+    });
+    
+    
+    app.get("/cell/coach/:cellId/:userId",  function(req, res){
+        
+        mongooseLogic.isCellCoach(req.params.cellId, req.params.userId, function(mes){
+           if(mes === true || mes === false){
+               res.json({ success: true, message: mes});
+           }
+           else{
+               res.json({ success: false, message: "No such cell or user."});
+           }
+
+        });      
     });
     
     
@@ -646,14 +661,16 @@ module.exports = function(app) {
     
     //To post/update the results of a workout 
     app.post("/result/:userId/:workoutId", function(req, res){
+        console.log("In route");
         
         var receivedJSON = req.body;    
-    
+        
         //Making sure the receive request is valid
         if(typeof(receivedJSON.type) !== undefined){
         
             mongooseLogic.saveResults(req.params.workoutId, receivedJSON, req.params.userId, function(message){
                 if(message === "Success"){
+                    console.log("received call back success");
                     res.json({ success: true,  message: 'Result saved.'});    
                 }
                 else{

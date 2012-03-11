@@ -204,6 +204,7 @@
         <option value="Ottawa, Ontario">Ottawa, Ontario</option>	
         <option value="Gatineau, Québec">Gatineau, Québec</option>
 	</select><br>
+    Coaching cell:  <input type="checkbox" id="isCellCoach" /> <br>
     On invite only: <input type="checkbox" id="isCellOnInvite" /> <br><br>
     Description <br>
     <textarea rows='5' cols='50' id='cellDescription'>Enter a description of the cell</textarea>
@@ -211,8 +212,8 @@
      <div class="ui-widget" style="width: 315px; ">
     	<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
 			<p><span class="ui-icon ui-icon-info" style="margin-right: .3em; float: left;"></span>
-			<strong>On invite only</strong><br><br> Checking "On invite only" will make your cell private. You will need to send invitation(s) (accessible in the cells main page) to any 
-            user that you wish to grant access.</p>
+			<strong>On invite only & Coach cells</strong><br><br> Checking "On invite only" will make your cell private. You will need to send invitation(s) (accessible in the cells main page) to any 
+            user that you wish to grant access. <br><br> Checking "Coaching cell" will make you the coach of this cell, and you will be able to see your cells athletes results.</p>
 		</div>
 	</div>
 
@@ -348,7 +349,10 @@
     <div id="basicInfo" style="font-size: 15px;">
 	
 		<ul id="icons" class="ui-widget ui-helper-clearfix">
-			<div id="viewDate" style="font-family: impact; font-size: 20px; float:left;"> </div>
+			<div id="viewDate" style="font-family: impact; font-size: 20px; float:left; "> </div>
+            <div style="float:left;">  
+                <select id="viewUsersResult" style='font-size: 10px; width: 150px; margin-top: 8px; margin-left: 10px;'> <option>View athletes results...</option> </select>
+            </div>
 			<li class="ui-state-default ui-corner-all" title="View your cell" id="showCell" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
 			<!--<li class="ui-state-default ui-corner-all" title="View your rating" id="showRating" style="float: right;"><span class="ui-icon ui-icon-star"></span></li>-->
             <li class="ui-state-default ui-corner-all" id="showTime" style="float: right;"><span class="ui-icon ui-icon-clock" id="iconShowTime"></span></li>

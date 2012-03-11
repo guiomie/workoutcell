@@ -27,6 +27,7 @@ var resetNotificationCount = "/notification/unread/reset";
 var postCellComment = "/notification/cell/message";
 var inviteToCell = "/notification/invitetocell/" ; //:cellId/:cellName/
 var deleteCellMessage = "/cell/notification/remove/"; //:cellid/:notificationid
+var isCoach = "/cell/coach/"; //:cellId/:userId
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -53,4 +54,5 @@ var initGlobalVar = function(){
     postCellComment = "/notification/cell/message";
     inviteToCell = "/notification/invitetocell/" ;
     deleteCellMessage = "/cell/notification/remove/";
+    isCoach = "/cell/coach/";
 }

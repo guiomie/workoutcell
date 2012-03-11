@@ -273,12 +273,7 @@ var initCellView = function(object){
             });
         });
         
-    }
-    
-    
-    
-    
-   
+    } 
    
 }
 
@@ -331,11 +326,11 @@ var renderCellMemberList = function(arrayResult){
        document.getElementById('cellToggleName').innerHTML = 'Join cell';
        for(i = 0; i < arrayResult.length; i++){
 
-          if(arrayResult[i].toString() == authId){
+          if(arrayResult[i].fbid.toString() == authId){
               document.getElementById('cellToggleName').innerHTML = 'Quit cell';
           }
 
-          var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i].fbid + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
           overallHtml = overallHtml + pictureTag + '</span>';
        }
        document.getElementById('cellMemberList').innerHTML = overallHtml;
@@ -344,7 +339,7 @@ var renderCellMemberList = function(arrayResult){
                 content: {
                     text: 'Loading data...',
                     ajax: {
-                        url: "/user/snippet/" + arrayResult[i]
+                        url: "/user/snippet/" + arrayResult[i].fbid
                     }
                 },
                 show: {

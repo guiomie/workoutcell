@@ -18,6 +18,7 @@ var applicationVariables = {
     calendarFirstLoad   : true,
     calendarMode        : "user", //or cell
     currentCell         : "none",
+    coachMode           : false,
     droppedWorkoutId    : "",
     timezone            : new Date().getTimezoneOffset()/60,
     feedPage            : 2,
@@ -225,7 +226,7 @@ $(document).ready(function(){
         $('#createCellDialog').dialog({
     		autoOpen: false,
 			width  : 400,
-            height : 400,
+            height : 500,
             resizable: false,
             draggable: false,
             modal: true,
@@ -937,7 +938,8 @@ $(document).ready(function(){
                 name         : $("input[type=text][id=cellName]").val(),
                 location     : $("#cellLocationSelect").val(),
 	            description  : $("#cellDescription").val(),
-                isPrivate    : $('#isCellOnInvite').is(':checked')
+                isPrivate    : $('#isCellOnInvite').is(':checked'),
+                isCoach      : $('#isCellCoach').is(':checked')
             }
             return object;
             
@@ -976,6 +978,15 @@ $(document).ready(function(){
                         UILoadNewState('emptyView');
                         document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
                     }else{
+                        //Set the users profile to coach mode, so we can display a custom coach UI
+                        //alert(data.message.owner.id + " vs " + data.message.isCoach);
+                        //alert(typeof(data.message.owner.id) + " vs " + typeof(authId));
+                        if(data.message.owner.id.toString() === authId && data.message.isCoach){
+                            applicationVariables.coachMode = true;
+                        }
+                        else{
+                            applicationVariables.coachMode = false;
+                        }
                         applicationVariables.calendarMode = "cell";
                         applicationVariables.currentCell = id;
                         initCellView(data.message);
@@ -998,6 +1009,13 @@ $(document).ready(function(){
                         UILoadNewState('emptyView');
                         document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
                     }else{
+                        //Set the users profile to coach mode, so we can display a custom coach UI
+                        if(data.message.owner.id.toString() === authId && data.message.isCoach){
+                            applicationVariables.coachMode = true;
+                        }
+                        else{
+                            applicationVariables.coachMode = false;
+                        }
                         applicationVariables.calendarMode = "cell";
                         applicationVariables.currentCell = id;
                         initCellView(data.message);
@@ -1020,6 +1038,13 @@ $(document).ready(function(){
                         UILoadNewState('emptyView');
                         document.getElementById('emptyView').innerHTML = '<span style="font-family: impact; font-size: 20px;">This cell is invite only. Sorry.</span>';
                     }else{
+                        //Set the users profile to coach mode, so we can display a custom coach UI
+                        if(data.message.owner.id.toString() === authId && data.message.isCoach){
+                            applicationVariables.coachMode = true;
+                        }
+                        else{
+                            applicationVariables.coachMode = false;
+                        }
                         applicationVariables.calendarMode = "cell";
                         applicationVariables.currentCell = id;
                         initCellView(data.message);
@@ -1117,6 +1142,12 @@ $(document).ready(function(){
                 moveUI('View');
             });
         });*/
+        
+        //!!!!--------------------------------------------------------------
+        //
+        //    Dropdown logic
+        //
+        //!!!!--------------------------------------------------------------
         
         var populateCellDropList = function(){
             
