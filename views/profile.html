@@ -1,0 +1,243 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+<title> Your Workoutcell Profile</title>
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script>
+  authToken = "empty";
+  authId = "empty";
+  userObject = "empty";
+  
+  FB.init({
+    appId  : '277924085557007',
+    status : true, // check login status
+    cookie : true, // enable cookies to allow the server to access the session
+    xfbml  : true, // parse XFBML
+    channelURL : 'http://WWW.MYDOMAIN.COM/channel.html', // channel.html file
+    oauth  : true // enable OAuth 2.0
+  });
+  
+  FB.getLoginStatus(function(response) {
+    if (response.authResponse) {
+      authToken = response.authResponse.accessToken;
+      authId = response.authResponse.userID;
+      initPage();
+    }
+  });
+
+</script>
+</head>
+
+<body>
+
+<div id="header">
+
+</div>
+
+<br>
+<a href="/logout"> Logout </a>
+
+<div id="searchResult">
+Content 
+</div>
+<a href="/profile"> Test Everyauth </a>
+<script type="text/javascript">
+  function initPage(){
+    
+    FB.api('/me', function(response) {
+    
+    userObject = response;
+    var pictureTag = '<fb:profile-pic uid="' + authId + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb"></fb:profile-pic>'; 
+    var name = userObject.name;
+    htmlText = pictureTag + ' ' + name + ', welcome to your Workoutcell profile';
+    document.getElementById('header').innerHTML =  htmlText ;
+    FB.XFBML.parse(document.getElementById('header'));
+    
+    });
+  } 
+</script>
+    <br>
+    <a href="/view/index"> Switch to Training planner </a><br>
+
+
+
+</div>
+     <br>
+ ----------------------------- POST Testing Area ---------------------------<br>
+Post a map with coordinates: /parcour/100000268779394/map1/5 <br>
+Post workout:    /workout/:userId  |  ex: /workout/100000268779394  <br>
+Post result:  /result/:userId/:workoutId  | ex: /result/100000268779394/4edbdc71b579ae691500005d <br>
+Post a cell:  /cell/create/:userId  | ex: /cell/create/100000268779394   <br>
+Post a workout to a cell: /workout/cell/:cellId/:userId |    <br>
+Post Event to join the workout: /workout/cell/join/<br>
+Post cell invite: /notification/invitetocell/:cellId/:cellName/ <br>
+<form action="/" id="requestForm">
+
+httpPost url: <input type="text" name="url" placeholder="" /> <br>
+<!--{"name":"map1","markerArray":[{"gm_accessors_":{},"position":{"Ja":45.50824125166435,"Ka":-75.64351905822753},"title":"0 meters","map":null,"b":null,"__gm_id":80,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50860215481875,"Ka":-75.64077247619628},"title":"218 meters","map":null,"b":null,"__gm_id":85,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50866230511951,"Ka":-75.63836921691893},"title":"406 meters","map":null,"b":null,"__gm_id":91,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50818110091366,"Ka":-75.63716758728026},"title":"514 meters","map":null,"b":null,"__gm_id":97,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50703822443733,"Ka":-75.6363092803955},"title":"657 meters","map":null,"b":null,"__gm_id":103,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50162428373774,"Ka":-75.63545097351073},"title":"1264 meters","map":null,"b":null,"__gm_id":109,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50126333584556,"Ka":-75.6377684020996},"title":"1449 meters","map":null,"b":null,"__gm_id":116,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50096254416777,"Ka":-75.64145912170409},"title":"1739 meters","map":null,"b":null,"__gm_id":123,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50066175088299,"Ka":-75.64266075134276},"title":"1838 meters","map":null,"b":null,"__gm_id":130,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.49296089565289,"Ka":-75.64111579895018},"title":"2704 meters","map":null,"b":null,"__gm_id":137,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.49211855071899,"Ka":-75.65210212707518},"title":"3567 meters","map":null,"b":null,"__gm_id":144,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50060159203321,"Ka":-75.6531320953369},"title":"4514 meters","map":null,"b":null,"__gm_id":154,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.503970388632474,"Ka":-75.6534754180908},"title":"4890 meters","map":null,"b":null,"__gm_id":163,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50595547794982,"Ka":-75.65244544982909},"title":"5125 meters","map":null,"b":null,"__gm_id":172,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.507699892593976,"Ka":-75.65124382019042},"title":"5341 meters","map":null,"b":null,"__gm_id":187,"anchorPoint":{"x":0,"y":-34}},{"gm_accessors_":{},"position":{"Ja":45.50794049726804,"Ka":-75.6447206878662},"title":"5851 meters","map":null,"b":null,"__gm_id":198,"anchorPoint":{"x":0,"y":-34}}],"distance":"5.85061","pathArray":[{"Ja":45.50824125166435,"Ka":-75.64351905822753},{"Ja":45.50860215481875,"Ka":-75.64077247619628},{"Ja":45.50866230511951,"Ka":-75.63836921691893},{"Ja":45.50818110091366,"Ka":-75.63716758728026},{"Ja":45.50703822443733,"Ka":-75.6363092803955},{"Ja":45.50162428373774,"Ka":-75.63545097351073},{"Ja":45.50126333584556,"Ka":-75.6377684020996},{"Ja":45.50096254416777,"Ka":-75.64145912170409},{"Ja":45.50066175088299,"Ka":-75.64266075134276},{"Ja":45.49296089565289,"Ka":-75.64111579895018},{"Ja":45.49211855071899,"Ka":-75.65210212707518},{"Ja":45.50060159203321,"Ka":-75.6531320953369},{"Ja":45.503970388632474,"Ka":-75.6534754180908},{"Ja":45.50595547794982,"Ka":-75.65244544982909},{"Ja":45.507699892593976,"Ka":-75.65124382019042},{"Ja":45.50794049726804,"Ka":-75.6447206878662}]}
+{"workout":{"sport":"Swim","type":"distance","distance":{"targetType":"Time","minValue":"35","maxValue":"1","intensity":"0"},"description":"none","cell":[],"parcour":{"id":"4e962d381c49265e4d000020","name":"Pres de la maison - 5km"},"results":"not entered"},"event":{"title":"Swim","allDay":false,"start":"2011-11-10T13:00:00.000Z","end":"2011-11-10T15:00:00.000Z","url":"ServerSideCreated","color":"#99CCFF"}}
+    {"type" : "intervall","intervallResult" :[{"type":"s","value":"34","completed":true},{"type":"s","value":"60","completed":false},{"type":"m","value":"34","completed":true},{"type":"m","value":"200","completed":false},{"type":"s","value":"0","completed":false},{"type":"s","value":"23","completed":true}]}
+
+-->
+    <textarea rows="6" cols="30" id="json">
+   
+</textarea><br>
+
+<input type="submit" value="Submit request" /><br>
+
+</form>
+
+<div id="result"></div>
+
+<script>
+  /* attach a submit handler to the form */
+  $("#requestForm").submit(function(event) {
+
+    /* stop form from submitting normally */
+    event.preventDefault(); 
+    document.getElementById("result").innerHTML = "process submitted...waitting for response ";
+    var $form = $( this );
+
+    $.ajax({
+    url: $form.find( 'input[name="url"]' ).val(),
+    type: "POST",
+    dataType: "json",
+    data: $('#json').val(),
+    contentType: "application/json",
+    cache: false,
+    timeout: 5000,
+    complete: function() {
+      //called when complete
+      document.getElementById("result").innerHTML = "process complete ";
+    },
+
+    success: function(data) {
+      
+     document.getElementById("result").innerHTML = 'process sucess: ' + data;
+   },
+
+    error: function() {
+     document.getElementById("result").innerHTML = 'process error';
+    },
+  });
+    
+    
+  });
+</script>
+
+
+ ----------------------------- Get Testing Area ---------------------------<br>
+/parcour/list/:userId | ex: /parcour/list/100000268779394 <br>
+/parcour/:parcourObjectId | ex: /parcour/4e962d381c49265e4d000020 <br>
+/event/:year/:month/:userId | ex: /event/2011/11/100000268779394 <br>
+/workout/:workoutid   |  ex: /workout/4eb3218b32bac49d3d000002 <br>
+/workout/delete/:userid/:year/:month/:workoutid/:eventid   | ex: /workout/delete/100000268779394/2011/12/4ee693b3554e61821700000f/4ee693b3554e618217000016    <br>
+/search/fullname/:first/:last     | ex: /search/fullname/Elizabeth/Lisky <br>
+(*deprecated*) /notification/queu/:userId/:min/:max  | ex: /notification/queu/100000268779394/0/10 <br>
+/notification/queu/:userId/:page  | ex: /notification/queu/100000268779394/1 <br>
+/notification/:userId/:type/:target   | ex: /notification/100000268779394/joinMasterCell/100000268779395   <br>
+/notification/joinMasterCell/:userId/:requester/:action  | ex: /notification/joinMasterCell/100000268779394/100000268779395/accept (or decline) <br>
+/cell/friends/:userId/  | ex:  /cell/friends/100000268779394     <br>
+/user/snippet/:userId   | ex:  /user/snippet/100003279348506     <br>
+/user/isFriend/:userId/:target  | ex: /user/isFriend/100000268779394/588395069 <br>
+/cell/all/:userId    |  ex: /cell/all/100000268779394  <br>
+/cell/details/:cellId   | ex: /cell/details/   <br>
+/cell/event/:year/:month/:cellId   | ex: /cell/event/2012/1/4f0a4067864c2ed55c00003c <br>
+/cell/join/:cellId/ <br>
+/cell/quit/:cellId/ <br>
+/parcour/delete/:parcourId <br>
+/notification/unread <br>
+/notification/unread/reset <br>
+(*deprecated*) /notifications/cell/:cellId/:from/:to | ex: /notifications/cell/4f2214d49513a0474a00003d/0/10 <br> 
+/notification/cell/message/:cellId/:message  | ex: /notification/cell/message/:cellId/:message   <br>
+/notification/cell/invite/:cellId/:response   | ex: /notification/cell/invite/:cellId/:response <br>
+/cell/notification/remove/:cellid/:notificationid  |  /cell/notification/remove/4f3065dc66cf0ef03f00004d/4f4fd7deb9ab7034520001c2<br>
+/cell/coach/:cellId/:userId   | ex: /cell/coach/:cellId/100000268779394
+
+httpGet url: <input type="text" id="getUrl" placeholder="" /> <br>
+
+<input type="submit" value="Get request" id="submitGet" /><br>
+<select id="dropdown" style='width: 120px;'> <option value="value">Click to load...</option> <option value="value2">Click to load 2...</option></select> <br>
+<div id="command">  </div>
+<div id="getResult">  </div>
+
+<script>
+    
+$('#submitGet').click(function() {
+    
+    document.getElementById("command").innerHTML = "Requested: " + $("input[id='getUrl']").attr("value");
+    document.getElementById("getResult").innerHTML = "Processing Request";
+    getJson();
+
+});
+
+
+$("#dropdown").change(function() { 
+
+    alert($(this).val());
+
+}); 
+
+        
+//Requires Jquery
+var populateDroplist = function(dropdownName, string, callback){
+  var droplistHtml = "<option> </option>" ;
+  var array = {};
+  var obj = jQuery.parseJSON(string);
+   $(droplistHtml).appendTo("#" + dropdownName);
+  
+  for(i = 0; i < obj.length;i++){
+     droplistHtml = "<option value='" +  obj[i].realId + "'>"+ obj[i].name+ "-" + obj[i].distance+"km </option>";
+     $(droplistHtml).appendTo("#" + dropdownName);
+  }
+  callback(droplistHtml);
+  
+}
+
+var getParcourJson = function(objectId, callback){
+  var theData;
+  var url = "/parcour/" + objectId ; 
+        $.get(url, function(data){
+         theData = data;   
+    }, "json");
+    
+  callback(theData);    
+}
+
+var getJson = function(){
+  var donnee;
+  $.ajax({
+    url: $("input[id='getUrl']").attr("value"),
+    type: "GET",
+    dataType: "json",
+    //data: $('#json').val(),
+    contentType: "application/json",
+    cache: false,
+    timeout: 5000,
+    complete: function() {
+      //called when complete
+      document.getElementById("getResult").innerHTML = JSON.stringify(donnee);
+    },
+
+    success: function(data) {
+     donnee = data; 
+     document.getElementById("getResult").innerHTML = JSON.stringify(donnee);
+   },
+
+    error: function() {
+     document.getElementById("getResult").innerHTML = "Erreur";
+    },
+  });
+
+}
+
+</script>
+
+
+
+
+</body>
+
+</html>

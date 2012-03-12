@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+<title> Facebook SDK testing page </title>
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script>
+  authToken = "empty";
+  authId = "empty";
+  
+  FB.init({
+    appId  : '277924085557007',
+    status : true, // check login status
+    cookie : true, // enable cookies to allow the server to access the session
+    xfbml  : true, // parse XFBML
+    channelURL : 'http://WWW.MYDOMAIN.COM/channel.html', // channel.html file
+    oauth  : true // enable OAuth 2.0
+  });
+  
+  FB.getLoginStatus(function(response) {
+    if (response.authResponse) {
+      authToken = response.authResponse.accessToken;
+      authId = response.authResponse.userID;
+    }
+  });
+
+</script>
+</head>
+
+<body>
+
+
+Search for a profile: <input type="text" id="name" /><br />
+<input type="button" onClick="searchName();" value="Search" />
+
+
+<div id="searchResult">
+Content 
+</div>
+
+<script type="text/javascript">  
+
+</script>
+
+
+<script type="text/javascript">
+  function searchName(){
+    
+    var tvalue = document.getElementById("name").value;
+    var urlCall = '/search?q=' + tvalue + '&type=user&access_token=' + authToken;
+    var htmlText = '<table>';
+    
+    FB.api(urlCall, function(response) {
+     
+    for (var j = 0; j < response.data.length; j++) {
+    
+    var pictureTag = '<fb:profile-pic uid="' + response.data[j].id + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb"></fb:profile-pic>'; 
+    var name = response.data[j].name;
+    var scratchUrl = '/addFbScratch/' + authId + '/' + response.data[j].id + '/' + response.data[j].name;
+    htmlText = htmlText + '<tr><td>' + pictureTag + '</td><td valign="middle">' + 
+    name + '</td><td valign="middle"><a href="' + scratchUrl + '">Scratch on trophy</a></td></tr>';
+    
+    }
+      
+    document.getElementById('searchResult').innerHTML =  htmlText + '</table>';
+    FB.XFBML.parse(document.getElementById('searchResult'));
+    });  
+  }
+    
+</script>
+
+
+</body>
+
+</html>

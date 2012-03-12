@@ -1,0 +1,574 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+<title>WorkoutCell - Train properly, train socially!</title>
+<link type="text/css" href="/css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" /> 
+<link rel="stylesheet" type="text/css" href="/css/styleCarousel.css" />
+<link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
+<link type="text/css" rel="stylesheet" href="/css/jquery.qtip.min.css" />
+
+<script type="text/javascript" src="/js/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+
+<!--Jquery specific plugin downloaded -->
+<script src='/jquery.corner.js'></script>
+<script src='/timepicker.js'></script>
+<script src='/notifier.js'></script>
+<script src='/jquery.timeago.js'></script>
+<script src='/jquery.tinyscrollbar.min.js'></script>
+<script src='/jquery.qtip.js'></script>
+<script src='/jquery.jcarousel.js'></script>
+
+<!-- Homemade plugins -->
+<script src='/moduleJquery.js'></script>
+<script src='/globalVar.js'></script>
+<script src='/moduleFacebook.js'></script>
+<script src='/moduleGmap.js'></script>
+<script src='/restUrl.js'></script>
+<script src='/moduleView.js'></script>
+<script src='/moduleSocial.js'></script>
+<script src='/moduleHeaderMenu.js'></script>
+<script src='/moduleUI.js'></script>
+<script src='/moduleWorkoutPost.js'></script>
+
+<style type="text/css">
+			/*demo page css
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}*/
+            body 
+            { 
+            font: 62.5% "Trebuchet MS", sans-serif; 
+             margin: 0; 
+             padding: 0; 
+             padding-top: 10px;
+             text-align: left; 
+            } 
+            #centered
+            { 
+             width: 75%; 
+             text-align: left;
+             border: 0px; 
+             padding: 0;  
+             margin: 0 auto; 
+            } 
+			.demoHeaders { margin-top: 2em; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			ul#icons {margin: 0; padding: 0;}
+			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#icons span.ui-icon {float: left; margin: 0 4px;}
+			#left { float: left; }
+			#right, #middle { float: right;}
+			/* Links */
+			a:link {color: #FFFFFF; text-decoration: none; }
+			a:active {color: #FFFFFF; text-decoration: none; }
+			a:visited {color: #FFFFFF; text-decoration: none; }
+			a:hover {color: black; text-decoration: none; }
+			
+			/* Timepicker CSS */
+			.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+			.ui-timepicker-div dl{ text-align: left; }
+			.ui-timepicker-div dl dt{ height: 25px; }
+			.ui-timepicker-div dl dd{ margin: -25px 10px 10px 65px; }
+			.ui-timepicker-div td { font-size: 90%; }
+            
+            /* For the horizontal scroll */
+            #scrollbar1 { width: 175px; clear: both; margin: 20px 0 10px; }
+            #scrollbar1 .viewport { width: 300px; height: 170px; overflow: hidden; position: relative; }
+            #scrollbar1 .overview { list-style: none; position: absolute; left: 0; top: 0; }
+            #scrollbar1 .thumb .end,
+            #scrollbar1 .thumb { background-color: #8FBF89; }
+            #scrollbar1 .scrollbar { position: relative; float: right; width: 7px; }
+            #scrollbar1 .track { background-color: #DEDEDE; height: 100%; width:5px; position: relative; padding: 0 1px; }
+            #scrollbar1 .thumb { height: 20px; width: 5px; cursor: pointer; overflow: hidden; position: absolute; top: 0; }
+            #scrollbar1 .thumb .end { overflow: hidden; height: 5px; width: 5px; }
+            #scrollbar1 .disable{ display: none; }
+            
+            #singlenotification:hover { background-color: #e2f1d5;}
+            .btn_viewProfile:hover  { background-color: #e2f1d5; cursor: pointer;}
+            .cellLink:hover  { background-color: #e2f1d5; cursor: pointer;}
+            .cellMessage:hover  { background-color: #e2f1d5; cursor: pointer;}
+            .cellNotificationMessage:hover  { background-color: #e2f1d5; cursor: pointer;}
+            .highLight:hover { background-color: #e2f1d5; cursor: pointer;}
+            .metricDiv { background-color: #e2f1d5; cursor: pointer;}
+            .metricDiv:hover { background-color: #DEDEDE; cursor: pointer;}
+            .intervallUnit:hover { background-color: #DEDEDE; }
+            
+            #drophere {
+            background-color: rgba(0,0,0,.5);
+            margin:100px auto;
+            font-size: 15px;
+            color: white;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            height: auto;
+            font-weight: bold;
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 1000 !important;
+            }
+            
+            .ui-icon-close:hover { background-color: #e2f1d5; cursor: pointer;}
+            .ui-icon-closethick:hover { background-color: #e2f1d5; cursor: pointer;}
+            .ui-icon-check:hover { background-color: #e2f1d5; cursor: pointer;}
+            
+</style>
+
+</head>
+
+<body background="/background/pattern.png" style="margin-top: 2px;">
+
+<!-- overlys are declared here -->
+<div id="centered">
+
+<div id='header' style="width:1000px; height: 100px;  margin-bottom: 20px; padding-bottom:10px;"> 
+    
+	<a href="viewYourProfile" id="profileLink" style="text-decoration: underline;"></a><br>
+	<div>
+        
+        <div id="logo" style="float: left; width:100px; height: 100px; background-image:url('../img/logo.png');"></div>
+		
+        <div id="facebookProfile" style="float: left; width:300px; height: 120px; position:relative; margin-top: 10px; margin-left: 10px;">
+	        
+            <div id="xfbmlPic" style="float: left;">  </div>
+                
+            <div style="float: left; margin-left: 10px;">
+                <div id="firstName" style="font-size: 20px; color:#FDF5E6; font-family: impact;"> </div>
+                <div id="lastName" style="font-size: 20px; color:#FDF5E6; font-family: impact;"> </div>
+            </div>
+            
+            <div id="navLink" style="position:absolute;bottom:10; padding-bottom: 15px;"> 
+	            <ul id="icons" class="ui-widget ui-helper-clearfix">			
+			        <li class="ui-state-default ui-corner-all" title="Manage your social training" id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Find athletes or coaches" id="goToSearch" style="float: right;"><span class="ui-icon ui-icon-search"></span></li>
+                    <li class="ui-state-default ui-corner-all" title="Manage your maps" id="goToMap" style="float: right;"><span class="ui-icon ui-icon-script"></span></li>
+			        <li class="ui-state-default ui-corner-all" title="Manage your training schedule" id="goToPlanner" style="float: right;"><span class="ui-icon ui-icon-calendar"></span></li>			        
+                </ul>
+		    </div>
+            
+		</div>
+
+		<div id='pub' style="float:right; display: table-cell; ">
+            <ul id="mycarousel" class="jcarousel-skin-tango">
+                <!-- The content goes in here -->
+                 <li>WorkoutCell tips: - You can drag and drop a published workout in the "Create Workout" to use it as a template</li>
+                 <li>WorkoutCell tip: Use the intervall workout template for typical swimming workout.</li>
+                 <li>Please report any bugs at gui.ouellet@gmail.com</li>
+            </ul>
+			<div style="float:right;" > <a href="/logout" style="font-size: medium;">Sign out</a>  </div>
+		</div>
+
+	</div>
+
+</div>
+
+<div id="courseMap" style="display: none;"> 
+    <div id="staticMapPicture"> </div>
+    <div id="mapInformation"> </div>
+</div>
+
+<div class="searchQtip" style="display: none;"> 
+    <input type="text" id="inputSearchUsers" size="16" value="" /><span id="searchIconButton" class="ui-icon ui-icon-search" style="float: right; margin-top: 2px;"></span><br>  
+    <!-- &nbsp; Coach search: <input type="checkbox" id="coachesOnlyCheckBox"/> -->
+</div>
+
+<div id="searchDialog">  No result were found. </div>
+
+<div id='mainContent' style="align: center; width: 1030px; background-color:#FFFFFF; layer-background-color:#FFFFFF; padding-top: 20px; padding-left: 20px; padding-right: 20px; padding-bottom: 20px; height:600px;" > <!-- whole content except for header -->
+
+<!-- Full Calendar load -->
+<div id='fullcalendar'  style="width:1000px; float:left;"></div>
+<!--
+<div id="toolBoxNav" style="float:right; margin-right: 1px;"> 
+		<div id="radio4" style="margin-bottom: 2em;"> 
+			<input type="radio" id="radio41" name="radio" /><label for="radio41">Social</label> 
+			<input type="radio" id="radio42" name="radio" /><label for="radio42">Map</label> 
+			<input type="radio" id="radio43" name="radio" checked="checked" /><label for="radio43">Create</label> 
+		</div>
+</div>-->
+
+<!-- toolpane, contains 3 item that show up 1 at the time 
+ No indent or wouldnt be readable-->
+<div id='leftPane' style="width:210px; float:left; margin-left: 16px; position: relative;"> 
+
+<div id="createCellDialog"> 
+    Name <br>
+    <input type="text" id="cellName" size="15" /> <br>
+    Location<br>
+    <select title="Select Cell Location" id="cellLocationSelect" style='width: 120px;'>
+        <option value="Ottawa, Ontario">Ottawa, Ontario</option>	
+        <option value="Gatineau, Québec">Gatineau, Québec</option>
+	</select><br>
+    Coaching cell:  <input type="checkbox" id="isCellCoach" /> <br>
+    On invite only: <input type="checkbox" id="isCellOnInvite" /> <br><br>
+    Description <br>
+    <textarea rows='5' cols='50' id='cellDescription'>Enter a description of the cell</textarea>
+    
+     <div class="ui-widget" style="width: 315px; ">
+    	<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+			<p><span class="ui-icon ui-icon-info" style="margin-right: .3em; float: left;"></span>
+			<strong>On invite only & Coach cells</strong><br><br> Checking "On invite only" will make your cell private. You will need to send invitation(s) (accessible in the cells main page) to any 
+            user that you wish to grant access. <br><br> Checking "Coaching cell" will make you the coach of this cell, and you will be able to see your cells athletes results.</p>
+		</div>
+	</div>
+
+</div>
+
+<!-- View for a users dashboard panel ex: Notifications, friendlist, celllist -->
+<div id="Social" style="display: none; background: white; width:510px; height:500px; margin-top:2px;">
+
+    <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
+        <div style="height:30px;":>
+        <div style="float: left;">Notifications</div>
+        <div style="float: right; cursor:pointer;"><span id="markRead" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px 5px; margin-right: 10px;"> Mark as seen</span></div>
+        </div>
+        
+        <div id="notificationList" style="height: 350px; font-size: 12px;" >  
+            No notifications
+        </div>
+        <div id="getMoreNews" style="font-size: 12px; cursor:pointer; margin-bottom: 15px;"> More feed ... </div>
+        
+        Your Cells &nbsp;<span style="font-size: 10px; cursor: pointer;" id="createCell">(create a cell) </span>
+        <div id="cellList" style="height: 200px; padding-top: 10px;"> 
+            No Cells
+        </div>
+        
+    </div>
+
+    <div id="socialList" style="float: right; width:160px; font-size: 15px;">  
+        Your friends<div id="friendList" style=""> </div>
+
+    </div>
+
+</div>
+
+<!-- viewing someones profile -->
+<div id="profileView" style="display: none; background: white; width:510px; height:500px; margin-top:2px;">
+
+    <div id="usersProfile" style="float: left; width:350px; height: 450px; font-size: 15px;"> 
+        
+        <div style="height: 150px;">
+        <div id="usersFbPic" style="float: left;"></div>
+        
+        <div id="profileCard" style="float: left;" >
+            <div id="usersInfo">
+                <div id="profileUserName">  </div>
+                <div id="profileUserLocation">  </div>
+                <div id="joindate">  </div>
+            </div>
+        </div>
+        </div>
+        
+        <div>Cells</div>
+        <div id="cellProfileList" style="height: 200px; padding-top: 10px;"> 
+            No Cells
+        </div>
+        
+    </div>
+
+    <div id="socialList" style="float: right; width:160px; font-size: 15px;">  
+        Friends<div id="friendProfileList" style=""> </div>
+
+    </div>
+
+</div>
+
+<div id="emptyView"  style="display: none; background: white; width:510px; height:500px; margin-top:30px;">  
+
+
+</div>
+
+<div id="inviteFriends"> 
+
+    <div id="inviteFriendList" style="height: 250px;"> </div>
+
+    <div class="ui-widget" style="width: 430px; ">
+		<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+			<p><span class="ui-icon ui-icon-info" style="margin-right: .3em; float: left;"></span>
+			<strong>Invite friends in your cell</strong><br><br> 1. Click on one or multiple friends profile picture to select him/them. <br> 2. Click a second time to unselect him. <br> 3. Your friend will receive a notification inviting him to join your cell. He can accept or decline.</p>
+		</div>
+	</div>
+
+</div>
+
+<div id="cellView" style="display: none; background: white; width:510px; height:500px; margin-top:2px;">
+
+    <div id="feed" style="float: left; width:350px; font-size: 15px;"> 
+        
+        <div id="toggleCell" style="float: right; cursor: pointer; height: 22px; "> <span id="cellToggleName" class="ui-state-default ui-corner-all" style="height: 22px; font-size: 12px; padding:0px 5px; margin-right: 10px;"> Join Cell</span> </div>
+        <div id="cellOptionsButton"style="float: right; height: 19px; margin-right: 2px; display: none; cursor:pointer;" class="ui-state-default ui-corner-all">
+            <span class="ui-icon ui-icon-triangle-1-s" style="margin: 0 auto"></span>
+        </div>
+        
+        <div id="viewCellOptionsContent" style="display: none;">
+            <div id="inviteInCell" class="highLight" style="padding-top: 3px;">Invite to Cell</div>
+        </div>
+        
+        <span id="cellTitle" style="font-family: impact; font-size: 20px;">   </span><br>
+         Created by: <span id="cellCreator"> </span><br>
+        <span id="cellLocation" style="font-size: 12px;"> </span><br>
+        <span id="cellInfo" style="font-size: 12px; "> </span><br><br>
+        
+
+        <div id="cellMessageInput" style="background: #C7E5AE; width:320px; height: 26px; float:left; margin-bottom: 8px;">
+            <div style="float: left;"><input  value="Post a comment ..." onfocus="if(this.value=='Post a comment ...'){this.value='';}" onblur="if(this.value==''){this.value='Post a comment ...';}" id='cellCommentInput' style="margin-top: 4px; margin-left: 10px; resize: none; background: #C7E5AE; font-size: 12px;   border: none; width: 270px;"/></div>
+            <div style="float: right;"><span id="postCellComment" class="ui-icon ui-icon-check" style=" margin-top: 4px; margin-right: 4px; margin-left: 4px; cursor:pointer;"></span></div>
+        </div> <br>
+            <!-- <div style="float: right; "><span id="postCellComment" class="ui-state-default ui-corner-all" style="font-size: 12px; padding:1px
+            5px; margin-right: 10px;">Post</span></div> -->
+
+        
+        Recent Activities 
+            <div id="notificationCellList" style="width: 350px; height: 300px; font-size: 12px; margin-top:5px;" >  
+                No notifications
+            </div>
+            <div id="getMoreFeed" style="display: none;"> more... </div>
+
+        
+        
+        
+    </div>
+
+    <div id="cellMemberList" style="float: right; width:160px; font-size: 15px;">  
+        In this cell<div id="friendList" style=""> </div>
+
+    </div>
+
+</div>
+
+<!-- Load the training viewer -->
+<div id="View" style="display: none; background: white; width:510px; height:500px; margin-top:2px;">
+
+<div id="viewLayout" style="width: 500px; float: top;">
+
+    <div id="basicInfo" style="font-size: 15px;">
+	
+		<ul id="icons" class="ui-widget ui-helper-clearfix">
+			<div id="viewDate" style="font-family: impact; font-size: 20px; float:left; "> </div>
+            <div style="float:left;">  
+                <select id="viewUsersResult" style='font-size: 10px; width: 150px; margin-top: 8px; margin-left: 10px;'> <option>View athletes results...</option> </select>
+            </div>
+			<li class="ui-state-default ui-corner-all" title="View your cell" id="showCell" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+			<!--<li class="ui-state-default ui-corner-all" title="View your rating" id="showRating" style="float: right;"><span class="ui-icon ui-icon-star"></span></li>-->
+            <li class="ui-state-default ui-corner-all" id="showTime" style="float: right;"><span class="ui-icon ui-icon-clock" id="iconShowTime"></span></li>
+            <li class="ui-state-default ui-corner-all" id="showWhere" style="float: right;"><span class="ui-icon ui-icon-flag" id="iconShowWhere"></span></li>
+            <li class="ui-state-default ui-corner-all" title="More options!" id="viewOptions" style="float: right; width: 15px;"><span class="ui-icon ui-icon-triangle-1-s" style="margin: 0 auto"></span></li>
+		</ul>
+		
+        <div id="viewOptionsContent" style="display: none;">
+            <!-- <div style="padding-top: 3px;">Share on Facebook</div>
+            <div style="cursor :pointer; padding-top: 3px;">Invite a Cell</div> -->
+            <div id="deleteWorkout" style="cursor: pointer; padding-top: 3px;">Delete this Workout</div>
+            <div id="joinWorkout" style="cursor: pointer; padding-top: 3px; display: none;">Join this Workout</div>
+            <div id="quitWorkout" style="cursor: pointer; padding-top: 3px; display: none;">Quit this Workout</div>
+        </div>
+        
+		<div id="workoutDescription" style="height:60px; margin-top: 15px;">
+            <div id="descFbId" style="width:50px; float:left;"></div>
+            <div id="qtipLocationDesc" style="float:left; height:50px;"></div>   
+        </div>
+        
+        <div>
+		    Planned workout <span id="toggleEdit" style="font-size: 10px;">(Edit results)</span>
+        </div>
+        
+		<div id="typeDetail">   </div>
+
+		<br>Comments
+		<div id="comments">
+			No comments yet. 	
+		</div>
+
+	</div>
+    
+    <div id="workoutCellMembers" style="display: none;">  </div>
+
+</div>
+
+</div>
+<!-- Load the mapping planner -->
+<div id="Map" style="display: none; width:510px; height:500px; margin-top:2px;">
+
+	<div id="map_canvas" style="width:500px; height:400px"></div>
+	
+	<div id="map_control" style="float: left;">
+		
+		<ul id="icons" class="ui-widget ui-helper-clearfix">
+		
+		<div style="float: top;" >
+		<li class="ui-state-default ui-corner-all" title="Clear Map" id="deleteTrace"><span class="ui-icon ui-icon-cancel"></span></li>		
+		<li class="ui-state-default ui-corner-all" title="Bike mode" id="bikeTrace"><span class="ui-icon ui-icon-transferthick-e-w"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Undo last" id="undoTrace"><span class="ui-icon ui-icon-arrowreturn-1-w"></span></li>
+		 Distance: <span id="distance" >0</span> km
+		<br><br><br>
+		</div>
+		
+		<div style="float: middle;">
+    		<input type="text" value="Save course as ..." onfocus="if(this.value=='Save course as ...'){this.value='';}" onblur="if(this.value==''){this.value='Save course as ...';}" id="courseName" style="width:120px; float: left; margin-top:6px; margin-right: 10px;" />
+            <li class="ui-state-default ui-corner-all" title="Save Trace" id="saveTrace"><span class="ui-icon ui-icon-disk"></span></li>
+    		<br><br><br>
+		</div> 
+		
+		<div style="float: bottom;">
+    		<select id="dropdownMap" style='width: 120px; float:left; margin-top:6px; margin-right: 10px;'> <option>Click to load...</option> </select>
+            <li class="ui-state-default ui-corner-all" title="Remove Selecred Trace" id="unSaveTrace"><span class="ui-icon ui-icon-trash"></span></li>
+		</div>
+		</ul>
+		
+		
+	</div>
+	
+  
+
+	<div id="instruction" style="float: right;">    
+		<div class="ui-widget" style="width: 270px; height: 300px;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong>Instructions</strong><br><br> 1. Click on map to trace your workout. <br> 2. Name and Save your workout course. <br> 3. View or Delete a previous workout with the droplist.</p>
+			</div>
+		</div>		
+	</div> 
+
+</div>
+
+<!-- Load the training planner -->
+<div id="Create" style="display: none; width: 510px; height: 500px; margin-top:5px;">
+    
+    <div id="drophere" style="display: none;">To use a previous workout as template <br> Drag & Drop over here! </div>
+    
+     <span style="font-size: 20px; font-family: impact;">Create a workout </span><br><br>
+    
+    <div style="height: 170px;">
+        <div style="float: left; width: 200px; height: 160px;">  
+            <span style="font-size: 15px; font-family: impact;">How</span><br>
+            <select title="Select Course" id="sportSelection" style='width: 120px;'>
+                <option value="Bike"> Bike </option>
+                <option value="Swim"> Swim </option>
+                <option value="Run"> Run </option>
+	        </select> <br>
+            <textarea rows='3' cols='20' id='descriptionInput' style="resize: none;">Enter a description for this workout</textarea>
+            
+            <span style="font-size: 15px; font-family: impact;">Who</span><br>
+            <select id="cellSelection" style='width: 120px;'>
+                <option value="yourself"> Yourself </option>
+            </select> <br>
+        
+            
+        </div>
+    
+        <div style="float: right; width: 200px; height: 160px;">  
+            <div id='calendar'></div>
+             <span style="font-size: 15px; font-family: impact;">When</span>
+            <p>Date: <input type="text" id="datepicker"></p>
+            <p>Time: <input type="text" id="timepickerStart" size="1"> from <input type="text" id="timepickerStop" size="1"> </p> 
+             <span style="font-size: 15px; font-family: impact;">Where<br></span>
+            <select title="Select Course" id="parcourSelection" style='width: 120px;'>
+                <option value="none">Loading...</option>	
+	        </select>
+        </div>
+    
+    </div>
+	
+
+
+	<div id="accordion" style="width: 500px">
+	
+	<h3><a href="#">Distance</a></h3>
+	<div id="distance" >
+	
+		<div style="float: left; margin-left: 80px;">
+			Target 
+			<div id="radio3" style="margin-top: 5px; margin-bottom: 5px; ">
+				<input type="radio" id="radioKiloMeters" name="radio3"  /><label for="radioKiloMeters">Kilometers</label>
+				<input type="radio" id="radioTime" name="radio3" checked="checked" /><label for="radioTime">Time</label> 
+			</div>
+			Value<br>
+			<input type="text" id="bigInput" class="qtipUnitHelper" size="3" /> <span id="bigLabel">hour</span> <input type="text" id="smallInput" class="qtipUnitHelper" size="3" /> <span id="smallLabel">min</span><br>
+			<span id="qtipUnitHelper" style="display: none;"> </span>
+			
+		</div>
+		
+        <div style="float: left; margin-left: 60px;">
+            
+            Metric <br><br>
+            
+    	    <span id="intensityHtml2" style="margin-top: 5px;">0</span> % <br>
+        
+            <div id="sliderIntensity2" style="width: 100px; float:left; margin-right: 5px; margin-top: 10px;"></div>
+        
+        </div>
+		
+
+	</div>
+	
+	<h3><a href="#">Intervall</a></h3>
+	<div id="intervall" >
+		
+        
+
+        <div id="intervallInputContainer" style="width: 500px">  
+            <div>
+            
+                <div style="float: left; width: 150px;"> 
+                &nbsp;&nbsp; Metric &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value &nbsp; Qty
+                </div>
+                
+                <div style="float: left; width: 150px;"> 
+                &nbsp;Target &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value
+                </div>
+                
+                <div style="float: left; width: 160px;"> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbspDescription
+                </div>
+            
+            </div>
+           
+       </div>
+       
+       <div id="addAnotherIntervall" style="cursor:pointer; margin-top: 10px; "> 
+       <br>&nbsp;&nbsp;&nbsp;&nbsp; Add another intervall
+       </div> 
+       
+       
+       
+       
+</div>                       
+
+    <div style="display: none;" id="qtipIntervallMetric">
+            <!-- <div>Units: <span id="intervallMetricUnit"> </span> </div>
+            <div id="changeMetricUnit" style="cursor: pointer;" >Change metric unit</div> -->
+            
+        
+    </div>
+           
+		
+	</div><!-- end of create -->
+
+    <div id="push2" style="padding-top: 10px;"> 
+    	<input type="button" id="push" value="Add Workout" />
+	</div>     
+
+    </div> <!--end of accordion -->
+
+
+	
+</div> <!-- end of tool box -->
+
+</div> <!-- end of toolPane -->
+<div style='clear:both;'> </div>  
+</div> <!-- end of main content body without header-->
+
+
+<div id="console">
+
+</div>
+
+</div>
+</body>
+
+</html>
