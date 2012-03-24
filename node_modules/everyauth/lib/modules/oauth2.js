@@ -143,7 +143,8 @@ everyModule.submodule('oauth2')
           , client_secret: this.appSecret()
         }
       , url = this.oauthHost() + this.accessTokenPath()
-      , additionalParams = this.moreAccessTokenParams;
+      , additionalParams = this.moreAccessTokenParams
+      , param;
 
     if (this.accessTokenPath().indexOf("://") != -1) {
       // Just in case the access token url uses a different subdomain
@@ -153,11 +154,24 @@ everyModule.submodule('oauth2')
     }
 
     if (additionalParams) for (var k in additionalParams) {
-      params[k] = additionalParams[k];
+      param = additionalParams[k];
+      if ('function' === typeof param) {
+        additionalParams[k] = // cache the fn call
+          param = param.call(this);
+      }
+      if ('function' === typeof param) {
+        param = param.call(this, req, res);
+      }
+      params[k] = param;
     }
 
-    var opts = {};
-    opts[this.postAccessTokenParamsVia()] = params;
+    var opts = {}
+      , paramsVia = this.postAccessTokenParamsVia();
+    opts[paramsVia] = params;
+    if (paramsVia === 'query') {
+      opts.headers || (opts.headers = {});
+      opts.headers['Content-Length'] = 0;
+    }
     rest[this.accessTokenHttpMethod()](url, opts)
       .on('success', function (data, res) {
         if ('string' === typeof data) {
@@ -181,7 +195,14 @@ everyModule.submodule('oauth2')
     // oauth provider in response to the access token
     // POST request
     for (var k in extra) {
-      compiled[k] = extra[k];
+      // avoid clobbering any of the properties we set just above (user, accessToken, oauthUser)
+      // instagram in particular sends a "user" which can break your code in strange ways if it's overwritten
+      if (compiled[k]) {
+        compiled.extra || (compiled.extra = {});
+        compiled.extra[k] = extra[k];
+      } else {
+        compiled[k] = extra[k];
+      }
     }
     return compiled;
   })
@@ -246,8 +267,6 @@ oauth2.accessTokenParam = function (key, val) {
     }
     return this;
   }
-  if ('function' === typeof val)
-    val = val();
   if (val)
     this.moreAccessTokenParams[key] = val;
   return this;

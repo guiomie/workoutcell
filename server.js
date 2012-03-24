@@ -71,7 +71,9 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({secret: cookieSecret}));
+  app.use(express.session({ 
+      secret: cookieSecret
+  }));
   app.use(everyauth.middleware());
   app.use(express.favicon());
   
@@ -85,5 +87,4 @@ app.get('/', function(req, res) {
 });
 
 
-
-app.listen(80);
+app.listen(process.env.PORT || 80);

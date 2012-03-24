@@ -28,6 +28,8 @@ var postCellComment = "/notification/cell/message";
 var inviteToCell = "/notification/invitetocell/" ; //:cellId/:cellName/
 var deleteCellMessage = "/cell/notification/remove/"; //:cellid/:notificationid
 var isCoach = "/cell/coach/"; //:cellId/:userId
+var postWorkoutMessage = "/workout/message/"; // :workoutid/:message
+var getCoachWorkout = "/result/coach/" //:workoutid/:userid/:cellid
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -55,4 +57,6 @@ var initGlobalVar = function(){
     inviteToCell = "/notification/invitetocell/" ;
     deleteCellMessage = "/cell/notification/remove/";
     isCoach = "/cell/coach/";
+    postWorkoutMessage = "/workout/message/"; // :
+    getCoachWorkout = "/result/coach/";
 }

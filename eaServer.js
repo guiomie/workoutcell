@@ -10,6 +10,8 @@ var Promise = everyauth.Promise;
 
 var mongooseLogic = require('./mongooseLogic');
 
+var MemoryStore = express.session.MemoryStore;
+
 //Import database models
 User = mongooseDb.User;
 GeneralReference = mongooseDb.GeneralReference;
@@ -82,13 +84,19 @@ everyauth.facebook
   })
   //.redirectPath('/view/profile');
   .redirectPath('/hasRights');
-  
+
+console.log("configure");
 app.configure(function(){
   app.use(express.static(__dirname + '/public'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({secret: cookieSecret}));
+  var session = express.session({
+      secret: cookieSecret,
+      store: new MemoryStore({ reapInterval: 60000 * 10 }),
+      key: "workoutcelld.sid"
+  });
+  app.use(session);
   app.use(everyauth.middleware());
   app.use(express.favicon());
   app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
@@ -101,6 +109,12 @@ app.get('/', function(req, res) {
    //console.log(everyauth.facebook.routes + everyauth.facebook.configurable());  // FTW!
    res.sendfile('./views/welcome.html');
 });
+
+app.post('/test', function (req, res) {
+    console.log("incoming test2");
+    res.end("thanks");
+});
+
 
 app.error(function(err, req, res){
     console.log(err);

@@ -74,13 +74,13 @@ module.exports = function(app) {
     app.get("/workout/:workoutid", function(req, res){
         
         
-         mongooseLogic.getWorkout(req.params.workoutid, getLogedId(req), function(message){
+         mongooseLogic.getWorkout(req.params.workoutid, getLogedId(req), function(mes){
 
-            if(message === "not instantiated"){
-                res.json("{ success: false, message:'Failed to find workout'}");
+            if(RealTypeOf(mes) === "array"){
+                res.json({ success: false, message:mes});
             }
             else{
-                res.json(message);    
+                res.json(mes);    
             }
          
          });
@@ -273,7 +273,7 @@ module.exports = function(app) {
             }
             else{
                 
-                if(req.params.response === "yes"){
+                if(req.params.response === "accept"){
                     mongooseLogic.joinCell(req.params.cellId, getLogedId(req), getLogedName(req), function(mes2){
                         if(mes2 !== "Success"){
                             res.json({ success: false, message:'Failed to find join Cell.'});  
@@ -341,6 +341,11 @@ module.exports = function(app) {
             } 
         });
     });
+    
+    //!!!!!----------------Cell Routes  -------------------------------------///
+    //
+    //
+    //!!!!!!!----------------------------------------------------------------///
     
     
     //Returns the users friend list, an array with their Facebook Ids
@@ -477,6 +482,12 @@ module.exports = function(app) {
         
     });
      
+    //------------------------------------------------------------------------
+    //
+    //     User base related routes
+    //
+    //------------------------------------------------------------------------
+    
     //Sends response as a string/html
     app.get("/user/snippet/:userId", function(req,res){
         mongooseLogic.getProfileSnippet(req.params.userId, function(mes){
@@ -539,6 +550,18 @@ module.exports = function(app) {
          });
     });
 
+    app.get('/workout/message/:workoutid/:message', function(req, res){
+        
+        mongooseLogic.addWorkoutMessage(getLogedName(req), getLogedId(req), req.params.workoutid, req.params.message, function(mes){
+            if(mes === "Success"){
+                res.json({ success: true, message:'Message sent.'});
+            }
+            else{
+                res.json({ success: false, message: mes}); 
+            }
+        });
+        
+    });
     
     //----DELETION OF DATA -----------
     
@@ -606,7 +629,36 @@ module.exports = function(app) {
     
     });
 
-    //!!!----Search -----!!!
+
+    //------------------------------------------------------------------------
+    //
+    //     Coach routes
+    //
+    //------------------------------------------------------------------------
+    
+    //retreive specific workout in database
+    app.get("/result/coach/:workoutid/:userid/:cellid", function(req, res){
+        
+         mongooseLogic.getWorkoutCoachMode(req.params.workoutid, req.params.userid, getLogedId(req), req.params.cellid, function(message){
+
+            if(RealTypeOf(message) === "array"){
+                res.json({ success: false, message:message});
+            }
+            else{
+                res.json(message);    
+            }         
+         });
+    });   
+        
+        
+        
+    
+    //------------------------------------------------------------------------
+    //
+    //     //!!!----Search -----!!!
+    //
+    //------------------------------------------------------------------------
+   
     
     app.get("/search/fullname/:first/:last", function(req, res){
         

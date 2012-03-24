@@ -92,6 +92,7 @@ $(document).ready(function(){
 		$('#mainContent').corner();
 		$('#xfbmlPic').corner();
         $('#cellMessageInput').corner("5px");
+        $('#workoutMessageInput').corner("5px");
         
         
         //--------------------------------------------------------
@@ -1094,6 +1095,12 @@ $(document).ready(function(){
              initView(workout, event); 
         });
         
+        //!!!!!----------------------------------------------------------------
+        //
+        //           Message Posting
+        //
+        //!!!!!!---------------------------------------------------------------
+        
         $('#postCellComment').live('click', function(){
            
            var comment = $('#cellCommentInput').val();
@@ -1133,6 +1140,29 @@ $(document).ready(function(){
                Notifier.error('Message too long or short or invalid.');
            }
         });
+        
+        
+        $('.postWorkoutComment').live('click', function(){
+            
+            var message = $('#workoutCommentInput').val();
+            
+            if(message.length > 10)
+                $.getJSON(postWorkoutMessage + $('#workoutMessageInput').attr('workoutid') + "/" + message , function(data) {
+                    if(data.success){
+                        Notifier.success('Message sent');
+                    }
+                    else{
+                        Notifier.error(data.mes);
+                    }
+                
+                });
+            else{
+                Notifier.error('Message to small');    
+                
+            }
+
+        });
+
         
         /*
         $('.cellNotificationNewWorkout').live('click', function(){

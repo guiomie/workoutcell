@@ -21,6 +21,9 @@ function initView(workoutObject, event) {
     else{
         document.getElementById('viewDate').innerHTML = jQuery.timeago(end);
     }
+
+    //Reinitialisation of coach based widget
+    $('#toggleEdit').show();
     
     if(typeof(workoutObject.parcour) !== "undefined" ){
 		$('#showWhere').show();
@@ -72,24 +75,40 @@ function initView(workoutObject, event) {
                 $('#viewUsersResult').die();
                 $('#viewUsersResult').live('change', function(){
                      
-                     var id = $('#viewUsersResult').val(':selected');
+                     var id = $(this).val();
+                     alert(id);
                      if(id === "none"){
                          
                      }
                      else{
-                        $.getJSON(isCoach + workoutObject.cell.cellId + "/" + authId , function(data) {
-                            if(data.success){
-                                
-                            }
-                            else{
-                                //renderDetails(workoutObject, function(output){});
-                            }
-                        
+                         
+                        $('#toggleEdit').hide();
+                         
+                        $.getJSON(getCoachWorkout + workoutObject._id + "/" + id + "/" +workoutObject.cell.cellId , function(data) {
+                            renderDetails(data, function(output){
+                            	document.getElementById('typeDetail').innerHTML = output;
+                                if(workoutObject.type === "intervall"){
+                                    loadDynamicQtip(workoutObject.intervalls.length, workoutObject.intervalls);
+                                    
+                                    $('.intervallUnit').die();   
+                                    $('.intervallUnit').qtip({
+                                        content: {
+                                            attr: 'description'
+                                        },
+                                        position: {
+                                            my: 'left center', // Use the corner...
+                                            at: 'right center' // ...and opposite corner
+                                        },
+                                        style: {
+                                            widget: true 
+                                        }
+                                    });
+                                }
+                    	    });                             
                         });
                      }
                  });
-                
-                
+    
             }
             else{
                 $('#viewUsersResult').hide();  
@@ -98,7 +117,13 @@ function initView(workoutObject, event) {
         else{
         //something wrong
             $('#viewUsersResult').hide(); 
-        }   
+        } 
+        
+        //Init or (reinit) the handlers for the click
+        $('#workoutMessageInput').die();
+        $('#workoutMessageInput').attr('workoutid', workoutObject._id);
+        
+        
     });
     
     //Empty descriptiom, then look if there is one

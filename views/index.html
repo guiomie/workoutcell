@@ -351,7 +351,7 @@
 		<ul id="icons" class="ui-widget ui-helper-clearfix">
 			<div id="viewDate" style="font-family: impact; font-size: 20px; float:left; "> </div>
             <div style="float:left;">  
-                <select id="viewUsersResult" style='font-size: 10px; width: 150px; margin-top: 8px; margin-left: 10px;'> <option>View athletes results...</option> </select>
+                <select id="viewUsersResult" style='display: none; font-size: 10px; width: 150px; margin-top: 8px; margin-left: 10px;'> <option>View athletes results...</option> </select>
             </div>
 			<li class="ui-state-default ui-corner-all" title="View your cell" id="showCell" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
 			<!--<li class="ui-state-default ui-corner-all" title="View your rating" id="showRating" style="float: right;"><span class="ui-icon ui-icon-star"></span></li>-->
@@ -379,8 +379,13 @@
         
 		<div id="typeDetail">   </div>
 
-		<br>Comments
-		<div id="comments">
+
+        <hr />
+        <div id="workoutMessageInput" workoutid="" style="background: #C7E5AE; width:320px; height: 26px; margin-bottom: 8px;">
+            <div style="float: left;"><input   value="Post a comment ..." onfocus="if(this.value=='Post a comment ...'){this.value='';}" onblur="if(this.value==''){this.value='Post a comment ...';}" id='workoutCommentInput' style="margin-top: 4px; margin-left: 10px; resize: none; background: #C7E5AE; font-size: 12px;   border: none; width: 270px;"/></div>
+            <div style="float: right;"><span class="ui-icon ui-icon-check postWorkoutComment" style=" margin-top: 4px; margin-right: 4px; margin-left: 4px; cursor:pointer;"></span></div>
+        </div>
+		<div id="comments" style="width: 500px">
 			No comments yet. 	
 		</div>
 

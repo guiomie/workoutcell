@@ -101,45 +101,6 @@ var deleteParcour = function(parcourId, userId, callback){
         }
     });
 }
-//NOT IMPLEMENTED YET 
-/*var deleteParcourReference = function(referenceId, userId, callback){
-    
-    //Verify the object is a valid objectid
-    if(referenceId.toString().length !== 24 || userId.toString().length !== 24){
-        
-       console.log("Invalid objectId or input submitted @ deleteParcourReference()");
-       callback("Invalid objectId or input");
-    }
-    else{
-        GeneralReference.findOne({ id: userId }, function (err, result) {
-            if (err || result === null) { 
-                console.log("In deleteParcourReference error(1)");
-                callback("Error in deletion. Stack Trace: " + err); 
-            }
-            else{
-                console.log(result.ref.length + " vs " + arrayLocation);
-                if( result.ref[arrayLocation].allEvents.id(eventId) !== null){
-                    //Mongoose special command to .id to search an _id
-                    result.save(function (err) {
-                        if (err) { 
-                            console.log("In deleteParcourReference error(2)");
-                            callback("Error in deletion. Stack Trace: " + err); 
-                        }
-                        else{
-                            console.log("In deleteEvent Success");
-                            callback("Success");      
-                        }      
-                    });
-                
-                }
-                else{
-                    console.log("In deleteParcourReference error(3)");
-                    callback("Error, couldnt find calendar event");
-                }                   
-            }
-        });
-    }
-}*/
 
 
 //****************WORKOUTS LOGIC ****************************************
@@ -528,6 +489,73 @@ var getWorkout = function(workoutRefId, userId, callback){
   
 }
 
+var getWorkoutCoachMode = function(workoutRefId, userId, coachId, cellId, callback){
+    
+    isCellCoach(cellId, coachId, function(coachStatus){
+        //Verify the object is a valid objectid
+        if(coachStatus === false || coachStatus === "Error"){
+            callback("Not coach for this cell, or invalid workout");
+        }
+        else{
+        
+            if(workoutRefId.toString().length !== 24 ){
+               console.log("Invalid objectId submitted @ getWorkout()");
+               callback("Invalid objectId for workoutId");
+            }
+            else{
+                CardioWorkout.findOne({ _id: workoutRefId }, function(err, workoutResult){
+        
+                    if(err || workoutResult === null){
+                        callback("No such workout: " + err);
+                    }
+                    else{
+                        var queryRestriction;
+                        var parameterName;
+                        if(workoutResult.type === "distance"){
+                            queryRestriction = { "id" : parseInt(userId), "distanceResult.workoutId" : ObjectId.fromString(workoutRefId)};
+                            parameterName = "distanceResult";
+                        }
+                        else{
+                            queryRestriction = { "id" : parseInt(userId), "intervallResult.workoutId" : ObjectId.fromString(workoutRefId)};
+                            parameterName = "intervallResult";
+                        }
+                        
+                        CardioResult.findOne(queryRestriction, function(err, result){
+                            if(err){ 
+                                callback("Error in finding: " + err);
+                            }
+                            else if(result === null){
+                                //console.log("cant find: " + queryRestriction + " at " + workoutRefId + " for user " + userId);
+                                callback(workoutResult);
+                            }
+                            else{    
+                                console.log(JSON.stringify(result));
+                                result[parameterName].forEach(function (element) {
+                                    if(element.workoutId.toString() === workoutRefId){
+                                        if(workoutResult.type === "distance"){
+                                            //console.log("Found match " + JSON.stringify(element));
+                                            workoutResult[parameterName] = element;
+                                            callback(workoutResult);
+                                            
+                                        }
+                                        else{
+                                            workoutResult[parameterName] = element.intervalls;
+                                            callback(workoutResult);
+                                        } 
+        
+                                    }
+                                });
+                            
+                            }
+                            
+                        });
+                    }  
+                });
+            }
+        }
+    });
+}
+
 var getMonthEvent = function(userId, year, month, callback){
     
     var callB = "not instantiated";
@@ -807,6 +835,44 @@ var joinCellWorkout = function(userId, userName, workoutId, callback){
     }
     
 }
+
+var addWorkoutMessage = function(userName, userId, workoutId, themessage, callback){
+    
+    if(workoutId.toString().length !== 24 ){
+       //console.log("Invalid objectId submitted @ getWorkout()");
+       callback("Invalid objectId for workoutId");
+    }
+    else{
+        CardioWorkout.findOne({ _id: workoutId }, function(err, workoutResult){
+
+            if(err || workoutResult === null){
+                callback("No such workout: " + err);
+            }
+            else{
+                
+                var message = {
+                    type: "message", 
+                    sender: userName, 
+                    senderId: parseInt(userId), 
+                    message: themessage 
+                }
+
+                workoutResult.feeds.push(message);
+                workoutResult.save(function (err) {
+                    if (err) { 
+                        //console.log("In addWorkoutMessage error(2)" + err);
+                        callback("Error addWorkoutMessage. Stack Trace: " + err); 
+                    }
+                    else{
+                        //console.log("In addWorkoutMessage Success" + err);
+                        callback("Success");      
+                    }      
+                });
+            }
+        });
+    }
+    
+}
 /////*********************** Social and SEARCH *****************************////
 
 //This will add a user friendship request in the users notification queu
@@ -1018,7 +1084,7 @@ var joinCell = function(cellId, userId, userName, callback){
                                 var newCellRef = new CellReference({
                                     name        : resultCellDetails.name,
                                     location    : resultCellDetails.location,
-                                    owner       : {id: creatorId, name: userName}, 
+                                    owner       : resultCellDetails.owner, 
                                     cellDetails : resultCellDetails._id,
                                     isCoach     : resultCellDetails.isCoach
                                 });
@@ -1085,6 +1151,7 @@ function isNumber(n) {
 }
 
 
+
 var checkIfUserInCell = function(cellId, userId, callback){
      GeneralReference.findOne({ "id" : parseInt(userId), "cells.cellDetails" : ObjectId.fromString(cellId)}, function(err, result){
         if(err){ 
@@ -1097,8 +1164,7 @@ var checkIfUserInCell = function(cellId, userId, callback){
             callback("Existant");
         }
      });
-    
-    
+
 }
 
 var isUserAFriend = function(userId, target, callback){
@@ -1184,6 +1250,7 @@ exports.createCell = createCell;
 exports.getUsersCells = getUsersCells;
 exports.joinCell = joinCell;
 exports.quitCell = quitCell;
+exports.addWorkoutMessage = addWorkoutMessage;
 
 exports.isCellCoach = isCellCoach;
 exports.isUserAFriend = isUserAFriend;
@@ -1191,5 +1258,6 @@ exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;
 exports.getFriendList = getFriendList;
 
+exports.getWorkoutCoachMode = getWorkoutCoachMode;
 exports.checkIfUserInCell = checkIfUserInCell;
 exports.pushToNotificationLog =  pushToNotificationLog;
