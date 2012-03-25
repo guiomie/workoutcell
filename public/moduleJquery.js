@@ -101,17 +101,17 @@ $(document).ready(function(){
         //--------------------------------------------------------
         
         $('#mycarousel').jcarousel({
-            initCallback: initCallbackFunction
+            //initCallback: initCallbackFunction
             
         });
         
-        function initCallbackFunction(carousel, state) {
+        /*function initCallbackFunction(carousel, state) {
             $('#mycarousel').click(function() {
                 var idx = $(this).data('index');
                 carousel.scroll(idx);
                 return false;
             });
-        };
+        };*/
         /*
          $('#mycarousel').hover(function(){
             // $('#mycarousel').jcarousel('scroll', $('#mycarousel').index);
@@ -284,7 +284,7 @@ $(document).ready(function(){
             if($('#radioTime').is(':checked') === true ){
                 timeToSec($('#bigInput').val(), $('#smallInput').val(), function(res){
                      //$('#bigInput').qtip({content: { text: res + ' seconds' }});
-                    $('#bigInput').qtip({
+                    $('#distanceOutDelimiter').qtip({
                         content: {
                             text: res + ' minutes'
                         },
@@ -298,12 +298,10 @@ $(document).ready(function(){
                             my: 'right center',
                             at: 'left center'
                         },
-                        
-                        api: {
-                            onShow: function() { 
-                                setTimeout(this.hide, 1000); /// hide after a second
-                            }
-                        }
+                        hide: {
+    	                    event: 'unfocus',
+                            delay: 2000
+	                    }
                     });   
 
                 });
@@ -313,7 +311,7 @@ $(document).ready(function(){
             else{
                 toMeters($('#bigInput').val(), $('#smallInput').val(), function(res){
                     //$('#bigInput').qtip({content: { text: res + ' meters or ' + (Math.round(1.609344*parseFloat(res/1000))*100)/100 + ' miles' }, show: true});
-                    $('#bigInput').qtip({
+                    $('#distanceOutDelimiter').qtip({
                         content: {
                             text: res + ' meters (' + (Math.round(1.609344*parseFloat(res/1000)*100)/100) + ' miles)' 
                         },
@@ -326,11 +324,20 @@ $(document).ready(function(){
                         position: {
                             my: 'right center',
                             at: 'left center'
-                        }
+                        },
+                        hide: {
+                            event: 'unfocus',
+                            delay: 2000
+	                    }
                     });
                 });
             }  
         }
+        
+        $('#distanceOutDelimiter').live('mouseenter', function(){
+            qtipUnitHelperContent();
+        });
+        
         
         //Event handlers for displaying a qtip with minute/meter coversion
         $('.qtipUnitHelper').bind('focus keypress change keydown keyup click', function(){
@@ -339,10 +346,12 @@ $(document).ready(function(){
 		});
         
         $('.qtipUnitHelper').bind('blur', function(){
-            var qtip = jQuery('#bigInput').qtip('api');
+            var qtip = jQuery('#distanceOutDelimiter').qtip('api');
             qtip.hide();
             
         });
+        
+        
         /*
         $('.qtipUnitHelper').keyup(function(){
         	  qtipUnitHelperContent();

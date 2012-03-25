@@ -162,7 +162,7 @@ var getPendingNotifications = function(userId, page, callback){
          else{
             //console.log(result);
             var arraySize = result[0].pendingSize;
-            var elementsPerPage = 5;
+            var elementsPerPage = 10;
             var numberOfPages = Math.ceil(arraySize / elementsPerPage);
             var skip = Math.ceil(arraySize - (page * elementsPerPage));
             if(skip < 0){
