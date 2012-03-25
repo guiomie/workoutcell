@@ -65,6 +65,19 @@ var renderNotifications = function(arrayNotification, reInit){
             
         }
     }
+    
+    $('.notificationUnit').die();
+    $('.notificationUnit').live('mouseenter', function() {
+        $(this).find(".removeNotification").show();
+
+    });
+    
+    $('.notificationUnit').live('mouseleave', function() {
+        $(this).find(".removeNotification").hide();
+
+    });
+    
+    
        
 }
 
@@ -176,7 +189,8 @@ var createFriendRequestElement = function(object){
 
 var createCellWorkoutElement = function(object){
     var strDate = new Date(object.date).toDateString();
-    var viewprofile = '<div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer;" title="'+strDate+'" >' + object.message + '</div>';
+    var viewprofile = '<div class="notificationUnit" style="overflow: hidden;" notificationId="' + object._id + '"><div class="cellLink" refId="' + object.refOId + '" style="cursor: pointer; float: left; width: 330px;" title="'+strDate+'" >' + 
+        object.message + '</div><div style="float: right; margin-top: 1px;"><span class="ui-icon ui-icon-close removeNotification" style="float: left; display: none;"></span></div></div>';
     document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile;
     
 }
@@ -184,7 +198,8 @@ var createCellWorkoutElement = function(object){
 var createCellMessageElement = function(object){
     
     var strDate = new Date(object.date).toDateString();
-    var viewprofile = '<div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer;" title="'+strDate+'">' + object.message + '</div>';
+    var viewprofile = '<div class="notificationUnit" style="overflow: hidden;" notificationId="' + object._id + '"><div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer; float: left;  width: 330px;" title="'+strDate+'">' + 
+    object.message + '</div><div style="float: right; margin-top: 1px;"><span class="ui-icon ui-icon-close removeNotification" style="float: left"></span></div></div>';
     document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile  ;
     
 }

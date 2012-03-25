@@ -1157,8 +1157,8 @@ $(document).ready(function(){
                                 document.getElementById('comments').innerHTML = html;
                                 $('.removeWorkoutComment').die();
                                 $('.removeWorkoutComment').live('click', function(){
-                                    var parent = $(this).parent();
-                                    $.getJSON(removeWorkoutComment +data.message._id + "/" + $(this).parent().attr('messageId'), function(data) {
+                                    var parent = $(this).parent().parent();
+                                    $.getJSON(removeWorkoutComment +data.message._id + "/" + parent.attr('messageId'), function(data) {
                                         if(data.success){
                                             parent.remove();
                                             if(data.message.feed.length === 1){

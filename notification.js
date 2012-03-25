@@ -95,6 +95,22 @@ var removeCellInviteNotification = function(cellId, userId, callback){
     });
 }
 
+//Go into someones notification colllection, and remove one from its _id
+var removeUserNotification = function(notificationId, userId, callback){
+    
+    NotificationsReference.update({ "id" : userId}, { $pull: { pending: { refOId :  ObjectId.fromString(notificationId)}}, $inc:{ pendingSize: -1 }}, function(err, result){
+        if(err || result === null){
+            console.log("Notification doesn't exist. Stack: " + err );
+            callback("Notification doesn't exist. Stack: " + err );
+        }
+        else{ //Memeber not in cell yet, so he can join
+            callback("Success");
+        
+        }
+    });
+
+}
+
 //This will return the values in between the ranges in relation to the array size
 /*var getPendingNotifications = function(userId, rangeMin, rangeMax, callback){
     
@@ -275,9 +291,9 @@ var sendNotificationToCellUsers = function(cellId, notification, callback){
         
             for(i =0; i < result.members.length; i++){
                 console.log( i  + " user is " + result.members[i]);
-                NotificationsReference.update({ "id" : result.members[i]}, { $push: { pending: notification}, $inc: { unRead : 1 , pendingSize: 1 }}, function(err){
+                NotificationsReference.update({ "id" : result.members[i].fbid}, { $push: { pending: notification}, $inc: { unRead : 1 , pendingSize: 1 }}, function(err){
                     if(err){
-                        console.log('update failed');
+                        console.log('update failed - ' + err);
                         callback("Error in pushing not to found user. User:" + result.members[i]);
                     }
                     else{ 
@@ -423,3 +439,4 @@ exports.removeCellInviteNotification = removeCellInviteNotification;
 exports.getPendingNotifications = getPendingNotifications;
 exports.removeCellMessage = removeCellMessage;
 exports.pushToNotificationLog = pushToNotificationLog;
+exports.removeUserNotification = removeUserNotification;

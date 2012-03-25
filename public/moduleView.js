@@ -136,7 +136,7 @@ function initView(workoutObject, event) {
         if(workoutObject.cell.creator != undefined){
              descPictureTag = '­­<fb:profile-pic uid="' + workoutObject.cell.creator.fbid 
              + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
-            name = workoutObject.cell.creator.fullName +"s description: ";
+            name = workoutObject.cell.creator.fullName +"'s description: ";
         }
         else{
             descPictureTag = '­­<fb:profile-pic uid="'+ authId 
@@ -173,8 +173,8 @@ function initView(workoutObject, event) {
             
             $('.removeWorkoutComment').die();
             $('.removeWorkoutComment').live('click', function(){
-                var parent = $(this).parent();
-                $.getJSON(removeWorkoutComment + workoutObject._id + "/" + $(this).parent().attr('messageId'), function(data) {
+                var parent = $(this).parent().parent();
+                $.getJSON(removeWorkoutComment + workoutObject._id + "/" + parent.attr('messageId'), function(data) {
                     if(data.success){
                          parent.remove();
                          if(workoutObject.feed.length === 1){
@@ -829,17 +829,16 @@ var renderWorkoutMessages = function(messageArray, callback){
     
     for(i = 0; i < messageArray.length; i++){
         
-        html = html + "<div class='workoutMessage' senderId='" + messageArray[i].senderId + "' messageId='" + messageArray[i]._id + "'>" +
-            messageArray[i].sender + " says: " + messageArray[i].message;
-
         if(messageArray[i].senderId === parseInt(authId)){
-            html = html + "<span class='ui-icon ui-icon-close removeWorkoutComment' style='float: right'></span></div>";
+            html = "<div style='float: left; margin-top: 3px;'><span class='ui-icon ui-icon-close removeWorkoutComment' style='float: right'></span></div></div>" + html;
         }
         else{
-            html = html + "</div>";   
-        }
-            
+            html = '</div>' + html;    
+        }        
         
+        html = "<div class='workoutMessage'  senderId='" + messageArray[i].senderId + "' messageId='" + messageArray[i]._id + "'><div style='width: 400px; float: left; ' >" +
+            messageArray[i].sender + " says: " + messageArray[i].message + "</div>" + html;
+
     }
     callback(html); 
 

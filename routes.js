@@ -342,6 +342,19 @@ module.exports = function(app) {
         });
     });
     
+    app.get("/notification/user/remove/:notificationid", function(req, res){
+        
+        notification.removeUserNotification(req.params.notificationid, getLogedId(req), function(mes){
+            if(mes === 'Success'){
+                res.json({ success: true, message:'Removed Notification'});
+            }
+            else{
+                res.json({ success: false, message: mes});
+            }
+        });
+        
+    });
+    
     //!!!!!----------------Cell Routes  -------------------------------------///
     //
     //
