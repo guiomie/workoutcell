@@ -139,7 +139,7 @@ module.exports = function(app) {
 
     
     //Adds a notification to the users queu
-    app.get("/notification/:userId/:type/:target", function(req, res){
+    app.get("/notification/add/:userId/:type/:target", function(req, res){
         
         if(isAllowed(req, req.params.userId) && req.params.target !== req.params.userId){ //make sure user submitting request is the user
              mongooseLogic.isUserAFriend(req.params.userId, req.params.target, function(bool){ //If user is a friend request ignored

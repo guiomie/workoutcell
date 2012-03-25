@@ -66,6 +66,8 @@ var renderNotifications = function(arrayNotification, reInit){
         }
     }
     
+    //Notification list interactive behavior
+    
     $('.notificationUnit').die();
     $('.notificationUnit').live('mouseenter', function() {
         $(this).find(".removeNotification").show();
@@ -75,6 +77,21 @@ var renderNotifications = function(arrayNotification, reInit){
     $('.notificationUnit').live('mouseleave', function() {
         $(this).find(".removeNotification").hide();
 
+    });
+    
+    $('.removeNotification').die();
+    $('.removeNotification').live('click', function(){
+       var parent = $(this).parent().parent();
+       
+       $.getJSON(removeUserNotification + parent.attr('notificationid') , function(data) {
+            if(data.success){
+                parent.remove();
+            }
+            else{
+                Notifier.error(data.message);
+            }
+        });
+        
     });
     
     
@@ -199,7 +216,7 @@ var createCellMessageElement = function(object){
     
     var strDate = new Date(object.date).toDateString();
     var viewprofile = '<div class="notificationUnit" style="overflow: hidden;" notificationId="' + object._id + '"><div class="cellMessage" refId="' + object.refId + '" style="cursor: pointer; float: left;  width: 330px;" title="'+strDate+'">' + 
-    object.message + '</div><div style="float: right; margin-top: 1px;"><span class="ui-icon ui-icon-close removeNotification" style="float: left"></span></div></div>';
+    object.message + '</div><div style="float: right; margin-top: 1px;"><span class="ui-icon ui-icon-close removeNotification" style="float: left; display: none;"></span></div></div>';
     document.getElementById('notificationList').innerHTML = document.getElementById('notificationList').innerHTML + viewprofile  ;
     
 }

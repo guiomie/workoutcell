@@ -97,7 +97,7 @@ var renderSearchHtml = function(arrayResult, callback){
        
        //add click handlers to each add user
        for(i = 0; i < arrayResult.length; i++){
-            var theUrl = "/notification/" + authId + "/joinMasterCell/" +  arrayResult[i].fbid;
+            var theUrl = "/notification/add/" + authId + "/joinMasterCell/" +  arrayResult[i].fbid;
             $('#addToCell' + arrayResult[i].fbid).live('click', function(){
                 
                 $.getJSON(theUrl, function(data) {
