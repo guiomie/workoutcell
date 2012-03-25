@@ -330,7 +330,7 @@ function initPostFields(){
 	tempIntervall = [];
     cell = new Array();
 	//document.getElementById('intervallList').length = 0;
-	document.getElementById('overview').innerHTML = " "; 
+	//document.getElementById('overview').innerHTML = " "; 
 
     $('#descriptionInput').attr('value', '');
     $('#datepicker').attr('value', '');

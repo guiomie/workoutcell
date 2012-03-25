@@ -76,7 +76,7 @@ function initView(workoutObject, event) {
                 $('#viewUsersResult').live('change', function(){
                      
                      var id = $(this).val();
-                     alert(id);
+                     //alert(id);
                      if(id === "none"){
                          
                      }
@@ -164,6 +164,34 @@ function initView(workoutObject, event) {
  
 		//document.getElementById('description').innerHTML = "Description <br><div style='font-size: 12px;'>" + workoutObject.description + "</div>";
 	}
+    
+    if(workoutObject.feed.length > 0){
+        
+        renderWorkoutMessages(workoutObject.feed, function(html){
+        
+            document.getElementById('comments').innerHTML = html;
+            
+            $('.removeWorkoutComment').die();
+            $('.removeWorkoutComment').live('click', function(){
+                var parent = $(this).parent();
+                $.getJSON(removeWorkoutComment + workoutObject._id + "/" + $(this).parent().attr('messageId'), function(data) {
+                    if(data.success){
+                         parent.remove();
+                         if(workoutObject.feed.length === 1){
+                            document.getElementById('comments').innerHTML = "<br> No Comments yet ..."   
+                        }
+                    }
+                    else{
+                        
+                    }
+                });
+            });
+        });  
+    }
+    else{
+        document.getElementById('comments').innerHTML = "<br> No Comments yet ..."; 
+    }
+    
     
     //Add layout for users in workoutcell
     fillWorkoutMembers(workoutObject.cell.participants);
@@ -793,4 +821,26 @@ var fillWorkoutMembers = function(arrayResult){
         }
     });  
           
+}
+
+var renderWorkoutMessages = function(messageArray, callback){
+    
+    var html = "";
+    
+    for(i = 0; i < messageArray.length; i++){
+        
+        html = html + "<div class='workoutMessage' senderId='" + messageArray[i].senderId + "' messageId='" + messageArray[i]._id + "'>" +
+            messageArray[i].sender + " says: " + messageArray[i].message;
+
+        if(messageArray[i].senderId === parseInt(authId)){
+            html = html + "<span class='ui-icon ui-icon-close removeWorkoutComment' style='float: right'></span></div>";
+        }
+        else{
+            html = html + "</div>";   
+        }
+            
+        
+    }
+    callback(html); 
+
 }

@@ -857,7 +857,7 @@ var addWorkoutMessage = function(userName, userId, workoutId, themessage, callba
                     message: themessage 
                 }
 
-                workoutResult.feeds.push(message);
+                workoutResult.feed.push(message);
                 workoutResult.save(function (err) {
                     if (err) { 
                         //console.log("In addWorkoutMessage error(2)" + err);
@@ -865,12 +865,36 @@ var addWorkoutMessage = function(userName, userId, workoutId, themessage, callba
                     }
                     else{
                         //console.log("In addWorkoutMessage Success" + err);
-                        callback("Success");      
+                        callback(workoutResult);      
                     }      
                 });
             }
         });
-    }
+    } 
+}
+
+
+var removeWorkoutMessage = function(workoutId, messageId, callback){
+    
+    CardioWorkout.findOne({ '_id' : workoutId, "feed._id" :  ObjectId.fromString(messageId)}, function(err, result){
+        if(err || result === null){
+            //console.log(err + " - " + result);
+            callback('Failed');
+        }
+        else{
+            CardioWorkout.update({ "_id" : workoutId}, { $pull: { feed: { _id :  ObjectId.fromString(messageId)}}}, function(err, result){
+                if(err || result === null){
+                    //console.log("User isnt part of this cell. Stack: " + err );
+                    callback("Failed");
+                }
+                else{ //Memeber not in cell yet, so he can join
+                    callback(result.feed);
+                
+                }
+            });
+        }
+    });
+    
     
 }
 /////*********************** Social and SEARCH *****************************////
@@ -1026,6 +1050,7 @@ var getCellDetails = function(cellId, callback){
                 callback("Error");
             }
             else{
+                //console.log(result);
                 callback(result);
             }
         });
@@ -1261,3 +1286,4 @@ exports.getFriendList = getFriendList;
 exports.getWorkoutCoachMode = getWorkoutCoachMode;
 exports.checkIfUserInCell = checkIfUserInCell;
 exports.pushToNotificationLog =  pushToNotificationLog;
+exports.removeWorkoutMessage = removeWorkoutMessage;

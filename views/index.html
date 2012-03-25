@@ -9,7 +9,7 @@
 <script type="text/javascript" src="/js/jquery-1.7.1.js"></script>
 <script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
 <div id="fb-root"></div>
 <script src="http://connect.facebook.net/en_US/all.js"></script>
@@ -143,7 +143,7 @@
             
             <div id="navLink" style="position:absolute;bottom:10; padding-bottom: 15px;"> 
 	            <ul id="icons" class="ui-widget ui-helper-clearfix">			
-			        <li class="ui-state-default ui-corner-all" title="Manage your social training" id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
+			        <li class="ui-state-default ui-corner-all"  id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Find athletes or coaches" id="goToSearch" style="float: right;"><span class="ui-icon ui-icon-search"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Manage your maps" id="goToMap" style="float: right;"><span class="ui-icon ui-icon-script"></span></li>
@@ -377,16 +377,18 @@
 		    Planned workout <span id="toggleEdit" style="font-size: 10px;">(Edit results)</span>
         </div>
         
-		<div id="typeDetail">   </div>
+		<div id="typeDetail" style="margin-left: 8px; margin-top: 5px; margin-bottom: 3px;">   </div>
 
-
+        <br>
         <hr />
-        <div id="workoutMessageInput" workoutid="" style="background: #C7E5AE; width:320px; height: 26px; margin-bottom: 8px;">
-            <div style="float: left;"><input   value="Post a comment ..." onfocus="if(this.value=='Post a comment ...'){this.value='';}" onblur="if(this.value==''){this.value='Post a comment ...';}" id='workoutCommentInput' style="margin-top: 4px; margin-left: 10px; resize: none; background: #C7E5AE; font-size: 12px;   border: none; width: 270px;"/></div>
+        <br>
+        
+        <div id="workoutMessageInput" workoutid="" style="background: #C7E5AE; width:420px; height: 26px; margin-bottom: 8px;">
+            <div style="float: left;"><input   value="Post a comment ..." onfocus="if(this.value=='Post a comment ...'){this.value='';}" onblur="if(this.value==''){this.value='Post a comment ...';}" id='workoutCommentInput' style="margin-top: 4px; margin-left: 10px; resize: none; background: #C7E5AE; font-size: 12px;   border: none; width: 370px;"/></div>
             <div style="float: right;"><span class="ui-icon ui-icon-check postWorkoutComment" style=" margin-top: 4px; margin-right: 4px; margin-left: 4px; cursor:pointer;"></span></div>
         </div>
 		<div id="comments" style="width: 500px">
-			No comments yet. 	
+			<br> No comments yet ... 	
 		</div>
 
 	</div>

@@ -133,7 +133,7 @@ function markerLatLngArray(array, callback){
     + "&markers=label:F%7C" + array[array.length-1].getPosition().lat() + "," + array[array.length-1].getPosition().lng();
     
     for(i=0; i < array.length; i++){
-        callbackArray.push(array[i].getPosition());
+        callbackArray.push({ lat: array[i].getPosition().lat(), lng: array[i].getPosition().lng()});
     }
     callback(callbackArray);
 }
@@ -174,7 +174,7 @@ function loadMarkers(arrayLatLng, arrayTitle){
 
     //alert(arrayLatLng + " : " + arrayTitle);
     for(i = 0; i < arrayLatLng.length; i++){
-        var pos = new google.maps.LatLng(arrayLatLng[i].Ta, arrayLatLng[i].Sa);
+        var pos = new google.maps.LatLng(arrayLatLng[i].lat, arrayLatLng[i].lng);
         
         var marker = new google.maps.Marker({
             position: pos,

@@ -442,9 +442,9 @@ $(document).ready(function(){
                 if(data.success){
                     Notifier.success(data.message);
                     refreshDropdown();
-                    distance = 0;
-                    markerArray = [];
-                    lastAddedDistance = [];
+                    //distance = 0;
+                    //markerArray = [];
+                    //lastAddedDistance = [];
                     $("#courseName").val('');
                     document.getElementById('distance').innerHTML = "0";
                 }
@@ -1150,6 +1150,29 @@ $(document).ready(function(){
                 $.getJSON(postWorkoutMessage + $('#workoutMessageInput').attr('workoutid') + "/" + message , function(data) {
                     if(data.success){
                         Notifier.success('Message sent');
+                        $('#workoutCommentInput').val('Post a comment ...');
+                        //get reqest returns new updated workout, then we udpdate the message feed
+                        if(data.message.feed.length > 0){
+                            renderWorkoutMessages(data.message.feed, function(html){
+                                document.getElementById('comments').innerHTML = html;
+                                $('.removeWorkoutComment').die();
+                                $('.removeWorkoutComment').live('click', function(){
+                                    var parent = $(this).parent();
+                                    $.getJSON(removeWorkoutComment +data.message._id + "/" + $(this).parent().attr('messageId'), function(data) {
+                                        if(data.success){
+                                            parent.remove();
+                                            if(data.message.feed.length === 1){
+                                                 document.getElementById('comments').innerHTML = "<br> No Comments yet ..."   
+                                            }
+                                        }
+                                        else{
+                                            
+                                        }                    
+                                    });
+                                });
+                            });
+                        }
+
                     }
                     else{
                         Notifier.error(data.mes);

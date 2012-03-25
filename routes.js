@@ -60,10 +60,10 @@ module.exports = function(app) {
          
             //console.log("routes.js level: " + data);
             if(message === "Success"){
-                res.json({ success: true, message:'Deleted workout'});
+                res.json({ success: true, message:'Deleted course.'});
             }
             else{
-                res.json({ success: false, message:'Failed to delete workout. ' + message});
+                res.json({ success: false, message:'Failed to delete course. ' + message});
             }
             
         });
@@ -375,8 +375,6 @@ module.exports = function(app) {
                 res.json({ success: false, message:mes});
             }
         });   
-         
-         
      });
      
      app.get("/cell/join/:cellId", function(req,res){
@@ -427,20 +425,25 @@ module.exports = function(app) {
             }
             else{
                 if(mes.isPrivate){
-                    for(i=0; i < mes.members.length; i++){
-                        //console.log(typeof(getLogedId(req)) + " vs " + typeof(mes.members[i].fbid));
-                        //console.log(getLogedId(req) + " vs " + mes.members[i].fbid);
-                        if(parseInt(getLogedId(req)) === parseInt(mes.members[i].fbid)){
-                           res.json({ success: true, message: mes});
-                           break;
-                        }
-                        else if(i === mes.members.length - 1){ //When loop is doen send failure
-                            res.json({ success: true, message: "This cell is private"});
-                        }
-                        else{
-                            
-                        }
-                    } 
+                    if(mes.members.length !== 0){
+                        for(i=0; i < mes.members.length; i++){
+                            //console.log(typeof(getLogedId(req)) + " vs " + typeof(mes.members[i].fbid));
+                            //console.log(getLogedId(req) + " vs " + mes.members[i].fbid);
+                            if(parseInt(getLogedId(req)) === parseInt(mes.members[i].fbid)){
+                               res.json({ success: true, message: mes});
+                               break;
+                            }
+                            else if(i === mes.members.length - 1){ //When loop is doen send failure
+                                res.json({ success: true, message: "This cell is private"});
+                            }
+                            else{
+                                
+                            }
+                        } 
+                    }
+                    else{
+                        res.json({ success: true, message: "This cell is private"});
+                    }
                 }
                 else{
                     res.json({ success: true, message: mes});
@@ -549,12 +552,31 @@ module.exports = function(app) {
             }
          });
     });
-
+    
+    //--------------------------------------------------------------------------
+    //
+    //     Comment system for individual workout
+    //
+    //--------------------------------------------------------------------------
+    
+    app.get("/workout/message/remove/:workoutid/:messageid", function(req, res){
+        //console.log("in comment"); 
+        mongooseLogic.removeWorkoutMessage(req.params.workoutid, req.params.messageid, function(mes){
+             if(mes === "Failed"){
+                res.json({ success: false, message: "Could not post message"});   
+            }
+            else{
+                console.log(JSON.stringify(mes));
+                res.json({ success: true, message:"Removed message"});
+            }
+        });   
+     });
+    
     app.get('/workout/message/:workoutid/:message', function(req, res){
         
         mongooseLogic.addWorkoutMessage(getLogedName(req), getLogedId(req), req.params.workoutid, req.params.message, function(mes){
-            if(mes === "Success"){
-                res.json({ success: true, message:'Message sent.'});
+            if(RealTypeOf(mes) !== "string"){               
+                res.json({ success: true, message:mes});
             }
             else{
                 res.json({ success: false, message: mes}); 
@@ -562,6 +584,8 @@ module.exports = function(app) {
         });
         
     });
+    
+    
     
     //----DELETION OF DATA -----------
     

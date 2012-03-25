@@ -30,6 +30,7 @@ var deleteCellMessage = "/cell/notification/remove/"; //:cellid/:notificationid
 var isCoach = "/cell/coach/"; //:cellId/:userId
 var postWorkoutMessage = "/workout/message/"; // :workoutid/:message
 var getCoachWorkout = "/result/coach/" //:workoutid/:userid/:cellid
+var removeWorkoutComment = "/workout/message/remove/"; //:workoutid/:message
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -59,4 +60,5 @@ var initGlobalVar = function(){
     isCoach = "/cell/coach/";
     postWorkoutMessage = "/workout/message/"; // :
     getCoachWorkout = "/result/coach/";
+    removeWorkoutComment = "/workout/message/remove/";
 }

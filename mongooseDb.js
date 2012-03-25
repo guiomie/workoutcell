@@ -66,7 +66,7 @@ var Parcour = new Schema({
    path       : String,
    distance   : Number,
    name       : String,
-   markers    : {latlng: [{Oa: Number, Pa: Number}], titles: [String]}
+   markers    : {latlng: [{lat: Number, lng: Number}], titles: [String]}
     
 });
 
@@ -152,7 +152,7 @@ var CardioWorkout = new Schema({
     parcour               :{id: ObjectId, name: String, distance: Number, staticUrl: String},
     distanceResult        :{unit: String , value:Number, completed:Boolean},
     intervallResult       :[SingleIntervallResult],
-    feed                  :[{type: String, sender: String, senderId: Number, message: String }]   //type is either notification or message
+    feed                  :[new mongoose.Schema({type: String, sender: String, senderId: Number, message: String })]   //type is either notification or message
 });
 
 var CardioRef = new Schema({
