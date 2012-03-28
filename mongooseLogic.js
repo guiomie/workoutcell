@@ -799,19 +799,20 @@ var deleteCellEvent = function(cellId, month, year, workoutId, callback){
     });  
 }
 
-
+//This function returns the cellId found, essential for /workout/cell/join/ route
 var joinCellWorkout = function(userId, userName, workoutId, callback){
     
     if(workoutId.toString().length !== 24 ){
         
        console.log("Invalid objectId submitted @ getWorkout()");
-       callback("Invalid objectId for workoutId");
+       callback("Failed");
     }
     else{
         CardioWorkout.findOne({ _id: workoutId }, function(err, workoutResult){
 
             if(err || workoutResult === null){
-                callback("No such workout: " + err);
+                console.log("In JoinCellWorkout error(1)" + err);
+                callback("Failed");
             }
             else{
                 
@@ -823,11 +824,11 @@ var joinCellWorkout = function(userId, userName, workoutId, callback){
                 workoutResult.save(function (err) {
                     if (err) { 
                         console.log("In JoinCellWorkout error(2)" + err);
-                        callback("Error JoinCellWorkout. Stack Trace: " + err); 
+                        callback("Failed"); 
                     }
                     else{
-                        console.log("In JoinCellWorkout Success" + err);
-                        callback("Success");      
+                        //console.log("In JoinCellWorkout Success" + err);
+                        callback(workoutResult.cell.cellId);      
                     }      
                 });
             }

@@ -58,6 +58,9 @@ var renderNotifications = function(arrayNotification, reInit){
         else if(arrayNotification[i - 1].type === "newCellMessage"){
             createCellMessageElement(arrayNotification[i - 1]);
         }
+        else if(arrayNotification[i - 1].type === "joinedWorkoutCell"){
+            createCellMessageElement(arrayNotification[i - 1]);
+        }
         else if(arrayNotification[i - 1].type === "cellInvite"){
             createCellInviteElement(arrayNotification[i - 1]);
         }
@@ -107,7 +110,7 @@ var renderFriendList = function(arrayResult, locationId){
     else{
        var overallHtml = "";
        for(i = 0; i < arrayResult.length; i++){
-          var pictureTag = '<div select="no" userid="'+ arrayResult[i] +'" class="selectable' + locationId + '"  id="friendPic'+ locationId + i + '" style="margin-left: 3px; cursor: pointer; float:left;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          var pictureTag = '<div select="no" userid="'+ arrayResult[i] +'" class="selectable' + locationId + '"  id="friendPic'+ locationId + i + '" style="margin-left: 3px; cursor: pointer; float:left;"><img src="http://graph.facebook.com/' + arrayResult[i] + '/picture" />'; 
           overallHtml = overallHtml + pictureTag + '</div>';
        }
        document.getElementById(locationId).innerHTML = overallHtml;
@@ -221,6 +224,7 @@ var createCellMessageElement = function(object){
     
 }
 
+
 var createCellListElement = function(object){
     
     var html = "<div class='cellCard' refId='" + object.cellDetails + "' style='float:left; margin-bottom: 3px; cursor: pointer; padding:3px 6px; margin-right: 5px; background-color:#C7E5AE; font-size: 12px;' id='cell" +
@@ -229,6 +233,7 @@ var createCellListElement = function(object){
     return html;
     
 }
+
 
 var  createCellInviteElement = function(object){
     
@@ -362,7 +367,9 @@ var renderCellMemberList = function(arrayResult){
               document.getElementById('cellToggleName').innerHTML = 'Quit cell';
           }
 
-          var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i].fbid + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          //var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i].fbid + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          var pictureTag = '<span id="friendPic' + i + '" style="padding-left: 3px; cursor: pointer;"><img src="http://graph.facebook.com/' + arrayResult[i].fbid + '/picture" />'; 
+          
           overallHtml = overallHtml + pictureTag + '</span>';
        }
        document.getElementById('cellMemberList').innerHTML = overallHtml;
@@ -456,7 +463,7 @@ var initUsersProfile = function(targetId){
     
     $.getJSON("/user/profile/" + targetId, function(data) {
         if(data.success){
-            renderProfileView(data.message);   
+            renderProfileView(data.message, targetId);   
         }
         else{
             //something wrong
@@ -497,7 +504,7 @@ var renderProfileView = function(object, userId){
         
         document.getElementById('joindate').innerHTML =  'Joined: ' + d.toLocaleDateString();
     
-        var pictureTag = '<fb:profile-pic uid="' + userId + '" facebook-logo="false" linked="true" width="100" height="100" size="thumb" ></fb:profile-pic>'; 
+        var pictureTag = '<img src="http://graph.facebook.com/' + userId + '/picture?type=normal" />'; //'<fb:profile-pic uid="' + userId + '" facebook-logo="false" linked="true" width="100" height="100" size="thumb" ></fb:profile-pic>'; 
     
         document.getElementById('usersFbPic').innerHTML =  pictureTag ;
         FB.XFBML.parse(document.getElementById('usersFbPic'));
@@ -547,7 +554,8 @@ var renderProfileFriendList = function(arrayResult){
     else{
        var overallHtml = "";
        for(i = 0; i < arrayResult.length; i++){
-          var pictureTag = '<span id="friendPic' + arrayResult[i] + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          //var pictureTag = '<span id="friendPic' + arrayResult[i] + '" style="padding-left: 3px; cursor: pointer;"><fb:profile-pic uid="' + arrayResult[i] + '" facebook-logo="false" linked="false" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          var pictureTag = '<span id="friendPic' + arrayResult[i] + '" style="padding-left: 3px; cursor: pointer;"><img src="http://graph.facebook.com/' + arrayResult[i] + '/picture" />'; 
           overallHtml = overallHtml + pictureTag + '</span>';
        }
        document.getElementById('friendProfileList').innerHTML = overallHtml;

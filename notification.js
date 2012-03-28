@@ -98,7 +98,7 @@ var removeCellInviteNotification = function(cellId, userId, callback){
 //Go into someones notification colllection, and remove one from its _id
 var removeUserNotification = function(notificationId, userId, callback){
     
-    NotificationsReference.update({ "id" : userId}, { $pull: { pending: { refOId :  ObjectId.fromString(notificationId)}}, $inc:{ pendingSize: -1 }}, function(err, result){
+    NotificationsReference.update({ "id" : userId}, { $pull: { pending: { _id :  ObjectId.fromString(notificationId)}}, $inc:{ pendingSize: -1 }}, function(err, result){
         if(err || result === null){
             console.log("Notification doesn't exist. Stack: " + err );
             callback("Notification doesn't exist. Stack: " + err );
@@ -283,14 +283,14 @@ var declinePendingFriendship = function(userId, requesterId, callback){
 var sendNotificationToCellUsers = function(cellId, notification, callback){
     //console.log('in not for users');
     CellDetails.findOne({_id: cellId}, function(err, result){
-        if(err || null){
+        if(err || result == null){
             console.log(result + " - " + err);
             callback("Can't send notification. Stack:" + err);
         }
         else{
-        
+            console.log(JSON.stringify(result));
             for(i =0; i < result.members.length; i++){
-                console.log( i  + " user is " + result.members[i]);
+                //console.log( i  + " user is " + result.members[i]);
                 NotificationsReference.update({ "id" : result.members[i].fbid}, { $push: { pending: notification}, $inc: { unRead : 1 , pendingSize: 1 }}, function(err){
                     if(err){
                         console.log('update failed - ' + err);

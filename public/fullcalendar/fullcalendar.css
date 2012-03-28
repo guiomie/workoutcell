@@ -425,7 +425,7 @@ table.fc-border-separate {
 	
 .fc-border-separate tbody tr.fc-first td,
 .fc-border-separate tbody tr.fc-first th {
-	border-top-width: 0;
+	border-top-width: 1px;
 	}
 	
 	

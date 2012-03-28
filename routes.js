@@ -847,7 +847,7 @@ module.exports = function(app) {
         var receivedJSON = req.body;//JSON.parse(req.body);
         var eventObject = receivedJSON.event;
         var workoutObject = receivedJSON.workout;
-        //console.log( "CELLID IS --> " + req.params.cellId);
+        console.log( "UserId IS --> " + getLogedId(req));
         //step1   
         if(typeof(eventObject) !== undefined && typeof(workoutObject) !== undefined){
             mongooseLogic.saveWorkout(workoutObject, getLogedId(req), getLogedName(req), req.params.cellId, function(savedWorkoutObjectId){
@@ -916,7 +916,7 @@ module.exports = function(app) {
         var eventObject = req.body.event;
         
         mongooseLogic.joinCellWorkout(getLogedId(req), getLogedName(req), eventObject.refWorkout, function(mes){
-            if(mes !== "Success"){
+            if(mes === "Failed"){
                 res.json({ success: false, message:'Failed to join Workout.'});    
             }
             else{
@@ -925,11 +925,26 @@ module.exports = function(app) {
                     //res.contentType('application/json');
                     if(message === "not instantiated"){
                         //console.log("Event not Saved ...");
-                        res.json({ success: false, message: 'Failed to saved event.'});
+                        res.json({ success: false, message: 'Failed to join event.'});
                     }
                     else{
                         //console.log("Saved Event ...");
-                        res.json({ success: true,  message: 'Joined workout successfully.'});    
+                        res.json({ success: true,  message: 'Joined workout successfully.'}); 
+                        
+                        //Send to all cell users you have joined this workout
+                        var newNotification = {
+                            type      : 'joinedWorkoutCell', //joinMasterCell, workoutCell, broadcast
+                            message   : getLogedName(req) + ' joined a workout.', //Name of person
+                            refId     : mes,
+                            refOId    : eventObject.refWorkout,  //cellId
+                            date      : new Date() 
+                        }
+
+                        notification.sendNotificationToCellUsers(mes, newNotification, function(res){
+                            if(res !== "Success"){
+                                  notification.pushToNotificationLog(res + " @ POST: /workout/cell/join/");
+                            }
+                        });
                     }
                 });
             }
