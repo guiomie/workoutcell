@@ -133,14 +133,16 @@ function initView(workoutObject, event) {
 	if(workoutObject.description !== "none"){
         var descPictureTag;
         var name = "Your description: ";
+        $('#workoutDescription').height(60);   
+        
         if(workoutObject.cell.creator != undefined){
-             descPictureTag = '­­<fb:profile-pic uid="' + workoutObject.cell.creator.fbid 
-             + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+             descPictureTag = '<img src="http://graph.facebook.com/' +  workoutObject.cell.creator.fbid + '/picture" />'; // '­­<fb:profile-pic uid="' + workoutObject.cell.creator.fbid 
+             //+ '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
             name = workoutObject.cell.creator.fullName +"'s description: ";
         }
         else{
-            descPictureTag = '­­<fb:profile-pic uid="'+ authId 
-             + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>';
+            descPictureTag = '<img src="http://graph.facebook.com/' + authId + '/picture" />'; //'­­<fb:profile-pic uid="'+ authId 
+             //+ '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>';
         }
         document.getElementById('descFbId').innerHTML =  descPictureTag ;
         FB.XFBML.parse(document.getElementById('descFbId'), function(){
@@ -164,6 +166,10 @@ function initView(workoutObject, event) {
  
 		//document.getElementById('description').innerHTML = "Description <br><div style='font-size: 12px;'>" + workoutObject.description + "</div>";
 	}
+    else{
+        //Required, or if a description was loaded, there will be an empty box in UI
+        $('#workoutDescription').height(0);   
+    }
     
     if(workoutObject.feed.length > 0){
         

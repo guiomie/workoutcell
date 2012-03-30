@@ -94,7 +94,47 @@ $(document).ready(function(){
         $('#cellMessageInput').corner("5px");
         $('#workoutMessageInput').corner("5px");
         
+        //--------------------------------------------------------
+        //      Input restriction
+        //--------------------------------------------------------
         
+        var bindInputBlocker = function(){
+            jQuery('.numbersOnly').die();    
+            jQuery('.numbersOnly').keyup(function () { 
+                this.value = this.value.replace(/[^0-9\.]/g,'');
+            });
+            
+            jQuery('.numbersOnly').blur(function () { 
+                if($(this).val() === ''){
+                  $(this).val('0');   
+                }
+            });
+            
+        }
+        
+        bindInputBlocker();
+        
+        //You can only enter numerical number in the field with this event
+    	$("input[type=text][id=unitInput]").keydown(function(event) {
+			// Allow only backspace and delete
+			if ( event.keyCode == 46 || event.keyCode == 8 ) {
+				// let it happen, don't do anything
+			}
+			else {
+				// Ensure that it is a number and stop the keypress
+				if (event.keyCode < 48 || event.keyCode > 57 ) {
+					event.preventDefault(); 
+				}   
+			}
+		});
+        
+        //Restricts the user from putting a / in the name, because the route to
+        //get a map will be messed up if using theres a / in the name
+        jQuery('#courseName').keyup(function () { 
+            this.value = this.value.replace(/[/]/g,'');
+        });
+
+
         //--------------------------------------------------------
         //       Carousel initiation (jcarousel)  
         //       http://sorgalla.com/projects/jcarousel/
@@ -313,7 +353,7 @@ $(document).ready(function(){
                     //$('#bigInput').qtip({content: { text: res + ' meters or ' + (Math.round(1.609344*parseFloat(res/1000))*100)/100 + ' miles' }, show: true});
                     $('#distanceOutDelimiter').qtip({
                         content: {
-                            text: res + ' meters (' + (Math.round(1.609344*parseFloat(res/1000)*100)/100) + ' miles)' 
+                            text: res + ' meters (' + (Math.round(0.621371192*parseFloat(res/1000)*100)/100) + ' miles)' 
                         },
                         show: {
                             ready: true
@@ -542,7 +582,7 @@ $(document).ready(function(){
 
 
         
-            var html = '<div class="intervallInputElement"><div style="float: left; width: 150px;" class="targetDiv">'+ firstOption +'<input type="text" class="metricValue" size="1" value="' + targetValue +'">&nbsp;<input type="text" class="quantityValue" size="1" value="' + quantityValue +'"></div><div class="metricDiv" style="float: left; width: 180px;">' + 
+            var html = '<div class="intervallInputElement"><div style="float: left; width: 150px;" class="targetDiv">'+ firstOption +'<input type="text" class="metricValue numbersOnly" size="1" value="' + targetValue +'">&nbsp;<input type="text" class="quantityValue numbersOnly" size="1" value="' + quantityValue +'"></div><div class="metricDiv" style="float: left; width: 180px;">' + 
                 secondOption +'<span class="targetValue">' + theMetricValue + '</span></div><div style="float: left; width: 110px" class="descContainer"> <input type="text" class="intervallDescription" element="0" size="13" value="' + intervallDescription + '"></div><div class="removeIntervallIcon"' + 
                 'style="float: left; width: 20px; cursor: pointer"><span class="ui-icon ui-icon-closethick"></span></div><div class="sliderIntervallContainer" style="margin-right: 200px; display: none; float:right;"></div></div>'    
            
@@ -557,6 +597,8 @@ $(document).ready(function(){
             
             
             refreshSlider();
+            
+            bindInputBlocker();
            
         }
         
@@ -713,26 +755,13 @@ $(document).ready(function(){
         //addIntervallInput("%", "70", "s", "100", "totototot", "", "");
         
         $('#addAnotherIntervall').click(function(){
-            addIntervallInput("", "", "", "", "", "", "");
+            addIntervallInput("", "", "", "0", "", "", "");
             //addIntervallInput();
             //createIntervallModel();
             
         });
 
-		//You can only enter numerical number in the field with this event
-		$("input[type=text][id=unitInput]").keydown(function(event) {
-			// Allow only backspace and delete
-			if ( event.keyCode == 46 || event.keyCode == 8 ) {
-				// let it happen, don't do anything
-			}
-			else {
-				// Ensure that it is a number and stop the keypress
-				if (event.keyCode < 48 || event.keyCode > 57 ) {
-					event.preventDefault(); 
-				}   
-			}
-		});
-
+		
 		//hover states on the static widgets
 		$('#dialog_link, ul#icons li').hover(
 			function() { $(this).addClass('ui-state-hover'); }, 
@@ -1329,7 +1358,7 @@ $(document).ready(function(){
         
         $('#markRead').click(function(){
             $.getJSON(resetNotificationCount, function(res) {
-               $("#goToSocial").qtip({hide: true});
+               $("#goToSocial").qtip("destroy");
             }); 
         });
         

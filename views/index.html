@@ -338,7 +338,7 @@
         </div>
         
         <span id="cellTitle" style="font-family: impact; font-size: 20px;">   </span><br>
-         Created by: <span id="cellCreator"> </span><br>
+        <span id="cellCreator"> </span><br>
         <span id="cellLocation" style="font-size: 12px;"> </span><br>
         <span id="cellInfo" style="font-size: 12px; "> </span><br><br>
         
@@ -525,9 +525,9 @@
 			Value<br>
             
             <div id="distanceOutDelimiter" style="width: 175px; height: 25px;">
-    			<input type="text" id="bigInput" class="qtipUnitHelper" size="3" /> 
+    			<input type="text" id="bigInput" value="0" class="qtipUnitHelper numbersOnly" size="3" onblur="if(this.value==''){this.value='0';}" /> 
                 <span id="bigLabel">hour</span> 
-                <input type="text" id="smallInput" class="qtipUnitHelper" size="3" /> 
+                <input type="text" id="smallInput" value="0" class="qtipUnitHelper numbersOnly" size="3" onblur="if(this.value==''){this.value='0';}" /> 
                 <span id="smallLabel">min</span><br>
 			</div>
             

@@ -318,8 +318,14 @@ var fillCellView = function(object){
    
     document.getElementById('cellTitle').innerHTML = object.name;
     document.getElementById('cellLocation').innerHTML = object.location;
-    document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>" + object.owner.name + "</span>";
     document.getElementById('cellInfo').innerHTML = object.description;
+    
+    if(!object.isCoach){
+        document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>Created by: " + object.owner.name + "</span>";
+    }
+    else{
+        document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>Coach : " + object.owner.name + "</span>";    
+    }
     
     renderCellMemberList(object.members);
     renderCellNotifications(object.notification);
@@ -533,7 +539,7 @@ var renderProfileCellList = function(arrayResult){
             
             $("#cell" + arrayResult[i].cellDetails).qtip({
                 content: {
-                    text: "Created by " + arrayResult[i].owner + "<br> Located in " + arrayResult[i].location
+                    text: "Created by " + arrayResult[i].owner.name + "<br> Located in " + arrayResult[i].location
                 },
                 style: {
                     widget: true 
@@ -571,7 +577,10 @@ var renderProfileFriendList = function(arrayResult){
                     event: 'click', 
                     ready: false 
                 },
-                hide: 'click',
+                hide: {
+                    event: 'click',
+                    inactive: 1000
+                },
                 style: {
                     widget: true 
                 }
