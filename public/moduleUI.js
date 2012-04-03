@@ -150,7 +150,7 @@ var moveUI = function(newUI) {
 	
     
     $('#qtipLocationDesc').qtip("destroy");
-    
+    $('#cellInfo').qtip("destroy");
     /*
 			*/
 } 
@@ -206,11 +206,14 @@ function UIrepositionCreate(){
 function UILoadNewState(newState){
 
     //Transit between user panel functionality
-	$("#" + panelState).hide("slide", {}, 1000, function(){
+	$("#" + panelState).hide(1, function(){
 
-		$("#" + newState).show("slide", {}, 1000);
+		$("#" + newState).show();
 		panelState = newState;
-	});   
+	}); 
+    
+    //$('#qtipLocationDesc').qtip("destroy");
+    $('#cellInfo').qtip("destroy");
 }
 
 function UILoadNewStateNoAnimation(newState){

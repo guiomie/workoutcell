@@ -44,6 +44,7 @@ everyauth.facebook
   .appSecret(fbSecret)
   .logoutPath('/logout')
   .logoutRedirectPath('/')
+  .scope('user_location')
   .handleAuthCallbackError( function (req, res) {
     //Define here for routing in case user decline app     
   })
@@ -51,12 +52,17 @@ everyauth.facebook
     //Verifies if user in database already
     var id = fbUserMetadata.id;
     var promise = this.Promise();
-    
+    //console.log(JSON.stringify(fbUserMetadata));
+    var userLocation = "Not Available";
+    //If the user has no location in its profile, then the location name will be unavailable
+    if(typeof(fbUserMetadata.location) !== 'undefined'){
+        userLocation = fbUserMetadata.location.name;
+    }
     
     User.findOne({ fbid: id}, function(err, user) {
         if (err) return promise.fail(err);
         if (user) return promise.fulfill(user);
-        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name}, function (err, user) {
+        User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name, location: userLocation }, function (err, user) {
             
             if (err) return promise.fail(err);
             promise.fulfill(user);

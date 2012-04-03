@@ -48,7 +48,7 @@ $('#searchIconButton').live('click', function(){
                     if(data.success){
                         //Notifier.success();
                         //$('#searchDialog').dialog('open');
-                        renderSearchHtml(data.message, function(){
+                        renderSearchHtml(data.message, arrayOfName, function(){
                             
                             $('#searchDialog').dialog('open');
                         });
@@ -69,31 +69,32 @@ $('#searchIconButton').live('click', function(){
             });
     } //single name search
     else if(arrayOfName.length === 1){
-        
+        Notifier.error('Please enter the full name. ex: Lance Armstrong');
         
     }
     else{
-        
+        Notifier.error('Please enter the full name. ex: Lance Armstrong');
     }
  
 });   
         
 //This will no nothing if result is empty, if not, it will process the array an xfbml it.
-var renderSearchHtml = function(arrayResult, callback){
+var renderSearchHtml = function(arrayResult, fullname, callback){
      
-    if(arrayResult === []){
+    if(arrayResult.length === 0){
+        document.getElementById('searchDialog').innerHTML = "No found results for " + fullname + ". Maybe there is a typo?<br><br><span style='font-size: 15px;'>Other users near you:</span>  <br><br> No one in your location";  
         callback();      
     }
     else{
        var overallHtml = "<table width='100%'>";
        for(i = 0; i < arrayResult.length; i++){
-          var pictureTag = '<fb:profile-pic uid="' + arrayResult[i].fbid + '" facebook-logo="false" linked="true" width="50" height="50" size="thumb" ></fb:profile-pic>'; 
+          var pictureTag = '<img src="http://graph.facebook.com/' +  arrayResult[i].fbid + '/picture" />'; 
           var name  = "<div style='font-size: 12px; float:left;'><div style='font-weight:bold'>" + arrayResult[i].firstName + " " + arrayResult[i].lastName + "</div><div>" + arrayResult[i].location + "</div>";
           var add = "<div id='addToCell" + arrayResult[i].fbid + "' style='float: right; cursor:pointer'> Add to your cell</div>";
           overallHtml = overallHtml + '<tr><td>' + pictureTag + '</td><td valign="middle">' + '</td><td valign="middle">' + name + '</td><td valign="middle"  width="99%">' + add + '</td></tr>';
        }
        document.getElementById('searchDialog').innerHTML = overallHtml + '</table><br><br><span style="font-size: 15px;">Other users near you:</span>  <br> No one in your location';
-       FB.XFBML.parse(document.getElementById('searchDialog'));
+       //FB.XFBML.parse(document.getElementById('searchDialog'));
        
        //add click handlers to each add user
        for(i = 0; i < arrayResult.length; i++){
@@ -117,23 +118,6 @@ var renderSearchHtml = function(arrayResult, callback){
     }  
 }
     
-    
-// Dialog    		
-$('#searchDialog').dialog({
-	autoOpen: false,
-	width  : 400,
-    height : 400,
-    resizable: false,
-    draggable: false,
-    modal: true,
-    position: {
-        my: "center",
-        at: "center",
-        of: window
-    }
-
-});   
-
 
 
 }

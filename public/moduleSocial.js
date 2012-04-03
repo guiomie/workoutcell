@@ -318,15 +318,47 @@ var fillCellView = function(object){
    
     document.getElementById('cellTitle').innerHTML = object.name;
     document.getElementById('cellLocation').innerHTML = object.location;
-    document.getElementById('cellInfo').innerHTML = object.description;
-    
-    if(!object.isCoach){
-        document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>Created by: " + object.owner.name + "</span>";
+    //document.getElementById('cellInfo').innerHTML = '<img src="http://graph.facebook.com/' +  object.owner.id + '/picture" />';// object.description;
+    var description; 
+    if(object.isCoach){
+        description = '<div>' + object.owner.name + ': ' + object.description + '</div><div style="float: right;"> -Coach of the cell</div>';
+        if(object.owner.id.toString() === authId){
+            description = '<div>Your description: ' + object.description + '</div><div style="float: right;"> -Coach of the cell</div>';
+        }
+        
+        //document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>Created by: " + object.owner.name + "</span>";
     }
     else{
-        document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>Coach : " + object.owner.name + "</span>";    
+        description = '<div>' + object.owner.name + ': ' + object.description + '</div><div style="float: right;"> -Creator of the cell</div>';
+        if(object.owner.id.toString() === authId){
+            description = '<div>Your description: ' + object.description + '</div><div style="float: right;">-Creator of the cell</div>';
+        }
+        //document.getElementById('cellCreator').innerHTML = "<span class='profileLink' profileId='" + object.owner.id + "'>Coach : " + object.owner.name + "</span>";    
     }
     
+    $('#fbpicCellCreator').attr('src', "");
+    $('#fbpicCellCreator').attr('src', "http://graph.facebook.com/" +  object.owner.id + "/picture"); 
+    
+    $('#fbpicCellCreator').one('load', function() { //Set something to run when it finishes loading
+          //alert('creator instantiation');
+          $('#cellInfo').qtip({
+            content: description,
+            position: {
+                my: 'left center', // Use the corner...
+                at: 'right center' // ...and opposite corner
+            },
+            show: {
+              ready: true
+            },
+            hide: false,
+            style: {
+                widget : true,
+                classes: 'ui-tooltip-rounded ui-tooltip-shadow',
+                width  : '300px'
+            }
+        });
+    });
+        
     renderCellMemberList(object.members);
     renderCellNotifications(object.notification);
     

@@ -218,40 +218,54 @@ $(document).ready(function(){
                 at: "center",
                 of: window
             },
+            open: function(){ 
+                $('#cellInfo').qtip("hide"); 
+                $("#goToSocial").qtip("hide");
+            },
+            beforeClose: function(){ 
+                $('#cellInfo').qtip("show");
+                $("#goToSocial").qtip("show");
+            },
 			buttons: {
 				"Ok": function() { 
+                    var jsonToSend = getSelectedElements('friendPic', 'inviteFriendList');
                     
-                    $.ajax({
-                        url: inviteToCell + applicationVariables.currentCell + "/" + $('#cellTitle').html() + "/",
-                        type: "POST",
-                        dataType: "json",
-                        data: JSON.stringify(getSelectedElements('friendPic', 'inviteFriendList')),
-                        contentType: "application/json",
-                        cache: false,
-                        timeout: 5000,
-                        complete: function() {
-                            //called when complete
-                            Notifier.info('Saving ...');
-                        },
-                        success: function(data) {
-                            //var res =jQuery.parseJSON(data);
-                            //callback('Sending: ' + data);
-                            if(data.success){
-                                Notifier.success(data.message);
-                                 callback(data.success);
-                            }
-                            else{
-                               Notifier.error(data.message); 
-                               callback(data.success);
-                            }
-                        },
-        
-                        error: function() {
-                            //callback('Operation failed');
-                            Notifier.error('Could not send data to server');
-                             callback(false);
-                        },
-                    });
+                    if(jsonToSend.length === 0){
+                        Notifier.error("You haven't selected anyone.");    
+                    }
+                    else{
+                        $.ajax({
+                            url: inviteToCell + applicationVariables.currentCell + "/" + $('#cellTitle').html() + "/",
+                            type: "POST",
+                            dataType: "json",
+                            data: JSON.stringify(getSelectedElements('friendPic', 'inviteFriendList')),
+                            contentType: "application/json",
+                            cache: false,
+                            timeout: 5000,
+                            complete: function() {
+                                //called when complete
+                                Notifier.info('Saving ...');
+                            },
+                            success: function(data) {
+                                //var res =jQuery.parseJSON(data);
+                                //callback('Sending: ' + data);
+                                if(data.success){
+                                    Notifier.success(data.message);
+                                     callback(data.success);
+                                }
+                                else{
+                                   Notifier.error(data.message); 
+                                   callback(data.success);
+                                }
+                            },
+            
+                            error: function() {
+                                //callback('Operation failed');
+                                Notifier.error('Could not send data to server');
+                                 callback(false);
+                            },
+                        });
+                    }
                     
                     document.getElementById('inviteFriendList').innerHTML = "";
                     applicationVariables.selectedElements = 0;
@@ -276,6 +290,12 @@ $(document).ready(function(){
                 at: "center",
                 of: window
             },
+            open: function(){ 
+                $("#goToSocial").qtip("hide");
+            },
+            beforeClose: function(){ 
+                $("#goToSocial").qtip("show");
+            },
 			buttons: {
 				"Ok": function() { 
 					postJson(JSON.stringify(grabNewCellInput()), postCell, function(){
@@ -288,6 +308,37 @@ $(document).ready(function(){
 				} 
 			}
 		});
+        
+        // Dialog        	
+        $('#searchDialog').dialog({
+        	autoOpen: false,
+        	width  : 400,
+            height : 400,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            position: {
+                my: "center",
+                at: "center",
+                of: window
+            },
+            open: function(){ 
+                $("#goToSocial").qtip("hide");
+                $("#goToSearch").qtip("hide");
+            },
+            beforeClose: function(){ 
+                $("#goToSocial").qtip("show");
+            }
+        
+        });   
+
+
+        
+        //--------------------------------------------------------------------
+        //
+        //    Sliders area
+        //
+        //--------------------------------------------------------------------
 
 		$( "#sliderIntensity" ).slider({
 			//orientation: "horizontal",
@@ -715,8 +766,8 @@ $(document).ready(function(){
                     $("#sliderIntervallIntensity" ).slider({
                         disabled: false, range: true,
                         step: 5,
-                        min: 0, max: 300,
-                        values: [30, 60],
+                        min: 0, max: 600,
+                        values: [100, 300],
                         slide: function(event, ui){ 
                             var minValueHtml = '<span class="intervallMin" seconds="' + ui.values[0] + '">' + Math.floor(ui.values[0] / 60) +":" + (ui.values[0] - (Math.floor(ui.values[0] / 60) * 60)) + '</span>';
                             var maxValueHtml = '<span class="intervallMax" seconds="' + ui.values[1] + '">' + Math.floor(ui.values[1] / 60) +":" + (ui.values[1] - (Math.floor(ui.values[1] / 60) * 60)) + '</span>';
