@@ -31,7 +31,9 @@ var isCoach = "/cell/coach/"; //:cellId/:userId
 var postWorkoutMessage = "/workout/message/"; // :workoutid/:message
 var getCoachWorkout = "/result/coach/" //:workoutid/:userid/:cellid
 var removeWorkoutComment = "/workout/message/remove/"; //:workoutid/:message
-var removeUserNotification = "/notification/user/remove/" //:notificationid
+var removeUserNotification = "/notification/user/remove/"; //:notificationid
+var getYourProfile = "/user/ownprofile";
+var postUserLocation = "/user/location/update/" //:lat/:lng
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -63,4 +65,6 @@ var initGlobalVar = function(){
     getCoachWorkout = "/result/coach/";
     removeWorkoutComment = "/workout/message/remove/";
     removeUserNotification = "/notification/user/remove/";
+    getYourProfile = "/user/ownprofile";
+    postUserLocation = "/user/location/update/";
 }

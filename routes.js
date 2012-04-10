@@ -107,6 +107,8 @@ module.exports = function(app) {
         
     });
     
+
+    
     //!!!!!----------------Notifications Route ------------------------------///
     //
     //
@@ -519,6 +521,21 @@ module.exports = function(app) {
   
     });
     
+    app.get("/user/ownprofile", function(req,res){
+         //console.log("got request");
+
+        mongooseLogic.getUserBasicInfo(getLogedId(req), function(profil){
+            if(profil === "Error"){
+                res.json({ success: false, message:'Failed to find Users Cells.'});  
+            }
+            else{
+                res.json({ success: true, message: profil}); 
+            }
+        });
+
+
+    });
+    
     app.get("/user/isFriend/:userId/:target", function(req,res){
          //console.log("got request");
          mongooseLogic.isUserAFriend(req.params.userId, req.params.target, function(bool){
@@ -564,6 +581,27 @@ module.exports = function(app) {
                  res.json({ success: false, message:'You are  not friends.'}); 
             }
          });
+    });
+    
+    
+    app.get("/user/location/update/:lat/:lng", function(req, res){
+    
+        if(req.loggedIn){
+            mongooseLogic.setUserLatLng(getLogedId(req), req.params.lat, req.params.lng, function(mes){
+                if(mes === "Success"){
+                     res.json({ success: true, message:'Update users geo-location successfully.'});
+                }
+                else{
+                    res.json({ success: false, message:'Location update failed.'}); 
+                }
+            });
+        }
+        else{
+            res.json({ success: false, message:'Invalid autorization.'}); 
+        }
+        
+        
+        
     });
     
     //--------------------------------------------------------------------------

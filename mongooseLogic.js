@@ -948,6 +948,31 @@ var getProfileSnippet = function(userId, callback){
     }); 
 }
 
+var setUserLatLng = function(userId, lat, lng, callback){
+    
+    User.findOne({ fbid: userId }, function(err, result){
+        if(err || result === null){
+            //console.log("For : " + userId + "  " + err + " : " + result);
+            callback("Error in finding user: " + err);
+        }
+        else{
+            result.location.latlng.lat = lat;
+            result.location.latlng.lng = lng;
+            
+            result.save(function(err, result){
+                if(err){
+                    callback("Error in saving cell: Stack: " + err);        
+                }
+                else{          
+                    callback("Success"); 
+                }
+            });
+
+        }
+    }); 
+  
+}
+
 var searchByFullName = function(first, last, callback){
     
     if(first !== "" && last !== ""){
@@ -1283,6 +1308,7 @@ exports.isUserAFriend = isUserAFriend;
 exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;
 exports.getFriendList = getFriendList;
+exports.setUserLatLng = setUserLatLng;
 
 exports.getWorkoutCoachMode = getWorkoutCoachMode;
 exports.checkIfUserInCell = checkIfUserInCell;

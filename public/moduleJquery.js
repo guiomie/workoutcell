@@ -25,6 +25,7 @@ var applicationVariables = {
     selectedElements    : 0,
     intervallInput      : [],
     intervallSliderUsed : false,
+    profile             : { location: "none" }
 }
 
 //Global functions, declared in jquery init
@@ -84,7 +85,47 @@ $(document).ready(function(){
                 $('#drophere').hide();
             }
 		});
+        
+        //--------------------------------------------------------
+        //      Profile loading
+        //--------------------------------------------------------
+        
+        var loadProfile = function(){
+            
+            $.getJSON(getYourProfile, function(data) {
+                if(data.success){
 
+                    setUsersLatLng(data.message.location, function(callback){
+                        if(callback === "Failed"){
+                            Notifier.error('Could initiate profile properly');
+                        }
+                        else if(callback === 'Already instantiated'){
+                            applicationVariables.profile.location =  data.message.location;  
+                        }
+                        else{
+                            //alert('posting new latlng: ' + JSON.stringify(callback));
+                            $.getJSON(postUserLocation + callback.lat + "/" + callback.lng, function(data) {
+                                if(data.success){
+                                    applicationVariables.profile.location =  data.message.location;
+                                }
+                                else{
+                                    Notifier.error('Error in updating your profile location.');
+                                }
+                            });
+                        }
+                    });
+                }
+                else{
+                //something wrong
+                Notifier.success(data.message);
+                }   
+            }); 
+ 
+        }
+        
+        loadProfile();
+        
+        
         //--------------------------------------------------------
         //      Rounded corner initialisation
         //--------------------------------------------------------
@@ -565,6 +606,7 @@ $(document).ready(function(){
                 markerArray = [];
                 decodeToMap(data.path)
                 loadMarkers(data.markers.latlng, data.markers.titles);
+                map.setCenter(new google.maps.LatLng(data.markers.latlng[0].lat, data.markers.latlng[0].lng));
                 document.getElementById('distance').innerHTML = data.distance;
                 
             }, "json");

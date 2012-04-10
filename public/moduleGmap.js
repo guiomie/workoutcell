@@ -9,7 +9,7 @@ var markerString = "";
 function initialize() {
 	
 	bikeLayer = new google.maps.BicyclingLayer();
-	var latlng = new google.maps.LatLng(45.50, -75.64);
+	var latlng = new google.maps.LatLng(applicationVariables.profile.location.latlng.lat, applicationVariables.profile.location.latlng.lng);
 	var myOptions = {
 		zoom: 14,
 		center: latlng,
@@ -185,4 +185,29 @@ function loadMarkers(arrayLatLng, arrayTitle){
         
     }
 
+}
+
+//This will verify if the passed lat lng passed are instantiated
+//If not, it will use a geocoding to return new valur
+function setUsersLatLng(location, callback){
+
+    if(location.latlng.lat !== 0){
+        callback('Already instantiated');    
+    }
+    else{
+        var geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode( { 'address': location.name}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
+            //alert(JSON.stringify(results));
+            callback({lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()});
+          } else {
+            //alert("Geocode was not successful for the following reason: " + status + ' sent: ' + location.name);
+            callback('Failed');
+          }
+        });
+    }
+    
+    
 }

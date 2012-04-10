@@ -24,7 +24,8 @@ var User = new Schema({
     firstName  : String,   
     lastName   : String,
     email      : String,
-    location   : String,
+    location   : {name: String, latlng: {lat: Number, lng: Number}},
+    objective  : String,
     joinDate   : {type: Date, default: Date.now}
 });
 
