@@ -11,7 +11,7 @@ var userGroup = "group1";
     status : true, // check login status
     cookie : true, // enable cookies to allow the server to access the session
     xfbml  : true, // parse XFBML
-    channelURL : 'http://WWW.MYDOMAIN.COM/channel.html', // channel.html file
+    channelURL : 'http://workoutcelld.guiomie.c9.io/view/channel', // channel.html file
     oauth  : true // enable OAuth 2.0
   });
   

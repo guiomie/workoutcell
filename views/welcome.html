@@ -1,6 +1,7 @@
 
-<html>
+<html xmlns:fb="https://www.facebook.com/2008/fbml">
     <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" ><!-- Edge is highest possible -->
       <title>WorkoutCell - Welcome to the login page</title>
       
       <script type="text/javascript" src="/js/jquery-1.7.1.js"></script>
@@ -22,8 +23,28 @@
           window.location = "http://wc.guiomie.cloud9ide.com/auth/facebook";
          }); */
          
-         $('#loginButton').show();
-         $('#enableJs').hide();
+         
+         
+        //Internet Explorer check
+        var Browser = {
+            Version: function() {
+                var version = 999; // we assume a sane browser
+                if (navigator.appVersion.indexOf("MSIE") != -1)
+                  // bah, IE again, lets downgrade version number
+                  version = parseFloat(navigator.appVersion.split("MSIE")[1]);
+                return version;
+                }
+        }
+         
+         
+        if (Browser.Version() >= 7) {
+            $('#loginButton').show();
+            $('#enableJs').hide();
+            
+        }
+        else{
+           $('#enableJs').html('You are using an old Internet Explorer version, please get Google Chrome.');  
+        }
           
       });
       

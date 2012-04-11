@@ -26,6 +26,7 @@ var User = new Schema({
     email      : String,
     location   : {name: String, latlng: {lat: Number, lng: Number}},
     objective  : String,
+    colors     : {bike: String, swim: String, run: String, cell: String, other: String},
     joinDate   : {type: Date, default: Date.now}
 });
 

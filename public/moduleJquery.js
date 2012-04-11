@@ -25,7 +25,11 @@ var applicationVariables = {
     selectedElements    : 0,
     intervallInput      : [],
     intervallSliderUsed : false,
-    profile             : { location: "none" }
+    profile             : { 
+        location: "none", 
+        objective: "none", 
+        colors: {bike: "#CCCCCC", swim: "#99CCFF", run: "#CC9966", cell: "#C24747"} 
+        }
 }
 
 //Global functions, declared in jquery init
@@ -34,7 +38,32 @@ var addIntervallInput;
 
 $(document).ready(function(){
 
-        $('#scrollbar1').tinyscrollbar();
+        //$('#scrollbar1').tinyscrollbar();
+        
+        
+        //Internet explorer warning
+       //Internet Explorer check
+        var Browser = {
+            Version: function() {
+                var version = 999; // we assume a sane browser
+                if (navigator.appVersion.indexOf("MSIE") != -1)
+                  // bah, IE again, lets downgrade version number
+                  version = parseFloat(navigator.appVersion.split("MSIE")[1]);
+                return version;
+                }
+        }
+         
+         
+        if (Browser.Version() >= 7) {
+            if (Browser.Version() !== 999) {
+                Notifier.warning("You are using IE, get Google Chrome for a better experience");
+            }
+        }
+        else{
+           Notifier.error("You shouldn't be here using IE6, upgrade to Google Chrome");  
+        } 
+        
+        
         
         //----Jcalendar initialisation ----------------------//
         //
@@ -100,7 +129,9 @@ $(document).ready(function(){
                             Notifier.error('Could initiate profile properly');
                         }
                         else if(callback === 'Already instantiated'){
-                            applicationVariables.profile.location =  data.message.location;  
+                            applicationVariables.profile.location =  data.message.location;
+                            applicationVariables.profile.objective = data.message.objective;
+                            applicationVariables.profile.colors = data.message.colors;
                         }
                         else{
                             //alert('posting new latlng: ' + JSON.stringify(callback));
@@ -112,6 +143,8 @@ $(document).ready(function(){
                                     Notifier.error('Error in updating your profile location.');
                                 }
                             });
+                            applicationVariables.profile.objective = data.message.objective;
+                            applicationVariables.profile.colors = data.message.colors;
                         }
                     });
                 }
@@ -238,6 +271,35 @@ $(document).ready(function(){
 				"Cancel": function() { 
 					$(this).dialog("close"); 
 				} 
+			}
+		});
+
+        $('#userOptionDialog').dialog({
+    		autoOpen: false,
+			width: 600,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            position: {
+                my: "center",
+                at: "center",
+                of: window
+            },
+            open: function(){ 
+                $('#cellInfo').qtip("hide"); 
+                $("#goToSocial").qtip("hide");
+                $('#editProfileObjective').html(applicationVariables.profile.objective);
+                //$('#colorInput').html("Bike <input class='color' size='1'  />");
+                document.getElementById('bikeColor').color.hidePicker();
+            },
+            beforeClose: function(){ 
+                $('#cellInfo').qtip("show");
+                $("#goToSocial").qtip("show");
+            },
+			buttons: {
+				"Ok": function() { 
+					$(this).dialog("close"); 
+				}
 			}
 		});
 
@@ -373,8 +435,40 @@ $(document).ready(function(){
         
         });   
 
-
+        //--------------------------------------------------------------------
+        //
+        //    jquery editable
+        //
+        //--------------------------------------------------------------------
         
+        //Functions used by editable
+        function updateObjective(content){
+            if(content.current !== content.previous){
+                $.getJSON(postUserObjective + content.current, function(data) {
+                    if(data.success){
+                        //successfully updated
+                        applicationVariables.profile.objective = content.current;
+                    }
+                    else{
+                    //something wrong
+                        Notifier.error(data.message);
+                    }   
+                }); 
+            }
+            else{
+                //Do nothing, content hasnt changed    
+            }
+
+        }
+         
+        //editable componenets instatiation
+        $('#editProfileObjective').editable({
+            submit:'save',
+            cancel:'cancel',
+            editClass:'resultItem',
+            onSubmit:updateObjective
+        });
+
         //--------------------------------------------------------------------
         //
         //    Sliders area
@@ -910,6 +1004,12 @@ $(document).ready(function(){
             
         });
         
+        $('#goToConfiguration').click(function(){
+            $('#userOptionDialog').dialog("open");
+            
+        });
+        
+        
         //This is to add a button to the calendar
         function addCalButton(where, text, id) {
             var my_button = '<span class="fc-header-space"></span>' +
@@ -1010,7 +1110,6 @@ $(document).ready(function(){
                 
             var month = d.getMonth() + 1;
             var year = d.getFullYear();
-            var theGetUrl = 
 
             $('#fullcalendar').fullCalendar( 'removeEvents' );
             
@@ -1027,7 +1126,7 @@ $(document).ready(function(){
                 }
                 else{
                 //something wrong
-                Notifier.success(data.message);
+                //Notifier.success(data.message);
                 }   
             }); 
             

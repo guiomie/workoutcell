@@ -583,7 +583,7 @@ module.exports = function(app) {
          });
     });
     
-    
+    //Update users map location loading
     app.get("/user/location/update/:lat/:lng", function(req, res){
     
         if(req.loggedIn){
@@ -598,10 +598,25 @@ module.exports = function(app) {
         }
         else{
             res.json({ success: false, message:'Invalid autorization.'}); 
+        }  
+    });
+    
+    //Update users description
+    app.get("/user/objective/update/:string", function(req, res){
+    
+        if(req.loggedIn){
+            mongooseLogic.setUserObjective(getLogedId(req), req.params.string, function(mes){
+                if(mes === "Success"){
+                     res.json({ success: true, message:'Update users objective.'});
+                }
+                else{
+                    res.json({ success: false, message:'Objective update failed.'}); 
+                }
+            });
         }
-        
-        
-        
+        else{
+            res.json({ success: false, message:'Invalid autorization.'}); 
+        }  
     });
     
     //--------------------------------------------------------------------------

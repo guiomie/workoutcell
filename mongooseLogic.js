@@ -961,16 +961,37 @@ var setUserLatLng = function(userId, lat, lng, callback){
             
             result.save(function(err, result){
                 if(err){
+                    callback("Error in saving location: Stack: " + err);        
+                }
+                else{          
+                    callback("Success"); 
+                }
+            });
+        }
+    });  
+}
+
+
+var setUserObjective = function(userId, objective, callback){
+    
+    User.findOne({ fbid: userId }, function(err, result){
+        if(err || result === null){
+            //console.log("For : " + userId + "  " + err + " : " + result);
+            callback("Error in finding user: " + err);
+        }
+        else{
+            result.objective = objective;
+            
+            result.save(function(err, result){
+                if(err){
                     callback("Error in saving cell: Stack: " + err);        
                 }
                 else{          
                     callback("Success"); 
                 }
             });
-
         }
-    }); 
-  
+    });  
 }
 
 var searchByFullName = function(first, last, callback){
@@ -1309,6 +1330,7 @@ exports.getProfileSnippet = getProfileSnippet;
 exports.searchByFullName = searchByFullName;
 exports.getFriendList = getFriendList;
 exports.setUserLatLng = setUserLatLng;
+exports.setUserObjective = setUserObjective;
 
 exports.getWorkoutCoachMode = getWorkoutCoachMode;
 exports.checkIfUserInCell = checkIfUserInCell;

@@ -44,6 +44,7 @@ everyauth.facebook
   .appSecret(fbSecret)
   .logoutPath('/logout')
   .logoutRedirectPath('/')
+  .moduleTimeout(20000) //To verify if this blocks the whole script
   .scope('user_location')
   .handleAuthCallbackError( function (req, res) {
     //Define here for routing in case user decline app     
@@ -63,7 +64,8 @@ everyauth.facebook
         if (err) return promise.fail(err);
         if (user) return promise.fulfill(user);
         User.create({ fbid: id, firstName: fbUserMetadata.first_name, lastName: fbUserMetadata.last_name, 
-            location: {name: userLocation, latlng: {lat: 0, lng: 0}}, objective: "Train socially and improve ! "}, function (err, user) {
+            location: {name: userLocation, latlng: {lat: 0, lng: 0}}, objective: "Train socially and improve ! ",
+            color:{bike:"#CCCCCC", swim: "#99CCFF", run: "#CC9966", cell: "#C24747"}}, function (err, user) {
             
             if (err) return promise.fail(err);
             promise.fulfill(user);
