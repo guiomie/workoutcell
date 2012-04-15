@@ -60,7 +60,7 @@ $(document).ready(function(){
             }
         }
         else{
-           Notifier.error("You shouldn't be here using IE6, upgrade to Google Chrome");  
+           Notifier.error("You shouldn't be here using Internet Explorer 6 or 7, upgrade to Google Chrome");  
         } 
         
         
@@ -167,6 +167,7 @@ $(document).ready(function(){
 		$('#xfbmlPic').corner();
         $('#cellMessageInput').corner("5px");
         $('#workoutMessageInput').corner("5px");
+        $('#searchDiv').corner("5px");
         
         //--------------------------------------------------------
         //      Input restriction
@@ -415,8 +416,8 @@ $(document).ready(function(){
         // Dialog        	
         $('#searchDialog').dialog({
         	autoOpen: false,
-        	width  : 400,
-            height : 400,
+        	width  : 500,
+            height : 500,
             resizable: false,
             draggable: false,
             modal: true,
@@ -1007,6 +1008,18 @@ $(document).ready(function(){
         $('#goToConfiguration').click(function(){
             $('#userOptionDialog').dialog("open");
             
+        });
+        
+        $("#goToSearch").click(function(){
+            $('#searchDialog').dialog("open");
+            
+        });
+        
+        $('#moreSearchResults').click(function(){
+            var page = parseInt($(this).attr('page'));
+            page++;    
+            $(this).attr('page', page);
+            executeSearch(page);
         });
         
         

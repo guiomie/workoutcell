@@ -1,9 +1,9 @@
 
-
+var executeSearch;
 
 function initHeaderBar(){
     
-    
+/*    
 $("#goToSearch").qtip({
     id: 'themeroller',
     content: $('.searchQtip'),
@@ -22,16 +22,34 @@ $("#goToSearch").qtip({
         at: 'bottom center'
     }
 });
-        
+*/        
       
 $('#searchIconButton').live('click', function(){
     
+    $('#moreSearchResults').hide();
+    $('#moreSearchResults').attr('page', 1);
+    executeSearch(1);
+
+});
+
+executeSearch = function(page){
     var nameSearch = $.trim(document.getElementById("inputSearchUsers").value);
-    
+    var theUrl;
     var arrayOfName = nameSearch.split(" ");
-    var theUrl = searchFullName + "/" + arrayOfName[0] + "/" + arrayOfName[1];
     
-    if(arrayOfName.length === 2){ //fullname search
+    if($('#radio41').attr('checked') === 'checked'){
+        if(arrayOfName.length === 1){
+            theUrl = seachSingleName  + arrayOfName[0] + "/" + page;
+        }
+        else{
+            theUrl = searchFullName + "/" + arrayOfName[0] + "/" + arrayOfName[1];   
+        }
+    }
+    else{
+        theUrl = searchByLocation  + arrayOfName[0] + "/" + page;
+    }
+    
+    if(arrayOfName.length >= 1){ //fullname search
             $.ajax({
                 url: theUrl,
                 type: "GET",
@@ -46,14 +64,18 @@ $('#searchIconButton').live('click', function(){
                     //var res =jQuery.parseJSON(data);
                     //callback('Sending: ' + data);
                     if(data.success){
-                        //Notifier.success();
-                        //$('#searchDialog').dialog('open');
+
                         renderSearchHtml(data.message, arrayOfName, function(){
+                            if(data.message.length > 4){
+                                $('#moreSearchResults').show();   
+                            }
+                            else{
+                                $('#moreSearchResults').hide();
+                            }
                             
-                            $('#searchDialog').dialog('open');
+                            //$('#searchDialog').dialog('open');
                         });
-                        //$('#searchDialog').dialog('open');
-                        //return false;  
+
                     }
                     else{
                        Notifier.error(data.message); 
@@ -75,25 +97,26 @@ $('#searchIconButton').live('click', function(){
     else{
         Notifier.error('Please enter the full name. ex: Lance Armstrong');
     }
- 
-});   
+} 
+   
         
 //This will no nothing if result is empty, if not, it will process the array an xfbml it.
 var renderSearchHtml = function(arrayResult, fullname, callback){
      
+     
     if(arrayResult.length === 0){
-        document.getElementById('searchDialog').innerHTML = "No found results for " + fullname + ". Maybe there is a typo?<br><br><span style='font-size: 15px;'>Other users near you:</span>  <br><br> No one in your location";  
+        document.getElementById('searchResultContainer').innerHTML = "No results found for " + fullname + ". Maybe there is a typo?<br>";  
         callback();      
     }
     else{
        var overallHtml = "<table width='100%'>";
        for(i = 0; i < arrayResult.length; i++){
           var pictureTag = '<img src="http://graph.facebook.com/' +  arrayResult[i].fbid + '/picture" />'; 
-          var name  = "<div style='font-size: 12px; float:left;'><div style='font-weight:bold'>" + arrayResult[i].firstName + " " + arrayResult[i].lastName + "</div><div>" + arrayResult[i].location + "</div>";
+          var name  = "<div style='font-size: 12px; float:left;'><div style='font-weight:bold'>" + arrayResult[i].firstName + " " + arrayResult[i].lastName + "</div><div>" + arrayResult[i].location.name + "</div>";
           var add = "<div id='addToCell" + arrayResult[i].fbid + "' style='float: right; cursor:pointer'> Add to your cell</div>";
-          overallHtml = overallHtml + '<tr><td>' + pictureTag + '</td><td valign="middle">' + '</td><td valign="middle">' + name + '</td><td valign="middle"  width="99%">' + add + '</td></tr>';
+          overallHtml = overallHtml + '<tr class="intervallUnit"><td>' + pictureTag + '</td><td valign="middle">' + '</td><td valign="middle">' + name + '</td><td valign="middle"  width="99%">' + add + '</td></tr>';
        }
-       document.getElementById('searchDialog').innerHTML = overallHtml + '</table><br><br><span style="font-size: 15px;">Other users near you:</span>  <br> No one in your location';
+       document.getElementById('searchResultContainer').innerHTML = overallHtml + '</table>';
        //FB.XFBML.parse(document.getElementById('searchDialog'));
        
        //add click handlers to each add user

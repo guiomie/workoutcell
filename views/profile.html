@@ -73,6 +73,7 @@ Post a cell:  /cell/create/:userId  | ex: /cell/create/100000268779394   <br>
 Post a workout to a cell: /workout/cell/:cellId/:userId |    <br>
 Post Event to join the workout: /workout/cell/join/<br>
 Post cell invite: /notification/invitetocell/:cellId/:cellName/ <br>
+Post a dummy user for testing purposes:  /dummyUser <br>
 <form action="/" id="requestForm">
 
 httpPost url: <input type="text" name="url" placeholder="" /> <br>
@@ -81,8 +82,15 @@ httpPost url: <input type="text" name="url" placeholder="" /> <br>
     {"type" : "intervall","intervallResult" :[{"type":"s","value":"34","completed":true},{"type":"s","value":"60","completed":false},{"type":"m","value":"34","completed":true},{"type":"m","value":"200","completed":false},{"type":"s","value":"0","completed":false},{"type":"s","value":"23","completed":true}]}
 
 -->
-    <textarea rows="6" cols="30" id="json">
-   
+<textarea rows="6" cols="30" id="json">
+    { 
+    "fbid": "100000227432579", 
+    "firstName": "Norbert", 
+    "lastName": "Ouellet", 
+    "location": {"name": "Biarritz, France", "latlng": {"lat": "0", "lng": "0"}},
+    "objective": "I am just a dummy",
+    "color":{"bike":"#CCCCCC", "swim": "#99CCFF", "run": "#CC9966", "cell": "#C24747"}
+    }
 </textarea><br>
 
 <input type="submit" value="Submit request" /><br>

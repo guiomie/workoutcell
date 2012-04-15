@@ -191,7 +191,7 @@
                  </li>
             </ul>
             
-			<div class="topright"> <a href="/logout" style="font-size: medium;">Sign out</a>  </div>
+			<div class="topright"> <span id="inviteFbFriends">Invite Friends</span> <br> <a href="/logout" style="font-size: medium;">Sign out</a>  </div>
 		</div>
 
 	</div>
@@ -203,12 +203,34 @@
     <div id="mapInformation"> </div>
 </div>
 
-<div class="searchQtip" style="display: none;"> 
-    <input type="text" id="inputSearchUsers" size="16" value="" /><span id="searchIconButton" class="ui-icon ui-icon-search" style="float: right; margin-top: 2px;"></span><br>  
-    <!-- &nbsp; Coach search: <input type="checkbox" id="coachesOnlyCheckBox"/> -->
-</div>
 
-<div id="searchDialog">  No result were found. </div>
+<div id="searchDialog"> 
+
+    <div id="searchInputContainer" style="height: 50px;">      
+    
+        <div id="searchDiv" style="float: left; border-width:5px; background: #C7E5AE; width: 180px; padding: 6px;">
+            <input id="inputSearchUsers" size="20" value="" style="margin-left:5px; background: #C7E5AE; border: none; "  />
+            <span id="searchIconButton" class="ui-icon ui-icon-search" style="margin-top: 2px; float: right; cursor: pointer;"></span>
+        </div>
+        
+        <div id="radio4" style="margin-bottom: 2em; float: right;"> 
+    		Search by 
+            <input type="radio" id="radio41" name="radio" checked="checked" /><label for="radio41">Name</label> 
+			<input type="radio" id="radio42" name="radio" /><label for="radio42">Location</label> 
+		</div>
+    
+    </div>
+    
+    <div id="searchResultContainer">
+    
+    
+    </div>
+    
+    <div id="moreSearchResults" style="margin-top: 15px; cursor: pointer; display: none; font-size: medium;" page="1" >
+        More search results ... 
+    </div>
+
+</div>
 
 
 <div id="userOptionDialog"> 
@@ -305,13 +327,16 @@
         <div id="usersFbPic" style="float: left;"></div>
         
         <div id="profileCard" style="float: left;" >
-            <div id="usersInfo">
+            <div id="usersInfo" style="margin-left: 5px">
                 <div id="profileUserName">  </div>
                 <div id="profileUserLocation">  </div>
                 <div id="joindate">  </div>
             </div>
         </div>
+        
         </div>
+        
+        <div id="profileObjective">     </div><br><br>
         
         <div>Cells</div>
         <div id="cellProfileList" style="height: 200px; padding-top: 10px;"> 

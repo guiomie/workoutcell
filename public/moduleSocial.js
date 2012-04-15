@@ -536,17 +536,18 @@ var renderProfileView = function(object, userId){
     else{
         document.getElementById('profileUserName').innerHTML = object.profile.firstName + " " + object.profile.lastName;
         if(typeof object.profile.location != "undefined"){
-            document.getElementById('profileUserLocation').innerHTML =  object.profile.location;
+            document.getElementById('profileUserLocation').innerHTML =  object.profile.location.name;
         }
         var d = new Date(object.profile.joinDate);
         
-        document.getElementById('joindate').innerHTML =  'Joined: ' + d.toLocaleDateString();
+        document.getElementById('joindate').innerHTML =  'Joined ' + d.toLocaleDateString();
     
         var pictureTag = '<img src="http://graph.facebook.com/' + userId + '/picture?type=normal" />'; //'<fb:profile-pic uid="' + userId + '" facebook-logo="false" linked="true" width="100" height="100" size="thumb" ></fb:profile-pic>'; 
     
         document.getElementById('usersFbPic').innerHTML =  pictureTag ;
-        FB.XFBML.parse(document.getElementById('usersFbPic'));
-        FB.XFBML.parse(document.getElementById('profileUserName'));
+        document.getElementById('profileObjective').innerHTML = object.profile.objective;  
+        //FB.XFBML.parse(document.getElementById('usersFbPic'));
+        //FB.XFBML.parse(document.getElementById('profileUserName'));
         renderProfileCellList(object.cell);
         renderProfileFriendList(object.friends);
     }

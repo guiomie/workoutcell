@@ -994,29 +994,7 @@ var setUserObjective = function(userId, objective, callback){
     });  
 }
 
-var searchByFullName = function(first, last, callback){
-    
-    if(first !== "" && last !== ""){
-    
-        var query = User.find({});
-        query.where('firstName', first);
-        query.where('lastName', last);
-        query.limit(5);
 
-        query.exec(function (err, docs) {
-            if(err){
-                callback("failed");   
-            }
-            else{
-                callback(docs);    
-            }
-        });    
-    }
-    else{ 
-        callback("failed"); 
-    }
-    
-}
 
 var createCell = function(creatorId, cellObject, userName, callback){
  
@@ -1327,7 +1305,6 @@ exports.addWorkoutMessage = addWorkoutMessage;
 exports.isCellCoach = isCellCoach;
 exports.isUserAFriend = isUserAFriend;
 exports.getProfileSnippet = getProfileSnippet;
-exports.searchByFullName = searchByFullName;
 exports.getFriendList = getFriendList;
 exports.setUserLatLng = setUserLatLng;
 exports.setUserObjective = setUserObjective;

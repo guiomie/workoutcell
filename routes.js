@@ -1,6 +1,7 @@
 
 var mongooseLogic = require('./mongooseLogic');
 var notification = require('./notification');
+var searchEngine = require('./searchEngine');
 
 module.exports = function(app) {
     
@@ -756,7 +757,7 @@ module.exports = function(app) {
         
         if(req.params.first.match(validRegEx) && req.params.last.match(validRegEx)){
         
-            mongooseLogic.searchByFullName(req.params.first, req.params.last, function(msg){
+            searchEngine.searchByFullName(req.params.first, req.params.last, function(msg){
                 if(msg === "failed"){
                     res.json({ success: false, message:'Couldnt process search, internal error'});     
                 }
@@ -769,16 +770,56 @@ module.exports = function(app) {
             
         }
         else{
-            res.json({ success: false, message:'Couldnt process search, invalid format submitted.'});   
-            
-        }
-        
+            res.json({ success: false, message:'Couldnt process search, invalid format submitted.'});     
+        }      
     });
     
     
-    //HTTP POST REQUEST
+    app.get("/search/name/:word/:page", function(req, res){
     
-
+        var validRegEx = /^[^\\\/&]*$/;
+        
+        if(req.params.word.match(validRegEx)){
+            searchEngine.searchOneWordName(req.params.word, parseInt(req.params.page), function(msg){
+                if(msg === "failed"){
+                    res.json({ success: false, message:'Couldnt process search, internal error'});     
+                }
+                else{
+                    res.json({ success: true, message: msg});
+                }
+            });     
+        }
+        else{
+            res.json({ success: false, message:'Couldnt process search, invalid format submitted.'});    
+        }
+    });
+    
+    app.get("/search/location/:word/:page", function(req, res){
+    
+        var validRegEx = /^[^\\\/&]*$/;
+        
+        if(req.params.word.match(validRegEx)){
+            searchEngine.searchByLocation(req.params.word, parseInt(req.params.page), function(msg){
+                if(msg === "failed"){
+                    res.json({ success: false, message:'Couldnt process search, internal error'});     
+                }
+                else{
+                    res.json({ success: true, message: msg});
+                }
+            });    
+        }
+        else{
+            res.json({ success: false, message:'Couldnt process search, invalid format submitted.'});   
+        }
+    });
+    
+    
+    //--------------------------------------------------------------------------
+    //
+    //    HTTP POST REQUEST
+    //
+    //--------------------------------------------------------------------------
+    
     app.post("/parcour/:userId/:name/:distance", function(req, res){
       
       if(isAllowed(req, req.params.userId)){
@@ -1040,6 +1081,10 @@ module.exports = function(app) {
     //*************************************************************************
     //Facebook auth command samples
     //Sample of auth if statement
+    //TEST ZONE
+    //
+    //--------------------------------------------------------------------------
+    
     app.get('/hasRights', function(req, res){
     
         Permission.findOne({ firstName: req.session.auth.facebook.user.first_name, lastName: req.session.auth.facebook.user.last_name}, function(err, result){
@@ -1072,6 +1117,43 @@ module.exports = function(app) {
     });
     app.get('/authDetails', function(req, res) {
         res.send('<br>User info: ' + JSON.stringify(req.session));
+    });
+    
+    app.post('/dummyUser', function(req, res) {
+        
+        var fbUserMetadata = req.body;
+        
+        User.create({ fbid: fbUserMetadata.fbid, firstName: fbUserMetadata.firstName, lastName: fbUserMetadata.lastName, 
+            location: {name: fbUserMetadata.location.name, latlng: {lat: 0, lng: 0}}, objective: "Train socially and improve ! ",
+            color:{bike:"#CCCCCC", swim: "#99CCFF", run: "#CC9966", cell: "#C24747"}}, function (err, user) {
+            
+            if(err){
+                res.json('Error: ' + err);
+            }
+            else{
+                res.json('Saved');    
+            }
+            /*
+            if (err) return promise.fail(err);
+            promise.fulfill(user);
+            
+            GeneralReference.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err);   
+            }); 
+            
+            CalendarEventReference.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err);   
+            }); 
+            
+            NotificationsReference.create({ id: id, pendingSize: 0, unRead: 0}, function(err, ref){
+               if (err) return promise.fail(err);   
+            });
+            
+            CardioResult.create({ id: id}, function(err, ref){
+               if (err) return promise.fail(err);   
+            }); */
+    
+        });
     });
 }
 

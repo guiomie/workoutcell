@@ -11,7 +11,7 @@ var userGroup = "group1";
     status : true, // check login status
     cookie : true, // enable cookies to allow the server to access the session
     xfbml  : true, // parse XFBML
-    channelURL : 'http://workoutcelld.guiomie.c9.io/view/channel', // channel.html file
+    channelURL : 'http://workoutcelld.guiomie.c9.io/view/channel', // Prod: http://workoutcell.no.de/view/channel
     oauth  : true // enable OAuth 2.0
   });
   
@@ -45,9 +45,13 @@ function initPage(){
 }
 
 
-function getFriendsCell(fbId, callback){
+function inviteFriends(invitesLeft){
     
+    var text = "You can invite " + invitesLeft + " facebook friends to workoutcell";
     
+    FB.ui({method: 'apprequests', message: text}, function(){
+        
+    });   
     
     
 }

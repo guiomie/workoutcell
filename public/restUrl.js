@@ -12,6 +12,8 @@ var getParcour = "/parcour/";
 var postResult = "/result/" + authId; //Followed by :workoutId
 var deleteWorkout = "/workout/delete/" + authId;  //followed by /:year/:month/:workoutid/:eventid
 var searchFullName = "/search/fullname";  //:first/:last
+var seachSingleName = "/search/name/"; //:word/:page
+var searchByLocation = "/search/location/"; //:word/:page
 var getFriendCell = '/cell/friends/' + authId;
 var getNotfication = '/notification/queu/' + authId;
 var postCell = '/cell/create/' + authId;
@@ -34,7 +36,8 @@ var removeWorkoutComment = "/workout/message/remove/"; //:workoutid/:message
 var removeUserNotification = "/notification/user/remove/"; //:notificationid
 var getYourProfile = "/user/ownprofile";
 var postUserLocation = "/user/location/update/" //:lat/:lng
-var postUserObjective = "/user/objective/update/"; //:string
+var postUserObjective = "/user/objective/update/"; //:string 
+
 //Instantiated variables with this function
 
 var initGlobalVar = function(){
@@ -69,4 +72,6 @@ var initGlobalVar = function(){
     getYourProfile = "/user/ownprofile";
     postUserLocation = "/user/location/update/";
     postUserObjective = "/user/objective/update/";
+    seachSingleName = "/search/name/"; 
+    searchByLocation = "/search/location/";
 }
