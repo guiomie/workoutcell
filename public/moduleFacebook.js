@@ -45,13 +45,33 @@ function initPage(){
 }
 
 
-function inviteFriends(invitesLeft){
-    
-    var text = "You can invite " + invitesLeft + " facebook friends to workoutcell";
-    
-    FB.ui({method: 'apprequests', message: text}, function(){
-        
-    });   
+function inviteFriends(){
     
     
+    
+    $.getJSON(getInvitesLeft, function(data) {
+        if(data.success){
+            if(data.message <= 0){
+                Notifier.error("Sorry you don't have any invitations left.");
+            }
+            else{
+                var text = "You can invite " + data.message + " facebook friends to workoutcell";
+                FB.ui({method: 'apprequests', message: text, max_recipients: data.message}, function(fbres){
+                    //console.log(res.to);
+                    $.ajax({
+                        url: postInvites,
+                        type: "POST",
+                        dataType: "json",
+                        data: JSON.stringify({ load: fbres.to}),
+                        contentType: "application/json",
+                    });
+                });
+            }
+        }
+        else{
+            
+        }
+    });
+      
+ 
 }

@@ -1077,6 +1077,25 @@ module.exports = function(app) {
         }
         
     });
+    
+    app.post("/giveright/", function(req,res){
+       
+        //console.log(req.body);
+        var arrayOfIds = req.body.load;
+       
+        mongooseLogic.addUserInRight(arrayOfIds, getLogedId(req), function(mes){
+        
+            if(mes === "Success"){
+                res.json({ success: true,  message: 'Request successfully processed'}); 
+            }
+            else{
+                res.json({ success: false,  message: mes}); 
+            }
+           
+        });
+        
+    });
+    
         
     //*************************************************************************
     //Facebook auth command samples
@@ -1086,9 +1105,9 @@ module.exports = function(app) {
     //--------------------------------------------------------------------------
     
     app.get('/hasRights', function(req, res){
-    
-        Permission.findOne({ firstName: req.session.auth.facebook.user.first_name, lastName: req.session.auth.facebook.user.last_name}, function(err, result){
-            console.log(JSON.stringify(result) + " for " + req.session.auth.facebook.user.first_name);
+        //Permission.findOne({ firstName: req.session.auth.facebook.user.first_name, lastName: req.session.auth.facebook.user.last_name}, function(err, result){
+        Permission.findOne({ id: parseInt(getLogedId(req))}, function(err, result){
+            console.log(JSON.stringify(result) + " for " + getLogedId(req) + " : " + req.session.auth.facebook.user.first_name);
             if(err){
                 res.redirect('/logout');
             }
@@ -1100,6 +1119,19 @@ module.exports = function(app) {
             }
         });
 
+    });
+    
+    app.get('/invitesleft', function(req, res){
+        
+        Permission.findOne({ id: getLogedId(req)}, function(err, result){
+            if(err){
+                res.json({ success: false,  message: 'Cant get invite'});
+            }
+            else{
+                res.json({ success: true,  message: result.invites});
+            }
+        });
+        
     });
     
     app.get('/test', function(req, res) {

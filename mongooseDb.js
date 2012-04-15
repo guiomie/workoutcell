@@ -240,7 +240,8 @@ var Log = new Schema({
 
 var Permission = new Schema({
     
-   //fbid : Number
+    id : Number,
+    invites: Number,
     firstName  : String,   
     lastName   : String
     

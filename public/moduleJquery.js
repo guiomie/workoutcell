@@ -1023,6 +1023,12 @@ $(document).ready(function(){
         });
         
         
+        $('#inviteFbFriends').click(function(){
+            inviteFriends();
+            
+        });
+        
+        
         //This is to add a button to the calendar
         function addCalButton(where, text, id) {
             var my_button = '<span class="fc-header-space"></span>' +

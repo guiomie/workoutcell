@@ -1177,6 +1177,43 @@ var quitCell = function(userId, cellId, callback){
 
 }
 
+var addUserInRight = function(arrayOfId, userInviting, callback){
+    
+    if(RealTypeOf(arrayOfId)){
+        for(i=0; i < arrayOfId.length; i++){
+            var newPermission = new Permission();
+            newPermission.id = arrayOfId[i];
+            newPermission.invites = 2;
+            newPermission.save(function(err){
+                if(err) { 
+                    console.log('Error in adding to rights: ' + newPermission.id);
+                }
+                else{
+                    console.log('Added to rights: ' + newPermission.id);
+                }
+            });
+            //Decrease users invites
+            if(i === (arrayOfId.length - 1)){
+                var dec = (arrayOfId.length) * (-1);
+                Permission.update({ "id" : userInviting}, { $inc: { invites:  dec}},function(err){    
+                if(err){
+                    //console.log("Cant decrease user");
+                    callback("Request executed with an error");
+                }
+                else{
+                    //console.log("Success"); 
+                    callback("Success");
+                }
+            });
+            }
+        }
+    }
+    else{
+        callback("Improper data was sent.");
+    }
+ 
+}
+
 var pushToNotificationLog = function (error){
     console.log('in push to not log'); 
     var newError = new Log();
@@ -1308,6 +1345,7 @@ exports.getProfileSnippet = getProfileSnippet;
 exports.getFriendList = getFriendList;
 exports.setUserLatLng = setUserLatLng;
 exports.setUserObjective = setUserObjective;
+exports.addUserInRight =  addUserInRight;
 
 exports.getWorkoutCoachMode = getWorkoutCoachMode;
 exports.checkIfUserInCell = checkIfUserInCell;

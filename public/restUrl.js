@@ -37,6 +37,8 @@ var removeUserNotification = "/notification/user/remove/"; //:notificationid
 var getYourProfile = "/user/ownprofile";
 var postUserLocation = "/user/location/update/" //:lat/:lng
 var postUserObjective = "/user/objective/update/"; //:string 
+var getInvitesLeft = "/invitesleft";
+var postInvites = "/giveright/";
 
 //Instantiated variables with this function
 
@@ -74,4 +76,6 @@ var initGlobalVar = function(){
     postUserObjective = "/user/objective/update/";
     seachSingleName = "/search/name/"; 
     searchByLocation = "/search/location/";
+    getInvitesLeft = "/invitesleft";
+    postInvites = "/giveright/";
 }
