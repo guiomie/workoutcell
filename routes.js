@@ -2,6 +2,7 @@
 var mongooseLogic = require('./mongooseLogic');
 var notification = require('./notification');
 var searchEngine = require('./searchEngine');
+var statisticsEngine = require('./statisticsEngine');
 
 module.exports = function(app) {
     
@@ -1095,6 +1096,26 @@ module.exports = function(app) {
         });
         
     });
+    
+    //*************************************************************************
+    //
+    // Statistical based routes
+    //
+    //--------------------------------------------------------------------------
+    
+    app.post("/statistics/workoutbased", function(req,res){
+       
+        console.log(req.body);
+        var arrayOfIds = req.body.array;
+       
+        statisticsEngine.calaculateWorkoutsStatistics(arrayOfIds, "100000268779394"/*getLogedId(req)*/, function(mes){
+        
+            res.json(mes);
+           
+        });
+        
+    });
+    
     
         
     //*************************************************************************

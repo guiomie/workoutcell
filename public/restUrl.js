@@ -39,6 +39,7 @@ var postUserLocation = "/user/location/update/" //:lat/:lng
 var postUserObjective = "/user/objective/update/"; //:string 
 var getInvitesLeft = "/invitesleft";
 var postInvites = "/giveright/";
+var calculateMonthStats = "/statistics/workoutbased";
 
 //Instantiated variables with this function
 
@@ -78,4 +79,5 @@ var initGlobalVar = function(){
     searchByLocation = "/search/location/";
     getInvitesLeft = "/invitesleft";
     postInvites = "/giveright/";
+    calculateMonthStats = "/statistics/workoutbased";
 }

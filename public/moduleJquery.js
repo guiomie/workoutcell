@@ -1015,6 +1015,7 @@ $(document).ready(function(){
             
         });
         
+        //Attribute page set to 1 for every new search
         $('#moreSearchResults').click(function(){
             var page = parseInt($(this).attr('page'));
             page++;    
