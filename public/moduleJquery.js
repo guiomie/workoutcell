@@ -93,15 +93,21 @@ $(document).ready(function(){
                 //Essential for first load, or calendar loads to fast without Fb authentication and cant find data
                 if(applicationVariables.calendarFirstLoad){
                     setTimeout(function() {
-                        updateCalendar();
+                        updateCalendar(function(res){});
                         updateUnreadNotifications();
                     }, 1000);
                     applicationVariables.calendarFirstLoad = false;
                 }
                 else{
-                    updateCalendar();
+                    updateCalendar(function(res){
+                        
+                        if(panelState === 'Stats'){
+                            //console.log(res);
+                            fillStatsPage(res);
+                        }  
+                        
+                    });
                 }
-                
             },
             eventDragStart: function(event, jsEvent, ui, view) {    		
 			    //var x = isElemOverDiv(ui, $('div.external-events'));
@@ -240,8 +246,8 @@ $(document).ready(function(){
 		//Date picker is ISO 8601
 		$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
 	    $( "#datepicker" ).datepicker();
-		$('#timepickerStart').timepicker({timeFormat: 'hh:mm'});
-		$('#timepickerStop').timepicker({});
+		$('#timepickerStart').timepicker({timeFormat: 'hh:mm', stepMinute: 5});
+		$('#timepickerStop').timepicker({timeFormat: 'hh:mm', stepMinute: 5});
 
 		/* To redo later, intent is to block entry of over time smaller then start time
 		$('#timepickerStop').click(function(){
@@ -1005,6 +1011,10 @@ $(document).ready(function(){
             
         });
         
+        $('#goToStats').click(function(){
+            moveUI('Stats');
+        });
+        
         $('#goToConfiguration').click(function(){
             $('#userOptionDialog').dialog("open");
             
@@ -1122,7 +1132,7 @@ $(document).ready(function(){
         
         //will remove everything in the calendar then
         //takes the current displayed month and go gets the data
-        updateCalendar = function (){
+        updateCalendar = function (callback){
             
             var url;
             var d = $('#fullcalendar').fullCalendar('getDate');
@@ -1142,9 +1152,11 @@ $(document).ready(function(){
             
             $.getJSON(url, function(data) {
                 if(data.success){
-                    $('#fullcalendar').fullCalendar( 'addEventSource', data.message );  
+                    $('#fullcalendar').fullCalendar( 'addEventSource', data.message );
+                    callback(data.message);
                 }
                 else{
+                    callback('Error');
                 //something wrong
                 //Notifier.success(data.message);
                 }   
