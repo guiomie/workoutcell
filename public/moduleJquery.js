@@ -37,9 +37,6 @@ var updateCalendar;
 var addIntervallInput;
 
 $(document).ready(function(){
-
-        //$('#scrollbar1').tinyscrollbar();
-        
         
         //Internet explorer warning
        //Internet Explorer check

@@ -2,6 +2,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>WorkoutCell - Train properly, train socially!</title>
+
 <link type="text/css" href="/css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" /> 
 <link rel="stylesheet" type="text/css" href="/css/styleCarousel.css" />
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
@@ -12,6 +13,7 @@
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
+
 <div id="fb-root"></div>
 <script src="http://connect.facebook.net/en_US/all.js"></script> 
 
@@ -25,6 +27,7 @@
 <script src='/jquery.jcarousel.js'></script>
 <script src='/jquery.editable-1.3.3.min.js'></script>
 <script src='/jscolor/jscolor.js'></script>
+<script src='/d3.v2.min.js'></script>
 
 <!-- Homemade plugins -->
 <script src='/moduleJquery.js'></script>
@@ -130,11 +133,16 @@
                 width:100px;
             }
             
+            .chart rect {
+                stroke: white;
+                
+            }
+            
 </style>
 
 </head>
 
-<body background="/background/pattern.png" style="margin-top: 2px;">
+<body background="/background/pattern.png" >
 
 <!-- overlys are declared here -->
 <div id="centered">
@@ -294,7 +302,18 @@
 </div>
 
 <div id="Stats" style="display: none; background: white; width:510px; height:500px; margin-top:2px;">
-
+    <span style="font-size: 20px; font-family: impact;"> Statistics of the Month</span><br><br>
+    <div id="distanceGraph">   
+    
+    </div>
+    
+    <div id="timeStats" style="margin-top:15px; font-size: 10px;">
+    
+    </div>
+    <div style="margin-top:10px; font-size: 15px;">Top training friends</div>
+    <div id="topTrainedWith">
+    
+    </div>
 
 
 </div>
