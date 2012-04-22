@@ -80,6 +80,10 @@ var fillStatsPage = function(eventSource){
 
                     document.getElementById("timeStats").innerHTML = 'Time biking: ' + newArray.timeBike.toString().toHHMMSS() + '<br>Time swimming: ' + newArray.timeSwim.toString().toHHMMSS() +
                         '<br>Time biking: ' + newArray.timeBike.toString().toHHMMSS() + '<br>Time socializing: ' + newArray.timeCell.toString().toHHMMSS();
+                        
+                    //document.getElementById("cellNFriendStats").innerHTML = JSON.stringify(res.socialStats);
+                    
+                    displayTopFriends(res.socialObject);
 
                 });
         });        
@@ -174,6 +178,42 @@ var graphTotalsBarChart = function(arrayB, arrayS, arrayR, arrayBc, arraySc, arr
     
 }
 
+var displayTopFriends = function(sortable){
+    
+    
+    var arrayOfUsers = [];
+        
+    for(var i in sortable){   
+        arrayOfUsers.push(sortable[i]);
+    }
+    
+    console.log(arrayOfUsers);
+    
+    arrayOfUsers.sort(dynamicSort("count"));
+    
+
+    var overallHtml = "<table width='100%'  style='border-collapse:collapse'>";
+    
+    //Display max of 5 persons
+    for(i = 0; i < arrayOfUsers.length; i++){
+      var pictureTag = '<img style="padding-left:15px;" src="http://graph.facebook.com/' + arrayOfUsers[i].fbid + '/picture" />'; 
+      var name  = "<div style='font-size: 12px; float:left;'><div style='font-weight:bold'>" + arrayOfUsers[i].name + "</div><div>";
+      var count = "<div style='float: right; padding-right: 15px;'> Trained with " +  arrayOfUsers[i].count +" time</div>";
+      overallHtml = overallHtml + '<tr class="intervallUnit"><td>' + pictureTag + '</td><td valign="middle">' + 
+        '</td><td valign="middle">' + name + '</td><td valign="middle" width="99%">' + count + '</td></tr>';
+        if(i === 5){
+            break;    
+        }
+    }
+
+    
+    document.getElementById('cellNFriendStats').innerHTML = overallHtml + '</table>';
+       
+    if(arrayOfUsers.length < 2){
+        document.getElementById('cellNFriendStats').innerHTML = "You haven't trained with any friends this month."
+    }    
+    
+}
 
 
 var computeStats = function(array, callback){
@@ -205,16 +245,20 @@ var computeStats = function(array, callback){
         totalSwimIntervall: 0,
         totalBikeIntervall: 0,
         totalCellIntervall: 0,
+        
+        socialObject: {}
+
   
     }
     
     
     for(i = 0; i < array.length; i++){
        
-       (function(i){
-           if(array[i].workout.type === "distance"){
+        (function(i){
+            if(array[i].workout.type === "distance"){
+                console.log(array[i].workout.sport + " - " + array[i].workout.targetType);
                 if(array[i].workout.sport === "Bike"){
-                    if(array[i].workout.targetType = 'Kilometers'){
+                    if(array[i].workout.distance.targetType === 'Kilometers'){
                         stats.plannedBikeDistance.push((array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue);
                         stats.plannedBikeDistanceSum = stats.plannedBikeDistanceSum + (array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue;
                         if(array[i].result !== "none"){
@@ -222,7 +266,7 @@ var computeStats = function(array, callback){
                             stats.totalBikeDistanceSum = stats.totalBikeDistanceSum + (array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue;
                         }
                     }
-                    else if(array[i].workout.targetType = 'Time'){
+                    else if(array[i].workout.distance.targetType === 'Time'){
                         if(array[i].result !== "none"){
                             stats.totalBikeDistance.push(array[i].result.value);
                             stats.totalBikeDistanceSum = stats.totalBikeDistanceSum + (array[i].result.value);
@@ -231,7 +275,7 @@ var computeStats = function(array, callback){
                     else{}
                 }
                 else if(array[i].workout.sport === "Swim"){
-                    if(array[i].workout.targetType = 'Kilometers'){
+                    if(array[i].workout.distance.targetType === 'Kilometers'){
                         stats.plannedSwimDistance.push((array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue);
                         stats.plannedSwimDistanceSum = stats.plannedSwimDistanceSum + (array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue;
                         if(array[i].result !== "none"){
@@ -239,7 +283,7 @@ var computeStats = function(array, callback){
                             stats.totalSwimDistanceSum = stats.totalSwimDistanceSum + (array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue;
                         }
                     }
-                    else if(array[i].workout.targetType = 'Time'){
+                    else if(array[i].workout.distance.targetType === 'Time'){
                         if(array[i].result !== "none"){
                             stats.totalSwimDistance.push(array[i].result.value);
                             stats.totalSwimDistanceSum = stats.totalSwimDistanceSum + (array[i].result.value);
@@ -248,7 +292,7 @@ var computeStats = function(array, callback){
                     else{}
                 }
                 else if(array[i].workout.sport === "Run"){
-                    if(array[i].workout.targetType = 'Kilometers'){
+                    if(array[i].workout.distance.targetType === 'Kilometers'){
                         stats.plannedRunDistance.push((array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue);
                         stats.plannedRunDistanceSum = stats.plannedRunDistanceSum + (array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue;
                         if(array[i].result !== "none"){
@@ -256,7 +300,7 @@ var computeStats = function(array, callback){
                             stats.totalRunDistanceSum = stats.totalRunDistanceSum + (array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue;
                         }
                     }
-                    else if(array[i].workout.targetType = 'Time'){
+                    else if(array[i].workout.distance.targetType === 'Time'){
                         if(array[i].result !== "none"){
                             stats.totalRunDistance.push(array[i].result.value);
                             stats.totalRunDistanceSum = stats.totalRunDistanceSum + (array[i].result.value);
@@ -268,14 +312,32 @@ var computeStats = function(array, callback){
                
                 }
                
-           }
-           else if(array[i].workout.type === "intervall"){
+            }
+            else if(array[i].workout.type === "intervall"){
                //getIntervallTotalValue(array[i].workout, array[i].result, array[i].workout.sport, stats)
                
-           }
-           else{
+            }
+            else{
                
-           }
+            }
+            
+            //Get social stats
+            if(array[i].workout.cell.participants.length !== 0){
+                var participantArray = array[i].workout.cell.participants;
+                for(i=0; i < participantArray.length; i++){
+                
+                    (function(i){
+                        //if(participantArray[i].fbid.toString() !== authId){
+                            if(stats.socialObject[participantArray[i].fbid] == undefined){ stats.socialObject[participantArray[i].fbid] = { count: 0} };
+                            stats.socialObject[participantArray[i].fbid].count = stats.socialObject[participantArray[i].fbid].count + 1;
+                            stats.socialObject[participantArray[i].fbid].name = participantArray[i].fullName;
+                            stats.socialObject[participantArray[i].fbid].fbid = participantArray[i].fbid;
+                        //}
+                    })(i);
+                   
+                }
+               
+            }
            
             if(i === (array.length -1)){
                 callback(stats);    
@@ -288,6 +350,16 @@ var computeStats = function(array, callback){
     }
 
 }
+
+
+
+function dynamicSort(property) {
+    return function (a,b) {
+        return (a[property] > b[property]) ? -1 : (a[property] < b[property]) ? 1 : 0;
+    }
+}
+
+
 
 var getIntervallTotalValue = function(anArray, resultArray, sport, stats){
     
