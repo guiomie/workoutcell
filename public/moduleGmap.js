@@ -30,6 +30,10 @@ function initialize() {
 	
 	// Add a listener for the click event
 	google.maps.event.addListener(map, 'click', addLatLng);
+    
+    
+    //For cell creation dialog
+    //setAutoComplete();
 }
 
 function addLatLng(event) {
@@ -50,6 +54,19 @@ function addLatLng(event) {
   });
   
   markerArray.push(marker);
+}
+
+function setAutoComplete(){
+
+    var input = document.getElementById('cellLocationInput');
+    var options = {
+      types: ['(cities)'],
+      componentRestrictions: {country: 'fr'}
+    };
+    
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    
+    
 }
 
 function updateDistance(poly){

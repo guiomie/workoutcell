@@ -12,7 +12,7 @@
 <script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry,places"></script>
 
 <div id="fb-root"></div>
 <script src="http://connect.facebook.net/en_US/all.js"></script> 
@@ -286,6 +286,7 @@
         <option value="Ottawa, Ontario">Ottawa, Ontario</option>	
         <option value="Gatineau, Québec">Gatineau, Québec</option>
 	</select><br>
+    <!-- <input id="cellLocationInput" /> -->
     Coaching cell:  <input type="checkbox" id="isCellCoach" /> <br>
     On invite only: <input type="checkbox" id="isCellOnInvite" /> <br><br>
     Description <br>
@@ -294,7 +295,7 @@
     <div class="ui-widget" style="width: 315px; ">
     	<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
 			<p><span class="ui-icon ui-icon-info" style="margin-right: .3em; float: left;"></span>
-			<strong>On invite only & Coach cells</strong><br><br> Checking "On invite only" will make your cell private. You will need to send invitation(s) (accessible in the cells main page) to any 
+			<strong>On invite only & Coach cells</strong><br><br> Checking "On invite only" will make your cell private. You will need to send invitations (accessible in the cells main page) to any 
             user that you wish to grant access. <br><br> Checking "Coaching cell" will make you the coach of this cell, and you will be able to see your cells athletes results.</p>
 		</div>
 	</div>
