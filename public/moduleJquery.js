@@ -1175,6 +1175,7 @@ $(document).ready(function(){
             $.getJSON(url, function(data) {
                 if(data.success){
                     $('#fullcalendar').fullCalendar( 'addEventSource', data.message );
+                    //console.log(data);
                     callback(data.message);
                 }
                 else{

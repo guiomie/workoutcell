@@ -70,7 +70,9 @@ var fillStatsPage = function(eventSource){
  
  
     getIdsFromEventSource(eventSource, function(newArray){
+        console.log(newArray);
         getStats(newArray.array, function(statsResult){
+                console.log(statsResult);
                 computeStats(statsResult, function(res){
                     
                     console.log(res);
@@ -79,7 +81,7 @@ var fillStatsPage = function(eventSource){
                         ["-", "Planned Bike", "Total Completed", "Planned Swim", "Total Completed", "Planned Run", "Total Completed"]);
 
                     document.getElementById("timeStats").innerHTML = 'Time biking: ' + newArray.timeBike.toString().toHHMMSS() + '<br>Time swimming: ' + newArray.timeSwim.toString().toHHMMSS() +
-                        '<br>Time biking: ' + newArray.timeBike.toString().toHHMMSS() + '<br>Time socializing: ' + newArray.timeCell.toString().toHHMMSS();
+                        '<br>Time running: ' + newArray.timeRun.toString().toHHMMSS() + '<br>Time socializing: ' + newArray.timeCell.toString().toHHMMSS();
                         
                     //document.getElementById("cellNFriendStats").innerHTML = JSON.stringify(res.socialStats);
                     
@@ -153,30 +155,7 @@ var d3graph = function(data, titles){
     
 }
 
-var graphTotalsBarChart = function(arrayB, arrayS, arrayR, arrayBc, arraySc, arrayRc, data){
-    
-    // Create and populate the data table.
-    var data = google.visualization.arrayToDataTable([
-        ['Sport', 'Planned', 'Completed'],
-        ['Bike',  arrayB,    arrayBc,  ],
-        ['Swim',  arrayS,    arraySc,  ],
-        ['Run',  arrayR,    arrayRc,   ]
-    ]);
-    
-    // Create and draw the visualization.
-    var mileageChart = new google.visualization.BarChart(document.getElementById('distanceGraph'));
-       
-     var options =  {
-        title:"Your mileage",
-        width:400, 
-        height:400,
-        vAxis: {title: "Sports"},
-        hAxis: {title: "Meters"}
-    }
 
-    mileageChart.draw(data, options);
-    
-}
 
 var displayTopFriends = function(sortable){
     
@@ -253,10 +232,10 @@ var computeStats = function(array, callback){
     
     
     for(i = 0; i < array.length; i++){
-       
+       //console.log(i + " - " + array[i]);
         (function(i){
             if(array[i].workout.type === "distance"){
-                console.log(array[i].workout.sport + " - " + array[i].workout.targetType);
+                console.log(array[i].workout.sport + " - " + array[i].workout.distance.targetType);
                 if(array[i].workout.sport === "Bike"){
                     if(array[i].workout.distance.targetType === 'Kilometers'){
                         stats.plannedBikeDistance.push((array[i].workout.distance.maxValue * 1000) +  array[i].workout.distance.minValue);
@@ -321,11 +300,18 @@ var computeStats = function(array, callback){
                
             }
             
-            //Get social stats
+           
+                   
+           
+        })(i);
+        
+        (function(i){
+            
+             //Get social stats
             if(array[i].workout.cell.participants.length !== 0){
                 var participantArray = array[i].workout.cell.participants;
                 for(i=0; i < participantArray.length; i++){
-                
+
                     (function(i){
                         //if(participantArray[i].fbid.toString() !== authId){
                             if(stats.socialObject[participantArray[i].fbid] == undefined){ stats.socialObject[participantArray[i].fbid] = { count: 0} };
@@ -338,14 +324,13 @@ var computeStats = function(array, callback){
                 }
                
             }
-           
-            if(i === (array.length -1)){
-                callback(stats);    
-            }
-                   
-           
         })(i);
         
+        
+       if(i === (array.length -1)){
+            //console.log('calling back');
+            callback(stats);    
+        }
        
     }
 
