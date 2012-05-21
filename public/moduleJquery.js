@@ -183,8 +183,31 @@ $(document).ready(function(){
             });
             
             jQuery('.numbersOnly').blur(function () { 
-                if($(this).val() === ''){
-                  $(this).val('0');   
+                
+                if($(this).hasClass('quantityValue')){
+                    if($(this).val() === '' || $(this).val() === '0'){
+                        $(this).val('1'); 
+                    }
+                    else{
+                        //$(this).val('1');   
+                    }
+                }
+                else{
+                    if($(this).val() === ''){
+                        $(this).val('1'); 
+                    }
+                    else{
+                        //$(this).val('0');   
+                    } 
+                }
+                
+            });
+            
+            $('.quantityValue').die();
+            $('.quantityValue').click(function(){
+                console.log(this);
+                if($(this).attr('value') === '1'){
+                    $(this).attr('value', '');
                 }
             });
             
@@ -211,6 +234,8 @@ $(document).ready(function(){
         jQuery('#courseName').keyup(function () { 
             this.value = this.value.replace(/[/]/g,'');
         });
+        
+       
 
 
         //--------------------------------------------------------

@@ -1,6 +1,7 @@
 var postWorkout = function(event) {
     
-  
+    if(verifyInput()){
+        
         var selectedSport = $('#sportSelection').val();
         //var parcourId = $("#parcourSelection").val();
         var parcourId = {
@@ -27,7 +28,7 @@ var postWorkout = function(event) {
 
 		};
 		//Getting dates
-		var basicStartDate = $("#datepicker").datepicker( "getDate" );
+		var basicStartDate = $("#datepicker").datepicker("getDate");
 		basicStartDate.setMinutes($('#timepickerStart').datetimepicker('getDate').getMinutes());
 		basicStartDate.setHours($('#timepickerStart').datetimepicker('getDate').getHours());
 
@@ -122,11 +123,40 @@ var postWorkout = function(event) {
         //Reinitializing the fields
 		//empty intervall array so it doesnt accumulate
         initPostFields();
+        
+    }
+
+}
+
+function verifyInput() {
+    
+    if(!$("#datepicker").datepicker("getDate")|| !$('#timepickerStart').datetimepicker('getDate') || 
+        !$('#timepickerStop').datetimepicker('getDate')){
+
+        Notifier.error('Please enter a valid date');    
+        return false; 
+
+    }
+    else if($("input[type=text][id=smallInput]").val() === '0' && 
+            $("input[type=text][id=bigInput]").val() === '0' && $("#accordion").accordion( "option", "active" ) === 0){
+                
+        Notifier.error('Please verify your workout input');
+        return false; 
+    
+    }
+    else if( $('.intervallInputElement').length === 0 && $("#accordion").accordion( "option", "active" ) === 1){
+        Notifier.error('Please verify your workout input');
+        return false; 
+    }
+    else{
+        return true;
+    }
 
 }
 
 var postCellWorkout = function(event) {
-    
+
+    if(verifyInput()){
         var cellId =  $('#cellSelection').val();
         
         var selectedSport = $('#sportSelection').val();
@@ -247,6 +277,7 @@ var postCellWorkout = function(event) {
         
 		//empty intervall array so it doesnt accumulate
 		initPostFields(); 
+    }
         
 }
 
@@ -332,14 +363,22 @@ function initPostFields(){
 	//document.getElementById('intervallList').length = 0;
 	//document.getElementById('overview').innerHTML = " "; 
 
-    $('#descriptionInput').attr('value', '');
+    $('#descriptionInput').attr('value', 'Enter a description for this workout');
     $('#datepicker').attr('value', '');
+    //$('#datepicker').attr('option', {minDate: null, maxDate: null});
     $('#timepickerStop').attr('value', '');
     $('#timepickerStart').attr('value', '');
-    $('#bigInput').attr('value', '');
-    $('#smallInput').attr('value', '');
+    //$('#timepickerStart').timepicker({hour: 0,minute: 0}); marche pas!
+    //$('#timepickerStop').timepicker({hour: 0,minute: 0}); marche pas!
+    $('#bigInput').attr('value', '0');
+    $('#smallInput').attr('value', '0');
     $('#unitInput').attr('value', '');
     $('#intervallDescInput').attr('value', '');
+    
+    $('#intervallInputContainer').html('<div><div style="float: left; width: 150px;">' +
+        '&nbsp;&nbsp; Metric &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value &nbsp; Qty</div>'+
+        '<div style="float: left; width: 150px;"> &nbsp;Target &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+        'Value</div><div style="float: left; width: 160px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbspDescription</div></div>');
     
 }
 

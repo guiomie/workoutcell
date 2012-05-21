@@ -4,36 +4,45 @@ var cookieSecret = "cook";     // enter a random hash for security
 
 var express= require('express');
 var everyauth= require('everyauth');
+
 var mongooseDb = require('./mongooseDb');
 var app = express.createServer();
 var Promise = everyauth.Promise;
-
 var mongooseLogic = require('./mongooseLogic');
 
+var MongoStore = require('connect-mongo')(express);
 var MemoryStore = express.session.MemoryStore;
+
+var conf = {
+  db: {
+    db: 'workoutcellDb',
+    host: 'staff.mongohq.com',
+    port: 10072,  // optional, default: 27017
+    username: 'guiomie', // optional
+    password: 'R)r60209021', // optional
+    collection: 'facebookSessions' // optional, default: sessions
+  },
+  secret: '076ee61d63aa10a125ea872411e433b9'
+};
 
 //Import database models
 User = mongooseDb.User;
 GeneralReference = mongooseDb.GeneralReference;
 Permission = mongooseDb.Permission;
 PersonnaReference = mongooseDb.PersonnaReference;
-
 NotificationsReference = mongooseDb.NotificationsReference;
 Notification = mongooseDb.Notification;
 Log = mongooseDb.Log;
-
 ParcourReference = mongooseDb.ParcourReference;
 Parcour = mongooseDb.Parcour;
 CalendarEventReference = mongooseDb.CalendarEventReference;
 CalendarMonth = mongooseDb.CalendarMonth;
 CalendarEvent = mongooseDb.CalendarEvent;
-
 CardioWorkout = mongooseDb.CardioWorkout;
 CardioResult = mongooseDb.CardioResult;
 BasicCell = mongooseDb.BasicCell;
 IntervallUnit = mongooseDb.IntervallUnit;
 SingleIntervallResult = mongooseDb.SingleIntervallResult;
-
 CellReference = mongooseDb.CellReference; 
 CellDetails = mongooseDb.CellDetails; 
 
@@ -100,12 +109,17 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  var session = express.session({
+  /*var session = express.session({
       secret: cookieSecret,
       store: new MemoryStore({ reapInterval: 60000 * 10 }),
       key: "workoutcelld.sid"
   });
-  app.use(session);
+  app.use(session);*/
+  app.use(express.session({
+    secret: conf.secret,
+    maxAge: new Date(Date.now() + 3600000),
+    store: new MongoStore(conf.db)
+  }));
   app.use(everyauth.middleware());
   app.use(express.favicon());
   app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));

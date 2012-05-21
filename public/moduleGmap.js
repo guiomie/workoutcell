@@ -123,9 +123,12 @@ function clearMap(){
 	
 	//clear markers on map
 	if (markerArray) {
-		for (i in markerArray) {
+		//removes markers from map
+        for (i in markerArray) {
 			markerArray[i].setMap(null);
 		}
+        //removes marker from variable, so they dont end up in next query
+        markerArray = [];
 	}
 	//empty array of distances
     lastAddedDistance = [];
@@ -205,7 +208,8 @@ function loadMarkers(arrayLatLng, arrayTitle){
 }
 
 //This will verify if the passed lat lng passed are instantiated
-//If not, it will use a geocoding to return new valur
+//If not, it will use a geocoding to return new value
+//This is used to make sure the map is centered at the users location
 function setUsersLatLng(location, callback){
 
     if(location.latlng.lat !== 0){

@@ -12,7 +12,7 @@
 <script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry,places"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyA4cP8ELifvgtkpZrJ8Z_nFPXb6eumE814&sensor=false&v=3&libraries=geometry,places"></script>
 
 <div id="fb-root"></div>
 <script src="http://connect.facebook.net/en_US/all.js"></script> 
@@ -574,8 +574,8 @@
         <div style="float: right; width: 200px; height: 160px;">  
             <div id='calendar'></div>
              <span style="font-size: 15px; font-family: impact;">When</span>
-            <p>Date: <input type="text" id="datepicker"></p>
-            <p>Time: <input type="text" id="timepickerStart" size="1"> from <input type="text" id="timepickerStop" size="1"> </p> 
+            <p>Date: <input type="text" id="datepicker" size="15"></p>
+            <p>Time: <input type="text" id="timepickerStart" size="2"> from <input type="text" id="timepickerStop" size="2"> </p> 
              <span style="font-size: 15px; font-family: impact;">Where<br></span>
             <select title="Select Course" id="parcourSelection" style='width: 120px;'>
                 <option value="none">Loading...</option>	
@@ -624,9 +624,8 @@
 	</div>
 	
 	<h3><a href="#">Intervall</a></h3>
-	<div id="intervall" >
-		
-        
+	
+    <div id="intervall" >
 
         <div id="intervallInputContainer" style="width: 500px">  
             <div>

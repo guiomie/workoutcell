@@ -11,7 +11,7 @@ var userGroup = "group1";
     status : true, // check login status
     cookie : true, // enable cookies to allow the server to access the session
     xfbml  : true, // parse XFBML
-    channelURL : 'http://workoutcelld.guiomie.c9.io/view/channel', // Prod: http://workoutcell.no.de/view/channel
+    //channelURL : 'http://workoutcelld.guiomie.c9.io/view/channel', // Prod: http://workoutcell.no.de/view/channel
     oauth  : true // enable OAuth 2.0
   });
   
@@ -57,7 +57,7 @@ function inviteFriends(){
             else{
                 var text = "You can invite " + data.message + " facebook friends to workoutcell";
                 FB.ui({method: 'apprequests', message: text, max_recipients: data.message}, function(fbres){
-                    //console.log(res.to);
+                    //console.log(fbres.to);
                     $.ajax({
                         url: postInvites,
                         type: "POST",

@@ -58,7 +58,7 @@ var getParcourList = function(userId, callback){
        console.log("Error in getParcourList: " + err + " - User returned for " + userId + " : " + result);
        callB = "No Document found: " + err; 
      }else{
-       console.log(userId + " : " + result);
+       //console.log(userId + " : " + result);
        callB = result.parcours; 
      } 
      callback(callB);

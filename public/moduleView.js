@@ -52,79 +52,84 @@ function initView(workoutObject, event) {
         $('#showWhere').hide();
     }
     
-    $.getJSON(isCoach + workoutObject.cell.cellId + "/" + authId , function(data) {
-        if(data.success){
-            if(data.message){
-                $('#viewUsersResult').show();
-                $('#viewUsersResult')
-                    .find('option')
-                    .remove()
-                    .end()
-                ;
-                
-                //Fill dropdown with usrs joinning the workout
-                var droplistHtml = "<option value='none'>View athletes results...</option>" ;
-                $(droplistHtml).appendTo("#viewUsersResult");
-                
-                for(i = 0; i < workoutObject.cell.participants.length; i++){
-                    droplistHtml = "<option value='" +  workoutObject.cell.participants[i].fbid + "'>"+ workoutObject.cell.participants[i].fullName+"</option>";
+    if(workoutObject.cell.participants.length !== 0){
+        $.getJSON(isCoach + workoutObject.cell.cellId + "/" + authId , function(data) {
+            if(data.success){
+                if(data.message){
+                    $('#viewUsersResult').show();
+                    $('#viewUsersResult')
+                        .find('option')
+                        .remove()
+                        .end()
+                    ;
+                    
+                    //Fill dropdown with usrs joinning the workout
+                    var droplistHtml = "<option value='none'>View athletes results...</option>" ;
                     $(droplistHtml).appendTo("#viewUsersResult");
+                    
+                    for(i = 0; i < workoutObject.cell.participants.length; i++){
+                        droplistHtml = "<option value='" +  workoutObject.cell.participants[i].fbid + "'>"+ workoutObject.cell.participants[i].fullName+"</option>";
+                        $(droplistHtml).appendTo("#viewUsersResult");
+                    }
+                    
+                    //Add a listener that will load selected users result
+                    $('#viewUsersResult').die();
+                    $('#viewUsersResult').live('change', function(){
+                         
+                         var id = $(this).val();
+                         //alert(id);
+                         if(id === "none"){
+                             
+                         }
+                         else{
+                             
+                            $('#toggleEdit').hide();
+                             
+                            $.getJSON(getCoachWorkout + workoutObject._id + "/" + id + "/" +workoutObject.cell.cellId , function(data) {
+                                renderDetails(data, function(output){
+                                	document.getElementById('typeDetail').innerHTML = output;
+                                    if(workoutObject.type === "intervall"){
+                                        loadDynamicQtip(workoutObject.intervalls.length, workoutObject.intervalls);
+                                        
+                                        $('.intervallUnit').die();   
+                                        $('.intervallUnit').qtip({
+                                            content: {
+                                                attr: 'description'
+                                            },
+                                            position: {
+                                                my: 'left center', // Use the corner...
+                                                at: 'right center' // ...and opposite corner
+                                            },
+                                            style: {
+                                                widget: true 
+                                            }
+                                        });
+                                    }
+                        	    });                             
+                            });
+                         }
+                     });
+        
                 }
-                
-                //Add a listener that will load selected users result
-                $('#viewUsersResult').die();
-                $('#viewUsersResult').live('change', function(){
-                     
-                     var id = $(this).val();
-                     //alert(id);
-                     if(id === "none"){
-                         
-                     }
-                     else{
-                         
-                        $('#toggleEdit').hide();
-                         
-                        $.getJSON(getCoachWorkout + workoutObject._id + "/" + id + "/" +workoutObject.cell.cellId , function(data) {
-                            renderDetails(data, function(output){
-                            	document.getElementById('typeDetail').innerHTML = output;
-                                if(workoutObject.type === "intervall"){
-                                    loadDynamicQtip(workoutObject.intervalls.length, workoutObject.intervalls);
-                                    
-                                    $('.intervallUnit').die();   
-                                    $('.intervallUnit').qtip({
-                                        content: {
-                                            attr: 'description'
-                                        },
-                                        position: {
-                                            my: 'left center', // Use the corner...
-                                            at: 'right center' // ...and opposite corner
-                                        },
-                                        style: {
-                                            widget: true 
-                                        }
-                                    });
-                                }
-                    	    });                             
-                        });
-                     }
-                 });
-    
+                else{
+                    $('#viewUsersResult').hide();  
+                }
             }
             else{
-                $('#viewUsersResult').hide();  
-            }
-        }
-        else{
-        //something wrong
-            $('#viewUsersResult').hide(); 
-        } 
-        
-        //Init or (reinit) the handlers for the click
-        $('#workoutMessageInput').die();
-        $('#workoutMessageInput').attr('workoutid', workoutObject._id);
-        
-        
-    });
+            //something wrong
+                $('#viewUsersResult').hide(); 
+            } 
+            
+            //Init or (reinit) the handlers for the click
+            $('#workoutMessageInput').die();
+            $('#workoutMessageInput').attr('workoutid', workoutObject._id);
+            
+            
+        });
+    }
+    else{
+        $('#viewUsersResult').hide();    
+    }
     
     //Empty descriptiom, then look if there is one
     document.getElementById('descFbId').innerHTML = "";

@@ -34,7 +34,7 @@ module.exports = function(app) {
      
         mongooseLogic.getParcourList(req.params.userId,  function(data){
          
-            console.log(data);
+            //console.log(data);
             res.json(JSON.stringify(data));
          
         });
