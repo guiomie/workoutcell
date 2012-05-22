@@ -3,11 +3,17 @@ var authId = "empty";
 var userObject = "empty";
 //Simply to help augment futur scalibility issues. Will need usergroup created in session info one day
 var userGroup = "group1";  
+var facebookapplicationId = 114525048657436; //production value
 
+  //Depending on domain, either give dev or production value, useful for fast deployment
+  if(document.domain === "workoutcelld.guiomie.c9.io"){
+      
+      facebookapplicationId = 277924085557007;
+  }
 
 
   FB.init({
-    appId  : 277924085557007,   //Prod: 114525048657436
+    appId  : facebookapplicationId,   //Prod: 
     status : true, // check login status
     cookie : true, // enable cookies to allow the server to access the session
     xfbml  : true, // parse XFBML
@@ -41,6 +47,8 @@ function initPage(){
     //FB.XFBML.parse(document.getElementById('xfbmlPic'));
     $('#fbppic').corner('6px');
     });
+    
+    
     
 }
 

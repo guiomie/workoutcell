@@ -1,5 +1,6 @@
-var fbId= "277924085557007";              // provided by facebook          
-var fbSecret= "6a4c2dbefa84c7ba0d824ef981a2157f";          // provided by facebook
+var fbId;              // provided by facebook          
+var fbSecret;          // provided by facebook
+var port;
 var cookieSecret = "cook";     // enter a random hash for security
 
 var express= require('express');
@@ -31,6 +32,20 @@ IntervallUnit = mongooseDb.IntervallUnit;
 SingleIntervallResult = mongooseDb.SingleIntervallResult;
 CellReference = mongooseDb.CellReference; 
 CellDetails = mongooseDb.CellDetails; 
+
+
+//Facebook setting
+if(mongooseDb.env = "dev"){
+    fbId= "277924085557007";              // provided by facebook          
+    fbSecret= "6a4c2dbefa84c7ba0d824ef981a2157f";          // provided by facebook
+    port = process.env.C9_PORT;
+}
+else{
+    fbId= "114525048657436";              // provided by facebook          
+    fbSecret= "03a45bd3d6c6ed6c9aecd5abc260966d";          // provided by facebook 
+    port = 80;
+}
+
 
 everyauth.helpExpress(app);
 
@@ -129,4 +144,4 @@ app.error(function(err, req, res){
     console.log(err);
 });
 
-app.listen(process.env.C9_PORT);
+app.listen(port);

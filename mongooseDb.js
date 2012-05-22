@@ -5,6 +5,7 @@ var mongoHQpassword = '12345';
 
 var mongoose = require('mongoose');
 var everyauth= require('everyauth');
+var dns = require("dns");
 var Promise = everyauth.Promise;
 
 var conf;
@@ -340,3 +341,4 @@ var CellReference = exports.CellReference = mongoose.model('CellReference');
 var CellDetails = exports.CellDetails = mongoose.model('CellDetails');
 
 exports.conf = conf;
+exports.env = env;
