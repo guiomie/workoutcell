@@ -7,14 +7,49 @@ var mongoose = require('mongoose');
 var everyauth= require('everyauth');
 var Promise = everyauth.Promise;
 
-//local dev guillaume desktop config
-//mongoose.connect('mongodb://' + mongoDbAdress + '/' + mongoDbName);
+var conf;
+var env = "dev";
 
-//online connect url
-mongoose.connect('mongodb://' + mongoHQuser + ':' + mongoHQpassword + '@' + mongoHQadress);
 
 Schema = mongoose.Schema;
 ObjectId = Schema.ObjectId;
+
+//****************** Connection Set up ****************************
+
+if(env = "dev"){
+    
+    conf = {
+      db: {
+        db: 'workoutcellDb',
+        host: 'staff.mongohq.com',
+        port: 10072,  // optional, default: 27017
+        username: 'guiomie', // optional
+        password: 'R)r60209021', // optional
+        collection: 'facebookSessions' // optional, default: sessions
+      },
+      secret: '076ee61d63aa10a125ea872411e433b9'
+    };
+    
+}
+else{ //Prod settings
+
+    conf = {
+      db: {
+        db: 'workoutcellDb',
+        host: 'dbh54.mongolab.com',
+        port: 27547,  // optional, default: 27017
+        username: 'mongoose', // optional
+        password: '12345', // optional
+        collection: 'facebookSessions' // optional, default: sessions
+        
+      },
+      secret: '076ee61d63aa10a125ea872411e433b9'
+    };
+
+}
+
+//online connect url
+mongoose.connect('mongodb://' + conf.db.username + ':' + conf.db.password + '@' + conf.db.host + ":" + conf.db.port + "/" + conf.db.db);
 
 //************************SOCIAL SCHEMAS **************************
 
@@ -303,3 +338,5 @@ var SingleIntervallResult = exports.SingleIntervallResult = mongoose.model('Sing
 
 var CellReference = exports.CellReference = mongoose.model('CellReference');
 var CellDetails = exports.CellDetails = mongoose.model('CellDetails');
+
+exports.conf = conf;

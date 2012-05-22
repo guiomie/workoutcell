@@ -4,26 +4,12 @@ var cookieSecret = "cook";     // enter a random hash for security
 
 var express= require('express');
 var everyauth= require('everyauth');
+var MongoStore = require('connect-mongo')(express);
 
 var mongooseDb = require('./mongooseDb');
+var mongooseLogic = require('./mongooseLogic');
 var app = express.createServer();
 var Promise = everyauth.Promise;
-var mongooseLogic = require('./mongooseLogic');
-
-var MongoStore = require('connect-mongo')(express);
-var MemoryStore = express.session.MemoryStore;
-
-var conf = {
-  db: {
-    db: 'workoutcellDb',
-    host: 'staff.mongohq.com',
-    port: 10072,  // optional, default: 27017
-    username: 'guiomie', // optional
-    password: 'R)r60209021', // optional
-    collection: 'facebookSessions' // optional, default: sessions
-  },
-  secret: '076ee61d63aa10a125ea872411e433b9'
-};
 
 //Import database models
 User = mongooseDb.User;
@@ -116,9 +102,9 @@ app.configure(function(){
   });
   app.use(session);*/
   app.use(express.session({
-    secret: conf.secret,
+    secret: mongooseDb.conf.secret,
     maxAge: new Date(Date.now() + 3600000),
-    store: new MongoStore(conf.db)
+    store: new MongoStore(mongooseDb.conf.db)
   }));
   app.use(everyauth.middleware());
   app.use(express.favicon());
