@@ -118,18 +118,18 @@ function initView(workoutObject, event) {
             else{
             //something wrong
                 $('#viewUsersResult').hide(); 
-            } 
-            
-            //Init or (reinit) the handlers for the click
-            $('#workoutMessageInput').die();
-            $('#workoutMessageInput').attr('workoutid', workoutObject._id);
-            
-            
+            }      
         });
     }
     else{
         $('#viewUsersResult').hide();    
     }
+    
+    
+    //Init or (reinit) the handlers for the click
+    $('#workoutMessageInput').die();
+    $('#workoutMessageInput').attr('workoutid', workoutObject._id);
+    
     
     //Empty descriptiom, then look if there is one
     document.getElementById('descFbId').innerHTML = "";

@@ -17,7 +17,7 @@ ObjectId = Schema.ObjectId;
 
 //****************** Connection Set up ****************************
 
-if(env = "dev"){
+if(env === "dev"){
     
     conf = {
       db: {
@@ -36,7 +36,7 @@ else{ //Prod settings
 
     conf = {
       db: {
-        db: 'workoutcellDb',
+        db: 'workoutcelldb',
         host: 'dbh54.mongolab.com',
         port: 27547,  // optional, default: 27017
         username: 'mongoose', // optional

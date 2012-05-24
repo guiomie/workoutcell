@@ -140,9 +140,9 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
             //console.log(resultReference.ref.length);
             var initialRefLength = resultReference.ref.length;
             if(resultReference.ref.length <= arrayLocation){
-                console.log("In if");
+                //console.log("In if");
                 for(i = initialRefLength; i <= (arrayLocation); i++){
-                    console.log("In loop: " +i);
+                    //console.log("In loop: " +i);
                     resultReference.ref.push({id: (i + initialRefLength), allEvents: []});  
                 } 
                 resultReference.ref[arrayLocation].allEvents.push(theEvent);
@@ -152,10 +152,7 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
                 resultReference.ref[arrayLocation].allEvents.push(theEvent);
    
             }
-      
-            
-            
-            //console.log(JSON.stringify(resultReference));
+
             resultReference.save(function(err){
      
                 if(err){
@@ -164,7 +161,7 @@ var saveEvent = function(eventObject, userId, workoutRef, callback){
                     callback(callbackVar);
                 }
                 else{
-                    console.log('Succesfully saved Event'); 
+                    //console.log('Succesfully saved Event'); 
                     callback("Successfully saved Workout and Reference");
                 }      
             });
@@ -218,7 +215,7 @@ var saveWorkout = function(workoutObject, logedId, logedName, idCell, callback){
     
     if(workoutObject.type === "intervall"){
        
-       console.log(JSON.stringify(workoutObject.intervalls));
+       //console.log(JSON.stringify(workoutObject.intervalls));
        //We rewrite the parcour name, not just the id, because we dont want
        //to http request just to get the name
        theWorkout = new CardioWorkout({ 
@@ -337,7 +334,7 @@ var saveCellEvent = function(eventObject, cellId, workoutRef, callback){
 
 var saveResults = function(workoutRefId, receivedResult, userId, callback){
     
-    console.log("Top:" + JSON.stringify(receivedResult) + " : " + workoutRefId);
+    //console.log("Top:" + JSON.stringify(receivedResult) + " : " + workoutRefId);
     
     if(workoutRefId.toString().length !== 24 ){
         
@@ -347,13 +344,13 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
     else{
         //Means this is a intervall trainning
         if(RealTypeOf(receivedResult) === "array"){
-            console.log("Looking for: " + userId + " at workout id: " +  workoutRefId);
+            //console.log("Looking for: " + userId + " at workout id: " +  workoutRefId);
             CardioResult.findOne({ "id" : userId, "intervallResult.workoutId": workoutRefId }, function(err, result){
                 if(err){
                     callback("No Document found: " + err);
                 }
                 else if( result === null){ //this means the document doesnt exist so lets push it to the array
-                    console.log('document not found');
+                    //console.log('document not found');
                     var tempResult = {
                         workoutId    :workoutRefId,
                         intervalls   :receivedResult
@@ -369,7 +366,7 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
                     });
                 }
                 else{
-                    console.log('in document update');
+                    //console.log('in document update');
                     CardioResult.update({ "id" : userId, "intervallResult.workoutId": workoutRefId },
                         { $set:{"intervallResult.$.intervalls":receivedResult}},{upsert: true}, function(err){
                             if(err){
@@ -383,7 +380,7 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
             });   
         }
         else{ //should be a distance training
-            console.log("in else");
+            //console.log("in else");
             CardioResult.findOne({ "id" : userId, "distanceResult.workoutId": workoutRefId }, function(err, result){
                 if(err){
                     callback("No Document found: " + err);
@@ -406,7 +403,7 @@ var saveResults = function(workoutRefId, receivedResult, userId, callback){
                     });
                 }
                 else{
-                    console.log("Looking for: " + userId + " at workout id: " +  workoutRefId);              
+                    //console.log("Looking for: " + userId + " at workout id: " +  workoutRefId);              
                     CardioResult.update({ "id" : userId, "distanceResult.workoutId": workoutRefId },
                         { $set:{
                             "distanceResult.$.unit"        : receivedResult.unit,
@@ -463,7 +460,7 @@ var getWorkout = function(workoutRefId, userId, callback){
                         callback(workoutResult);
                     }
                     else{    
-                        console.log(JSON.stringify(result));
+                        //console.log(JSON.stringify(result));
                         result[parameterName].forEach(function (element) {
                             if(element.workoutId.toString() === workoutRefId){
                                 if(workoutResult.type === "distance"){
@@ -529,7 +526,7 @@ var getWorkoutCoachMode = function(workoutRefId, userId, coachId, cellId, callba
                                 callback(workoutResult);
                             }
                             else{    
-                                console.log(JSON.stringify(result));
+                                //console.log(JSON.stringify(result));
                                 result[parameterName].forEach(function (element) {
                                     if(element.workoutId.toString() === workoutRefId){
                                         if(workoutResult.type === "distance"){
@@ -628,11 +625,11 @@ var deleteWorkout = function(workoutId, callback){
         //console.log("Searching for parcour at: " + workoutId);
         CardioWorkout.remove({ _id: workoutId }, function (err, result) {
             if (err) { 
-                console.log("In deleteWorkout Failed");
+                //console.log("In deleteWorkout Failed");
                 callback("Error in deletion. Stack Trace: " + err); 
             }
             else{
-                console.log("In deleteWorkout success" + JSON.stringify(result));
+                //console.log("In deleteWorkout success" + JSON.stringify(result));
                 callback("Success");      
             }      
         });
@@ -644,7 +641,7 @@ var deleteEvent = function(eventId, userId, month, year, callback){
     //Verify the object is a valid objectid
     if(eventId.toString().length !== 24 || !isNumber(month) || !isNumber(year) || month < 0 || year < 2011){
        //console.log("Invalid objectId or input submitted @ deleteEvent()");
-       callback("Invalid objectId or input for eventId");
+       callback("deleteEvent - Invalid objectId or input for eventId");
     }
     else{
         var arrayLocation = 1 + ((parseInt(year) - 2011)*12) + parseInt(month);
@@ -653,7 +650,7 @@ var deleteEvent = function(eventId, userId, month, year, callback){
         CalendarEventReference.findOne({ id: userId }, function (err, result) {
             if (err || result === null) { 
                 //console.log("In deleteEvent error(1)");
-                callback("Error in deletion. Stack Trace: " + err); 
+                callback("deleteEvent - Error in deletion. Stack Trace: " + err); 
             }
             else{
                 //console.log(result.ref.length + " vs " + arrayLocation);
@@ -663,11 +660,11 @@ var deleteEvent = function(eventId, userId, month, year, callback){
                     result.ref[arrayLocation].allEvents.id(eventId).remove();
                     result.save(function (err) {
                         if (err) { 
-                            console.log("In deleteEvent error(2)");
+                            console.log("deleteEvent - In deleteEvent error(2)");
                             callback("Error in deletion. Stack Trace: " + err); 
                         }
                         else{
-                            console.log("In deleteEvent Success");
+                            //console.log("In deleteEvent Success");
                             callback("Success");      
                         }      
                     });
@@ -688,7 +685,7 @@ var leaveWorkout = function(workoutRefId, userId, callback){
     
     if(workoutRefId.toString().length !== 24 ){
         
-       console.log("Invalid objectId submitted @ getWorkout()");
+       console.log("leaveWorkout - Invalid objectId submitted @ getWorkout()");
        callback("Invalid objectId for workoutId");
     }
     else{
@@ -767,7 +764,7 @@ var deleteCellEvent = function(cellId, month, year, workoutId, callback){
    
     CellDetails.findOne({ _id: cellId }, function (err, result) {
         if (err || result === null) { 
-            console.log("In deleteCellEvent error(1) at: " + err);
+            console.log("deleteCellEvent - In deleteCellEvent error(1) at: " + err);
             callback("Error in deletion. Stack Trace: " + err); 
         }
         else{
@@ -780,11 +777,11 @@ var deleteCellEvent = function(cellId, month, year, workoutId, callback){
                         result.activities[arrayLocation].allEvents[i].remove();
                         result.save(function (err) {
                             if (err) { 
-                                console.log("In deleteCellEvent error(2)" + err);
+                                console.log("deleteCellEvent - In deleteCellEvent error(2)" + err);
                                 callback("Error in deletion. Stack Trace: " + err); 
                             }
                             else{
-                                console.log("In deleteCellEvent Success" + err);
+                                //console.log("In deleteCellEvent Success" + err);
                                 callback("Success");      
                             }      
                         });
@@ -792,7 +789,7 @@ var deleteCellEvent = function(cellId, month, year, workoutId, callback){
                 }
             }
             else{
-                console.log("In deleteCellEvent error(3)");
+                console.log("deleteCellEvent - In deleteCellEvent error(3)");
                 callback("Error, couldnt find calendar event");
             }                   
         }
@@ -804,14 +801,14 @@ var joinCellWorkout = function(userId, userName, workoutId, callback){
     
     if(workoutId.toString().length !== 24 ){
         
-       console.log("Invalid objectId submitted @ getWorkout()");
+       console.log("joinCellWorkout - Invalid objectId submitted @ getWorkout()");
        callback("Failed");
     }
     else{
         CardioWorkout.findOne({ _id: workoutId }, function(err, workoutResult){
 
             if(err || workoutResult === null){
-                console.log("In JoinCellWorkout error(1)" + err);
+                console.log("joinCellWorkout - In JoinCellWorkout error(1)" + err);
                 callback("Failed");
             }
             else{
@@ -823,7 +820,7 @@ var joinCellWorkout = function(userId, userName, workoutId, callback){
                 workoutResult.cell.participants.push(tinyUser);
                 workoutResult.save(function (err) {
                     if (err) { 
-                        console.log("In JoinCellWorkout error(2)" + err);
+                        console.log("joinCellWorkout - In JoinCellWorkout error(2)" + err);
                         callback("Failed"); 
                     }
                     else{
@@ -841,13 +838,13 @@ var addWorkoutMessage = function(userName, userId, workoutId, themessage, callba
     
     if(workoutId.toString().length !== 24 ){
        //console.log("Invalid objectId submitted @ getWorkout()");
-       callback("Invalid objectId for workoutId");
+       callback("addWorkoutMessage - Invalid objectId for workoutId");
     }
     else{
         CardioWorkout.findOne({ _id: workoutId }, function(err, workoutResult){
 
             if(err || workoutResult === null){
-                callback("No such workout: " + err);
+                callback("addWorkoutMessage - No such workout: " + err);
             }
             else{
                 
@@ -861,7 +858,7 @@ var addWorkoutMessage = function(userName, userId, workoutId, themessage, callba
                 workoutResult.feed.push(message);
                 workoutResult.save(function (err) {
                     if (err) { 
-                        //console.log("In addWorkoutMessage error(2)" + err);
+                        console.log("addWorkoutMessage - In addWorkoutMessage error(2)" + err);
                         callback("Error addWorkoutMessage. Stack Trace: " + err); 
                     }
                     else{
@@ -906,7 +903,7 @@ var getFriendList = function(userId, callback){
  
     GeneralReference.findOne({ id: userId}, function(err, result){
         if(err || result === null){
-            console.log("For : " + userId + "  " + err + " : " + result);
+            console.log("addWorkoutMessage - For : " + userId + "  " + err + " : " + result);
             callback("Error");
         }
         else{ 
@@ -942,7 +939,7 @@ var getProfileSnippet = function(userId, callback){
         }
         else{
             var html = result.firstName + " " + result.lastName + "<br> <span class='btn_viewProfile' userId='" + 
-                    result.fbid + "' style='cursor: pointer;'> View Profile </span>";
+                result.fbid + "' style='cursor: pointer;'> View Profile </span>";
             callback(html);
         }
     }); 
@@ -998,7 +995,7 @@ var setUserObjective = function(userId, objective, callback){
 
 var createCell = function(creatorId, cellObject, userName, callback){
  
-    console.log('in createCell()');
+    //console.log('in createCell()');
     var newCellDetails = new CellDetails({
         name         : cellObject.name,
 	    location     : cellObject.location,
@@ -1011,7 +1008,7 @@ var createCell = function(creatorId, cellObject, userName, callback){
     
     newCellDetails.save(function(err, result){
         if(err){
-            callback("Error in saving cell: Stack: " + err);        
+            callback("createCell - Error in saving cell: Stack: " + err);        
         }
         else{
         
@@ -1025,13 +1022,13 @@ var createCell = function(creatorId, cellObject, userName, callback){
             
             GeneralReference.findOne({ id: creatorId}, function(err, result){
                 if(err || result === null){
-                    callback("Error in finding Users Ref. Stack: " + err);
+                    callback("createCell - Error in finding Users Ref. Stack: " + err);
                 }
                 else{  
                     result.cells.push(newCellRef);
                     result.save(function(err, result){
                         if(err){
-                            callback("Error in saving cellRef: Stack: " + err);        
+                            callback("createCell - Error in saving cellRef: Stack: " + err);        
                         }
                         else{
                             callback("Success");       
@@ -1063,7 +1060,7 @@ var getUsersCells = function(userId, callback){
 }
 
 var getCellDetails = function(cellId, callback){
-    console.log("looking for: " + cellId);
+    //console.log("looking for: " + cellId);
     if(cellId.toString().length !== 24 ){
        //console.log("not 24 char");
        callback("Error");
@@ -1083,7 +1080,7 @@ var getCellDetails = function(cellId, callback){
 }
 
 var isCellCoach = function(cellId, userId, callback){
-    console.log("looking for: " + cellId);
+    //console.log("looking for: " + cellId);
     if(cellId.toString().length !== 24 ){
        //console.log("not 24 char");
        callback("Error");
@@ -1116,19 +1113,19 @@ var joinCell = function(cellId, userId, userName, callback){
     else{
         CellDetails.findOne({ _id: cellId }, function(err, resultCellDetails){
             if(err || resultCellDetails === null){
-                console.log(err);
+                console.log("joinCell - " + err);
                 callback("Error in finding Cell. Stack: " + err);
             }
             else{
                 resultCellDetails.members.push({fbid: parseInt(userId), fullName: userName});
                 resultCellDetails.save(function(err){
                     if(err){
-                        callback("Error in saving cellRef: Stack: " + err);        
+                        callback("joinCell - Error in saving cellRef: Stack: " + err);        
                     }
                     else{
                         GeneralReference.findOne({ id: userId }, function(err, result){
                             if(err || result === null){
-                                callback("Error in finding User. Stack: " + err);
+                                callback("joinCell - Error in finding User. Stack: " + err);
                             }
                             else{
                                 var newCellRef = new CellReference({
@@ -1141,7 +1138,7 @@ var joinCell = function(cellId, userId, userName, callback){
                                 result.cells.push(newCellRef);
                                 result.save(function(err){
                                     if(err){
-                                        callback("Error in saving cellRef: Stack: " + err);        
+                                        callback("joinCell - Error in saving cellRef: Stack: " + err);        
                                     }
                                     else{
                                         callback("Success");
@@ -1186,7 +1183,7 @@ var addUserInRight = function(arrayOfId, userInviting, callback){
             newPermission.invites = 2;
             newPermission.save(function(err){
                 if(err) { 
-                    console.log('Error in adding to rights: ' + newPermission.id);
+                    console.log('addUserInRight - Error in adding to rights: ' + newPermission.id);
                 }
                 else{
                     console.log('Added to rights: ' + newPermission.id);
@@ -1220,7 +1217,7 @@ var pushToNotificationLog = function (error){
     newError.notificationError.push(error);
     newError.save(function(err){
         if(err) {
-            console.log('Cant save to notification error log'); 
+            console.log('pushToNotificationLog - Cant save to notification error log'); 
         }
         else{
            
