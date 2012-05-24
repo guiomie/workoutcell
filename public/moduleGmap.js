@@ -2,6 +2,7 @@ var map;
 var poly;
 var distance = 0;
 var markerArray = [];
+var latlngArray = []; //only used to calculate altitude
 var bikeLayer = null;
 var lastAddedDistance = [];
 var markerString = "";
@@ -132,7 +133,7 @@ function clearMap(){
 	}
 	//empty array of distances
     lastAddedDistance = [];
-    
+    latlngArray = [];
 }
 
 function markertTitleArray(array, callback){
@@ -195,7 +196,7 @@ function loadMarkers(arrayLatLng, arrayTitle){
     //alert(arrayLatLng + " : " + arrayTitle);
     for(i = 0; i < arrayLatLng.length; i++){
         var pos = new google.maps.LatLng(arrayLatLng[i].lat, arrayLatLng[i].lng);
-        
+        latlngArray.push(pos);
         var marker = new google.maps.Marker({
             position: pos,
             title: JSON.stringify(arrayTitle[i]),
@@ -229,6 +230,17 @@ function setUsersLatLng(location, callback){
           }
         });
     }
+}
+
+function calculateAltitude(array){
+
+    var elevationService = new google.maps.ElevationService();
+   
+    elevationService.getElevationAlongPath({path: array, samples: 200}, function(elevationResultArray, elevationStatus){
+         //console.log(ElevationResultArray);
+        //alert(ElevationStatus);
+        drawElevationGraph(elevationArrayToArray(elevationResultArray));
+    });
     
     
 }

@@ -506,43 +506,53 @@
 
 	<div id="map_canvas" style="width:500px; height:400px"></div>
 	
-	<div id="map_control" style="float: left;">
-		
-		<ul id="icons" class="ui-widget ui-helper-clearfix">
-		
-		<div style="float: top;" >
-		<li class="ui-state-default ui-corner-all" title="Clear Map" id="deleteTrace"><span class="ui-icon ui-icon-cancel"></span></li>		
-		<li class="ui-state-default ui-corner-all" title="Bike mode" id="bikeTrace"><span class="ui-icon ui-icon-transferthick-e-w"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Undo last" id="undoTrace"><span class="ui-icon ui-icon-arrowreturn-1-w"></span></li>
-		 Distance: <span id="distance" >0</span> km
-		<br><br><br>
-		</div>
-		
-		<div style="float: middle;">
-    		<input type="text" value="Save course as ..." onfocus="if(this.value=='Save course as ...'){this.value='';}" onblur="if(this.value==''){this.value='Save course as ...';}" id="courseName" style="width:120px; float: left; margin-top:6px; margin-right: 10px;" />
-            <li class="ui-state-default ui-corner-all" title="Save Trace" id="saveTrace"><span class="ui-icon ui-icon-disk"></span></li>
+    <div>
+    	<div id="map_control" style="float: left;">
+    		
+    		<ul id="icons" class="ui-widget ui-helper-clearfix">
+    		
+    		<div style="float: top;" >
+    		<li class="ui-state-default ui-corner-all" title="Clear Map" id="deleteTrace"><span class="ui-icon ui-icon-cancel"></span></li>		
+    		<li class="ui-state-default ui-corner-all" title="Bike mode" id="bikeTrace"><span class="ui-icon ui-icon-transferthick-e-w"></span></li>
+    		<li class="ui-state-default ui-corner-all" title="Undo last" id="undoTrace"><span class="ui-icon ui-icon-arrowreturn-1-w"></span></li>
+    		 Distance: <span id="distance" >0</span> km
     		<br><br><br>
-		</div> 
-		
-		<div style="float: bottom;">
-    		<select id="dropdownMap" style='width: 120px; float:left; margin-top:6px; margin-right: 10px;'> <option>Click to load...</option> </select>
-            <li class="ui-state-default ui-corner-all" title="Remove Selecred Trace" id="unSaveTrace"><span class="ui-icon ui-icon-trash"></span></li>
-		</div>
-		</ul>
-		
-		
-	</div>
-	
-  
+    		</div>
+    		
+    		<div style="float: middle;">
+        		<input type="text" value="Save course as ..." onfocus="if(this.value=='Save course as ...'){this.value='';}" onblur="if(this.value==''){this.value='Save course as ...';}" id="courseName" style="width:120px; float: left; margin-top:6px; margin-right: 10px;" />
+                <li class="ui-state-default ui-corner-all" title="Save Trace" id="saveTrace"><span class="ui-icon ui-icon-disk"></span></li>
+        		<br><br><br>
+    		</div> 
+    		
+    		<div style="float: bottom;">
+        		<select id="dropdownMap" style='width: 120px; float:left; margin-top:6px; margin-right: 10px;'> <option>Click to load...</option> </select>
+                <li class="ui-state-default ui-corner-all" title="Remove Selecred Trace" id="unSaveTrace"><span class="ui-icon ui-icon-trash"></span></li>
+    		</div>
+    		</ul>
+    		
+    		
+    	</div>
+    	
+      
+    
+    	<div id="instruction" style="float: right;">    
+    		<div class="ui-widget" style="width: 270px; height: 105px;">
+    			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+    				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+    				<strong>Instructions</strong><br><br> 1. Click on map to trace your workout. <br> 2. Name and Save your workout course. <br> 3. View or Delete a previous workout with the droplist.</p>
+    			</div>
+    		</div>		
+    	</div>
+          
+          <div id="elevationGraph">
 
-	<div id="instruction" style="float: right;">    
-		<div class="ui-widget" style="width: 270px; height: 300px;">
-			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
-				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-				<strong>Instructions</strong><br><br> 1. Click on map to trace your workout. <br> 2. Name and Save your workout course. <br> 3. View or Delete a previous workout with the droplist.</p>
-			</div>
-		</div>		
-	</div> 
+        </div>
+          
+          
+    </div>
+
+            
 
 </div>
 

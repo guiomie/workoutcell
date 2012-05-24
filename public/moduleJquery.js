@@ -731,7 +731,7 @@ $(document).ready(function(){
                 loadMarkers(data.markers.latlng, data.markers.titles);
                 map.setCenter(new google.maps.LatLng(data.markers.latlng[0].lat, data.markers.latlng[0].lng));
                 document.getElementById('distance').innerHTML = data.distance;
-                
+                /*calculateAltitude(latlngArray);*/
             }, "json");
 
         }); 

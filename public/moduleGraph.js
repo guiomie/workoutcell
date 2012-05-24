@@ -392,8 +392,53 @@ var getIntervallTotalValue = function(anArray, resultArray, sport, stats){
         }
         else{
         
-        }
-        
+        }  
+    }   
+}
+
+
+
+var drawElevationGraph = function(data){
+    console.log(data);
+    
+    //var data = array.
+    
+    document.getElementById("elevationGraph").innerHTML = "";
+    
+    var barWidth = 5;
+    var height = 75;
+    var width = 400;
+    
+    var chart = d3.select("#elevationGraph").append("svg")
+     .attr("class", "chart")
+     .attr("width", 400)
+     .attr("height", height);
+    
+    var x = d3.scale.linear()
+     .range([0, data.length]);
+
+     
+    var y = d3.scale.linear()
+     .domain([d3.min(data), d3.max(data)])
+     .range([0, height]);
+    
+    chart.selectAll("rect")
+     .data(data)
+    .enter().append("rect")
+     .attr("y", function(d){ return y(height - d)  })
+     .attr("width", barWidth)
+     .attr("x", function(d, i) { return i * barWidth; })
+     .attr("fill", "#e2f1d5")
+     .attr("height", function(d){ return y(d) })
+}
+
+var elevationArrayToArray = function(elevationArray){
+
+    var toReturn = [];
+    for(i=0; i < elevationArray.length;i++){
+       toReturn.push(elevationArray[i].elevation); 
     }
+    return toReturn;
+    
     
 }
