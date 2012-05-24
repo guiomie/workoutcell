@@ -409,7 +409,7 @@ module.exports = function(app) {
      app.get("/cell/quit/:cellId", function(req, res){
         mongooseLogic.quitCell(getLogedId(req), req.params.cellId, function(mes){
             if(mes === "Success"){
-                res.json({ success: true, message: 'Joined Cell'});
+                res.json({ success: true, message: 'You have quit  the Cell'});
             }
             else{
                 res.json({ success: false, message:'Failed to quit Cell.' + mes});     

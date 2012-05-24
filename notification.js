@@ -171,7 +171,7 @@ var getPendingNotifications = function(userId, page, callback){
                 elementsPerPage = elementsPerPage + skip ;
                 skip = 0;
             }
-            console.log(skip + " - " + numberOfPages + " - " + arraySize + " - " + JSON.stringify(result));
+            //console.log(skip + " - " + numberOfPages + " - " + arraySize + " - " + JSON.stringify(result));
             NotificationsReference.find({ id: userId}, { pending: { $slice: [skip, elementsPerPage]}}, function(err, result){
                if(err || result === null){
                     callback("Failed");
@@ -297,7 +297,7 @@ var sendNotificationToCellUsers = function(cellId, notification, callback){
                         callback("Error in pushing not to found user. User:" + result.members[i]);
                     }
                     else{ 
-                        console.log('update succes');
+                        //console.log('update succes');
                         callback("Success");
                     }
                 });

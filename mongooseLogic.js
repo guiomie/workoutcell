@@ -1161,9 +1161,9 @@ var quitCell = function(userId, cellId, callback){
             callback("User isnt part of this cell. Stack: " + err );
         }
         else{ //Memeber not in cell yet, so he can join
-           CellDetails.update({ "_id" : cellId}, { $pull: {"members": userId}}, {upsert: true}, function(err){    
+           CellDetails.update({ "_id" : ObjectId.fromString(cellId)}, { $pull: { members: { fbid: userId}}}, {upsert: true}, function(err){    
                 if(err){
-                    callback("Cant remove user");
+                    callback("quitCell - Cant remove user - uid: " + userId  + " - cid: " + cellId);
                 }
                 else{
                     callback("Success"); 
