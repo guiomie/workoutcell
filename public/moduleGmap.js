@@ -232,14 +232,14 @@ function setUsersLatLng(location, callback){
     }
 }
 
-function calculateAltitude(array){
-
+function calculateAltitude(array, distance){
+    var numberOfPoints = 480;
     var elevationService = new google.maps.ElevationService();
    
-    elevationService.getElevationAlongPath({path: array, samples: 200}, function(elevationResultArray, elevationStatus){
+    elevationService.getElevationAlongPath({path: array, samples: numberOfPoints}, function(elevationResultArray, elevationStatus){
          //console.log(ElevationResultArray);
         //alert(ElevationStatus);
-        drawElevationGraph(elevationArrayToArray(elevationResultArray));
+        drawElevationGraph(elevationArrayToArray(elevationResultArray), distance, numberOfPoints);
     });
     
     

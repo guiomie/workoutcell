@@ -618,6 +618,22 @@ $(document).ready(function(){
         //
         //--------------------------------------------------------------------
         
+        $('#elevationGraph').qtip({
+            content: {
+                text: 'Not initialized'
+            },
+            show: {
+                ready: false
+            },
+            style: {
+                widget: true 
+            },
+            position: {
+                my: 'left center',
+                at: 'right center'
+            }
+        });
+        
         // Remove last added segment on map trace
     	$('#undoTrace').click(function(){
 			undoLast();
@@ -731,7 +747,7 @@ $(document).ready(function(){
                 loadMarkers(data.markers.latlng, data.markers.titles);
                 map.setCenter(new google.maps.LatLng(data.markers.latlng[0].lat, data.markers.latlng[0].lng));
                 document.getElementById('distance').innerHTML = data.distance;
-                /*calculateAltitude(latlngArray);*/
+                calculateAltitude(latlngArray, data.distance);
             }, "json");
 
         }); 
@@ -1010,7 +1026,11 @@ $(document).ready(function(){
 
 		
 
-        ///// MAPPING NAVIGATION BUTTONS 
+        ///// ------------- MAPPING NAVIGATION BUTTONS -----------------------
+        //
+        //
+        // ---------------------------------------------------------------------
+        
         $('#goToSocial').click(function(){
             applicationVariables.calendarMode = "user";
             applicationVariables.feedPage = 2;
@@ -1076,10 +1096,7 @@ $(document).ready(function(){
             moveUI('largeCalendar'); 
             
         });
-
-		//Simple function to an object that you can put in the calendar
-		
-        
+		        
         //Will take a JSON for string argumen (array of maps) and will populate drop list
         var populateDroplist = function(dropdownName, string){
             

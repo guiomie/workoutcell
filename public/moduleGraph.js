@@ -398,38 +398,83 @@ var getIntervallTotalValue = function(anArray, resultArray, sport, stats){
 
 
 
-var drawElevationGraph = function(data){
+var drawElevationGraph = function(data, distance, calculatePoints){
     console.log(data);
     
     //var data = array.
     
     document.getElementById("elevationGraph").innerHTML = "";
     
-    var barWidth = 5;
+    var barWidth = 1;
     var height = 75;
     var width = 400;
+    var delta = d3.max(data) - d3.min(data) + 10; //10 is a basic padding
     
     var chart = d3.select("#elevationGraph").append("svg")
      .attr("class", "chart")
-     .attr("width", 400)
-     .attr("height", height);
+     .attr("width", 480)
+     .attr("height", 85);
     
     var x = d3.scale.linear()
-     .range([0, data.length]);
+     .domain([0, data.length]);
 
      
     var y = d3.scale.linear()
-     .domain([d3.min(data), d3.max(data)])
-     .range([0, height]);
-    
+     .domain([0 , d3.max(data)])
+     .range([10, height]);
+     
+    /* 
     chart.selectAll("rect")
      .data(data)
     .enter().append("rect")
-     .attr("y", function(d){ return y(height - d)  })
-     .attr("width", barWidth)
-     .attr("x", function(d, i) { return i * barWidth; })
-     .attr("fill", "#e2f1d5")
-     .attr("height", function(d){ return y(d) })
+     .attr("y", function(d){ return 75 - y(d);})
+     .attr("width", 2)
+     .attr("x", function(d, i) { return (i * 2) + 15; })
+     .attr("fill", "#84C74D")
+     .attr("height", function(d){ return y(d); })*/
+     
+    chart.selectAll("line")
+     .data(data)
+    .enter().append("line")
+     .attr("y1", function(d){ return 75 - y(d);})
+     .attr("y2", 75)
+     .attr("x1", function(d, i) { return (i); })
+     .attr("x2", function(d, i) { return (i); })
+     .style("stroke", "#84C74D")
+     .on("mouseover", function(d, i){  
+         //$('#elevationBubble').text('Trigger started');
+         var displayVar = "Elevation of " + Math.round(d) + " m <br>Distance of " + Math.round(((i/calculatePoints)*distance)*100)/100 + " km" 
+         $("#elevationGraph").qtip('option', 'content.text', displayVar)
+         /*$('#elevationGraph').qtip({
+            
+            show: true
+         });*/
+      })
+	 .on("mouseout", function(){
+
+         //$('#elevationGraph').qtip({show: false });
+     });
+     
+    /* 
+    chart.selectAll(".rule")
+     .data(y.ticks(2))
+    .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", 0)
+     .attr("y", function(d){ return y(d) })
+     .attr("dx", 6)
+     .attr("text-anchor", "middle")
+     .text(function(d){ return d3.max(0) - d });
+     
+    chart.selectAll("line")
+     .data(y.ticks(2))
+    .enter().append("line")
+     .attr("x1", 10)
+     .attr("x2", 480)
+     .attr("y1", y)
+     .attr("y2", y)
+     .style("stroke", "#FFFFFF");*/
+
 }
 
 var elevationArrayToArray = function(elevationArray){
