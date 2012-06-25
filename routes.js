@@ -1105,14 +1105,19 @@ module.exports = function(app) {
     
     app.post("/statistics/workoutbased", function(req,res){
        
-        console.log(req.body);
+        //console.log(req.body);
         var arrayOfIds = req.body.array;
-       
-        statisticsEngine.calaculateWorkoutsStatistics(arrayOfIds, "100000268779394"/*getLogedId(req)*/, function(mes){
-        
-            res.json(mes);
-           
-        });
+        if(arrayOfIds.length === 0){
+            res.json({ success: false,  message: 'Array is 0, error'});
+        }
+        else{
+            
+            statisticsEngine.calaculateWorkoutsStatistics(arrayOfIds, "100000268779394"/*getLogedId(req)*/, function(mes){
+            
+                res.json({ success: true,  message: mes});
+               
+            });
+        }
         
     });
     

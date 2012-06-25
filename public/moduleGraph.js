@@ -19,7 +19,7 @@ var getStats = function(arrayObid, callback){
 
 
 var getIdsFromEventSource = function(arrayOfEvents, callback){
-    
+    //console.log(arrayOfEvents);
     var response = {
       
       array: [],
@@ -29,7 +29,6 @@ var getIdsFromEventSource = function(arrayOfEvents, callback){
       timeCell:0
         
     };
-    
     
     for(i=0;i < arrayOfEvents.length;i++){
     
@@ -68,28 +67,36 @@ var getIdsFromEventSource = function(arrayOfEvents, callback){
 
 var fillStatsPage = function(eventSource){
  
- 
-    getIdsFromEventSource(eventSource, function(newArray){
-        console.log(newArray);
-        getStats(newArray.array, function(statsResult){
-                console.log(statsResult);
-                computeStats(statsResult, function(res){
-                    
-                    console.log(res);
-
+    
+    if(eventSource === "Error"){
+            $('#friendTopTitle').text('No statistics for this month');
+            document.getElementById('timeStats').innerHTML = '';
+            document.getElementById('distanceGraph').innerHTML = '';
+            document.getElementById('cellNFriendStats').innerHTML = '';
+    }
+    else{
+        document.getElementById('cellNFriendStats').innerHTML = "You haven't trained with any friends this month.";
+        $('#friendTopTitle').text('Top training friends');
+        
+        getIdsFromEventSource(eventSource, function(newArray){
+            //console.log(newArray);
+            getStats(newArray.array, function(statsResult){
+                //console.log(statsResult);
+                $('#friendTopTitle').text('Top training friends');
+                computeStats(statsResult.message, function(res){
+                    console.log('statisting');
                     d3graph([res.plannedBikeDistanceSum, res.totalBikeDistanceSum, res.plannedSwimDistanceSum, res.totalSwimDistanceSum, res.plannedRunDistanceSum, res.totalRunDistanceSum],
                         ["-", "Planned Bike", "Total Completed", "Planned Swim", "Total Completed", "Planned Run", "Total Completed"]);
 
                     document.getElementById("timeStats").innerHTML = 'Time biking: ' + newArray.timeBike.toString().toHHMMSS() + '<br>Time swimming: ' + newArray.timeSwim.toString().toHHMMSS() +
                         '<br>Time running: ' + newArray.timeRun.toString().toHHMMSS() + '<br>Time socializing: ' + newArray.timeCell.toString().toHHMMSS();
-                        
-                    //document.getElementById("cellNFriendStats").innerHTML = JSON.stringify(res.socialStats);
-                    
-                    displayTopFriends(res.socialObject);
 
+                    displayTopFriends(res.socialObject);
                 });
-        });        
-    });
+            }); 
+        
+        });
+    }
 }
 
 String.prototype.toHHMMSS = function () {
@@ -197,7 +204,7 @@ var displayTopFriends = function(sortable){
 
 var computeStats = function(array, callback){
     
-   console.log(array); 
+   //console.log(array); 
     var stats = {
         plannedRunDistance: [],
         plannedSwimDistance: [],
@@ -299,10 +306,7 @@ var computeStats = function(array, callback){
             else{
                
             }
-            
-           
-                   
-           
+
         })(i);
         
         (function(i){
@@ -399,7 +403,7 @@ var getIntervallTotalValue = function(anArray, resultArray, sport, stats){
 
 
 var drawElevationGraph = function(data, distance, calculatePoints){
-    console.log(data);
+    //console.log(data);
     
     //var data = array.
     
