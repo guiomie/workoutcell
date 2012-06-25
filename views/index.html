@@ -130,7 +130,7 @@
                 position:absolute;
                 top:0;
                 right:0;
-                width:100px;
+                width:200px;
             }
             
             .chart rect {
@@ -166,7 +166,7 @@
             <div id="navLink" style="position:absolute;bottom:10; padding-bottom: 15px;"> 
 	            <ul id="icons" class="ui-widget ui-helper-clearfix">			
 			        <li class="ui-state-default ui-corner-all"  id="goToSocial" style="float: right;"><span class="ui-icon ui-icon-person"></span></li>
-                    <li class="ui-state-default ui-corner-all"  id="goToStats" style="float: right;"><span class="ui-icon ui-icon-folder-open"></span></li>
+                    <li class="ui-state-default ui-corner-all"  id="goToStats" title="View your workout statistics" style="float: right;"><span class="ui-icon ui-icon-folder-open"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Manage your workoutcell account" id="goToConfiguration" style="float: right;"><span class="ui-icon ui-icon-wrench"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Find athletes or coaches" id="goToSearch" style="float: right;"><span class="ui-icon ui-icon-search"></span></li>
                     <li class="ui-state-default ui-corner-all" title="Manage your maps" id="goToMap" style="float: right;"><span class="ui-icon ui-icon-script"></span></li>
@@ -202,7 +202,9 @@
                  </li>
             </ul>
             
-			<div class="topright"> <span id="inviteFbFriends">Invite Friends</span> <br> <a href="/logout" style="font-size: medium;">Sign out</a>  </div>
+			<div class="topright"> 
+                <span id="inviteFbFriends" style="font-size: medium; float:right; padding-right: 15px;">Give access to your friends!</span> 
+                <br> <a href="/logout" style="font-size: medium; float:right; padding-right: 15px;">Sign out</a>  </div>
 		</div>
 
 	</div>
@@ -250,14 +252,14 @@
         <div style="float: left;">Describe your objective:&nbsp;&nbsp; </div>  
         <div style="float: left; cursor:pointer;" id="editProfileObjective">To train properly, to train socially </div>
     </div>
-    <br><br><br>
+    <br><br><br><!--
     Select colors to show in calendar:<br><br>
     <div id="colorInput">
         Bike&nbsp;&nbsp; <input id="bikeColor" class='color' size='1'  style="cursor:pointer;" /><br>
         Swim <input id="swimColor" class='color' size='1' style="cursor:pointer;" /><br>
         Run&nbsp;&nbsp; <input id="runColor" class='color' size='1' style="cursor:pointer;" /><br>
         Cell&nbsp;&nbsp; <input id="cellColor" class='color' size='1' style="cursor:pointer;"  /><br>
-    </div>
+    </div> -->
 
 </div>
 
