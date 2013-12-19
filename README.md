@@ -1,42 +1,10 @@
-# README for a newly created project.
+This software falls under GNU GPLv3
 
-There are a couple of things you should do first, before you can use all of Git's power:
+Workoutcell was an attempt to build a platform for connecting atheltes and coach in cardio based sports. The project was abandonned, it is also my first web project, this means both server-side and client-side code is horrible. The platform still supports the following features:
 
-  * Add a remote to this project: in the Cloud9 IDE command line, you can execute the following commands
-    `git remote add [remote name] [remote url (eg. 'git@github.com:/ajaxorg/node_chat')]` [Enter]
-  * Create new files inside your project
-  * Add them to to Git by executing the following command
-    `git add [file1, file2, file3, ...]` [Enter]
-  * Create a commit which can be pushed to the remote you just added
-    `git commit -m 'added new files'` [Enter]
-  * Push the commit the remote
-    `git push [remote name] master` [Enter]
-
-create git repo named wc
-
-git remote add wc git@github.com:guiomie/wc.git
-
-git add eaServer.js index.html mongooseDb.js mongooseLogic.js routes.js welcome.html views/profile.html
-
-git commit -m 'Blablabla'
-
-git push wc master
-
-
---------------------------------
-
-WORKING GIT
-
-git remote add workoutcell git@github.com:guiomie/workoutcell.git
-git add .
-git commit -m "text"
-git push -u workoutcell master
-
-
----------------------------------------
-
-
-That's it! If this doesn't work for you, please visit the excellent resources from [Github.com](http://help.github.com) and the [Pro Git](http://http://progit.org/book/) book.
-If you can't find your answers there, feel free to ask us via Twitter (@cloud9ide), [mailing list](groups.google.com/group/cloud9-ide) or IRC (#cloud9ide on freenode).
-
-Happy coding!
+1. Adding/Removing training events in a calendar
+2. Creation of workout cells (a circle of friends)
+3. Adding training events for a cell
+4. Notification events (friend request, coaching request, event request)
+5. Creation of running/cycling courses on a map (google map javascript sdk)
+6. Attaching courses to training events to share
