@@ -1,7 +1,7 @@
 var mongoHQadress = 'staff.mongohq.com:10072/workoutcellDb';
 //var mongoHQadress = 'dbh54.mongolab.com:27547/workoutcelldb';
 var mongoHQuser = 'mongoose';
-var mongoHQpassword = '12345';
+var mongoHQpassword = 'removed';
 
 var mongoDbAdress = '24.202.230.241:27017';
 var mongoDbName = 'workoutcellDb';
