@@ -1,6 +1,6 @@
 This software falls under GNU GPLv3
 
-Workoutcell was an attempt to build a platform for connecting atheltes and coach in cardio based sports. The project was abandonned, it is also my first web project, this means both server-side and client-side code is horrible. The platform still supports the following features:
+Workoutcell was an attempt to build a platform for connecting atheltes and coach in cardio based sports. The project was abandoned, it is also my first web project, this means both server-side and client-side code is horrible. The platform still supports the following features:
 
 1. Adding/Removing training events in a calendar
 2. Creation of workout cells (a circle of friends)
